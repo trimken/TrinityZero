@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-const char AreaTableEntryfmt[]="iiinixxxxxissssssssssssssssxixxxxxx";
+const char AreaTableEntryfmt[]="iiinixxxxxisxxxxxxxxixxxx";
 const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";
 const char AreaTriggerEntryfmt[]="niffffffff";
 const char BankBagSlotPricesEntryfmt[]="ni";
