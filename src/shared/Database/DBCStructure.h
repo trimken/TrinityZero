@@ -152,16 +152,10 @@ struct ChrRacesEntry
     uint32      model_f;                                    // 5
                                                             // 6-7 unused
     uint32      TeamID;                                     // 8 (7-Alliance 1-Horde)
-                                                            // 9-12 unused
-    uint32      startmovie;                                 // 13 id from CinematicCamera.dbc
-    char*       name[16];                                   // 14-29 used for DBC language detection/selection
-                                                            // 30 string flags, unused
-    //char*       nameFemale[16];                           // 31-46, if different from base (male) case
-                                                            // 47 string flags, unused
-    //char*       nameNeutralGender[16];                    // 48-63, if different from base (male) case
-                                                            // 64 string flags, unused
-                                                            // 65-67 unused
-    uint32      addon;                                      // 68 (0 - original race, 1 - tbc addon, ...)
+                                                            // 9 unused
+    uint32      startmovie;                                 // 10
+    char*       name[10];                                   // 14-23 used for DBC language detection/selection
+    uint32      addon;                                      // 24 (0 - original race, 1 - tbc addon, ...)
 };
 
 struct CreatureDisplayInfoEntry

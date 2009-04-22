@@ -31,7 +31,7 @@ const char ChatChannelsEntryfmt[]="iixssssssssssssssssxx";
                                                             // ChatChannelsEntryfmt, index not used (more compact store)
 //const char ChrClassesEntryfmt[]="nxixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";
 const char ChrClassesEntryfmt[]="nxxixsxxxxxxxxxix";
-const char ChrRacesEntryfmt[]="nxixiixxixxxxissssssssssssssssxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
+const char ChrRacesEntryfmt[]="nxixiixxixixxxisssssssssixxxx";
 const char CreatureDisplayInfofmt[]="nxxxfxxxxxxxxx";
 const char CreatureFamilyfmt[]="nfifiiiissssssssssssssssxx";
 const char CreatureSpellDatafmt[]="nxxxxxxxx";
