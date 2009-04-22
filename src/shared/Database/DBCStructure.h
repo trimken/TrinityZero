@@ -137,16 +137,9 @@ struct ChrClassesEntry
                                                             // 1-2, unused
     uint32      powerType;                                  // 3
                                                             // 4, unused
-    //char*       name[16];                                 // 5-20 unused
-    char*       name[16];                                   // 5-20 unused
-                                                            // 21 string flag, unused
-    //char*       nameFemale[16];                           // 21-36 unused, if different from base (male) case
-                                                            // 37 string flag, unused
-    //char*       nameNeutralGender[16];                    // 38-53 unused, if different from base (male) case
-                                                            // 54 string flag, unused
-                                                            // 55, unused
-    uint32      spellfamily;                                // 56
-                                                            // 57, unused
+    char*       name[10];                                   // 5-14 unused
+    uint32      spellfamily;                                // 15
+															// 16 unused
 };
 
 struct ChrRacesEntry
