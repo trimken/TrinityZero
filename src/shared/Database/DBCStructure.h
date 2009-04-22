@@ -155,15 +155,15 @@ struct ChrRacesEntry
                                                             // 9 unused
     uint32      startmovie;                                 // 10
     char*       name[10];                                   // 14-23 used for DBC language detection/selection
-    uint32      addon;                                      // 24 (0 - original race, 1 - tbc addon, ...)
+    uint32      addon;                                      // 24 (0 - original race, 1 - tbc addon, ...) //used DBC column that had all 0's for now
 };
 
 struct CreatureDisplayInfoEntry
 {
     uint32      Displayid;                                  // 0
-                                                            // 1-3,unused
-    float       scale;                                      // 4
-                                                            // 5-13,unused
+                                                            // 1-8,unused
+    float       scale;                                      // 9
+                                                            // 10-11,unused
 };
 
 struct CreatureFamilyEntry
