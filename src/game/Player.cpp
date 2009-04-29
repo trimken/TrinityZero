@@ -9760,13 +9760,15 @@ uint8 Player::CanEquipItem( uint8 slot, uint16 &dest, Item *pItem, bool swap, bo
                 if(!enchantEntry)
                     continue;
 
-                ItemPrototype const* pGem = objmgr.GetItemPrototype(enchantEntry->GemID);
+                /*
+				ItemPrototype const* pGem = objmgr.GetItemPrototype(enchantEntry->GemID);
                 if(pGem && (pGem->Flags & ITEM_FLAGS_UNIQUE_EQUIPPED))
                 {
                     Item* tItem = GetItemOrItemWithGemEquipped(enchantEntry->GemID);
                     if(tItem && (!swap || tItem->GetSlot() != eslot ))
                         return EQUIP_ERR_ITEM_UNIQUE_EQUIPABLE;
                 }
+				*/
             }
 
             // check unique-equipped special item classes
@@ -11610,8 +11612,8 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
     if(!pEnchant)
         return;
 
-    if(!ignore_condition && pEnchant->EnchantmentCondition && !((Player*)this)->EnchantmentFitsRequirements(pEnchant->EnchantmentCondition, -1))
-        return;
+    //if(!ignore_condition && pEnchant->EnchantmentCondition && !((Player*)this)->EnchantmentFitsRequirements(pEnchant->EnchantmentCondition, -1))
+    //    return;
 
     for (int s=0; s<3; s++)
     {
@@ -16972,13 +16974,13 @@ void Player::ProhibitSpellScholl(SpellSchoolMask idSchoolMask, uint32 unTimeMs )
 void Player::InitDataForForm(bool reapplyMods)
 {
     SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(m_form);
-    if(ssEntry && ssEntry->attackSpeed)
-    {
-        SetAttackTime(BASE_ATTACK,ssEntry->attackSpeed);
-        SetAttackTime(OFF_ATTACK,ssEntry->attackSpeed);
-        SetAttackTime(RANGED_ATTACK, BASE_ATTACK_TIME);
-    }
-    else
+    //if(ssEntry && ssEntry->attackSpeed)
+    //{
+    //    SetAttackTime(BASE_ATTACK,ssEntry->attackSpeed);
+    //    SetAttackTime(OFF_ATTACK,ssEntry->attackSpeed);
+    //    SetAttackTime(RANGED_ATTACK, BASE_ATTACK_TIME);
+    // }
+    //else
         SetRegularAttackTime();
 
     switch(m_form)
@@ -17388,25 +17390,27 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
                 if(!enchantEntry)
                     continue;
 
-                uint32 gemid = enchantEntry->GemID;
-                if(!gemid)
-                    continue;
+               // uint32 gemid = enchantEntry->GemID;
+               // if(!gemid)
+               //    continue;
 
-                ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid);
-                if(!gemProto)
-                    continue;
+                //ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid);
+                //if(!gemProto)
+                //    continue;
 
-                GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
-                if(!gemProperty)
-                    continue;
+                //GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
+                //if(!gemProperty)
+                //    continue;
 
-                uint8 GemColor = gemProperty->color;
+                //uint8 GemColor = gemProperty->color;
 
-                for(uint8 b = 0, tmpcolormask = 1; b < 4; b++, tmpcolormask <<= 1)
+                /*
+				for(uint8 b = 0, tmpcolormask = 1; b < 4; b++, tmpcolormask <<= 1)
                 {
                     if(tmpcolormask & GemColor)
                         ++curcount[b];
                 }
+				*/
             }
         }
     }
@@ -17466,6 +17470,7 @@ void Player::CorrectMetaGemEnchants(uint8 exceptslot, bool apply)
             if(!enchantEntry)
                 continue;
 
+			/*
             uint32 condition = enchantEntry->EnchantmentCondition;
             if(condition)
             {
@@ -17479,6 +17484,7 @@ void Player::CorrectMetaGemEnchants(uint8 exceptslot, bool apply)
                     ApplyEnchantment(pItem,EnchantmentSlot(enchant_slot),!wasactive,true,true);
                 }
             }
+			*/
         }
     }
 }
@@ -17510,9 +17516,9 @@ void Player::ToggleMetaGemsActive(uint8 exceptslot, bool apply)
                 continue;
 
             //only metagems to be (de)activated, so only enchants with condition
-            uint32 condition = enchantEntry->EnchantmentCondition;
-            if(condition)
-                ApplyEnchantment(pItem,EnchantmentSlot(enchant_slot), apply);
+            //uint32 condition = enchantEntry->EnchantmentCondition;
+            //if(condition)
+            //    ApplyEnchantment(pItem,EnchantmentSlot(enchant_slot), apply);
         }
     }
 }

@@ -1179,7 +1179,8 @@ void WorldSession::HandleSocketOpcode(WorldPacket& recv_data)
                     return;
                 }
             }
-            for (int j = 0; j < 3; ++j)
+            /*
+			for (int j = 0; j < 3; ++j)
             {
                 if (OldEnchants[j])
                 {
@@ -1194,6 +1195,7 @@ void WorldSession::HandleSocketOpcode(WorldPacket& recv_data)
                     }
                 }
             }
+			*/
         }
     }
 

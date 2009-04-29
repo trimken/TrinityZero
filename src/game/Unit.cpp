@@ -10464,10 +10464,11 @@ uint32 Unit::GetCreatureType() const
 {
     if(GetTypeId() == TYPEID_PLAYER)
     {
-        SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(((Player*)this)->m_form);
-        if(ssEntry && ssEntry->creatureType > 0)
-            return ssEntry->creatureType;
-        else
+	   // TODO: find way to return correct creature type for 1.12 for shapeshifted players
+       // SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(((Player*)this)->m_form);
+       // if(ssEntry && ssEntry->creatureType > 0)
+       //     return ssEntry->creatureType;
+       // else
             return CREATURE_TYPE_HUMANOID;
     }
     else

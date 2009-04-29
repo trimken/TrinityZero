@@ -822,7 +822,8 @@ bool Item::GemsFitSockets() const
 
         uint8 GemColor = 0;
 
-        uint32 gemid = enchantEntry->GemID;
+        /*
+		uint32 gemid = enchantEntry->GemID;
         if(gemid)
         {
             ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid);
@@ -833,6 +834,7 @@ bool Item::GemsFitSockets() const
                     GemColor = gemProperty->color;
             }
         }
+		*/
 
         fits &= (GemColor & SocketColor) ? true : false;
     }
@@ -852,8 +854,8 @@ uint8 Item::GetGemCountWithID(uint32 GemID) const
         if(!enchantEntry)
             continue;
 
-        if(GemID == enchantEntry->GemID)
-            ++count;
+        //if(GemID == enchantEntry->GemID)
+        //    ++count;
     }
     return count;
 }
