@@ -2098,11 +2098,11 @@ enum SummonType
 enum ResponseCodes
 {
     RESPONSE_SUCCESS                                       = 0x00,
-    RESPONSE_FAILURE                                       = 0x02,
-    RESPONSE_CANCELLED                                     = 0x03,
-    RESPONSE_DISCONNECTED                                  = 0x04,
-    RESPONSE_FAILED_TO_CONNECT                             = 0x05,
-    RESPONSE_CONNECTED                                     = 0x01,
+    RESPONSE_FAILURE                                       = 0x01,
+    RESPONSE_CANCELLED                                     = 0x02,
+    RESPONSE_DISCONNECTED                                  = 0x03,
+    RESPONSE_FAILED_TO_CONNECT                             = 0x04,
+    RESPONSE_CONNECTED                                     = 0x05,
     RESPONSE_VERSION_MISMATCH                              = 0x06,
 
     CSTATUS_CONNECTING                                     = 0x07,
@@ -2152,51 +2152,51 @@ enum ResponseCodes
     CHAR_CREATE_IN_PROGRESS                                = 0x2D,
     CHAR_CREATE_SUCCESS                                    = 0x2E,
     CHAR_CREATE_ERROR                                      = 0x2F,
-    CHAR_CREATE_FAILED                                     = 0x31,
-    CHAR_CREATE_NAME_IN_USE                                = 0x4C, /// UNSURE
-    CHAR_CREATE_DISABLED                                   = 0x32,
+    CHAR_CREATE_FAILED                                     = 0x30,
+    CHAR_CREATE_NAME_IN_USE                                = 0x31,
+    CHAR_CREATE_DISABLED                                   = 0x3A,
     CHAR_CREATE_PVP_TEAMS_VIOLATION                        = 0x33,
     CHAR_CREATE_SERVER_LIMIT                               = 0x34,
     CHAR_CREATE_ACCOUNT_LIMIT                              = 0x35,
-    CHAR_CREATE_SERVER_QUEUE                               = 0x36,
-    CHAR_CREATE_ONLY_EXISTING                              = 0x37,
-    CHAR_CREATE_EXPANSION                                  = 0x38,
+    CHAR_CREATE_SERVER_QUEUE                               = 0x30,/// UNSURE
+    CHAR_CREATE_ONLY_EXISTING                              = 0x30,/// UNSURE
+    CHAR_CREATE_EXPANSION                                  = 0x30,/// UNSURE
 
-    CHAR_DELETE_IN_PROGRESS                                = 0x39,
-    CHAR_DELETE_SUCCESS                                    = 0x3A,
-    CHAR_DELETE_FAILED                                     = 0x3B,
-    CHAR_DELETE_FAILED_LOCKED_FOR_TRANSFER                 = 0x3C,
-    CHAR_DELETE_FAILED_GUILD_LEADER                        = 0x3B,
-    CHAR_DELETE_FAILED_ARENA_CAPTAIN                       = 0x3B,
+    CHAR_DELETE_IN_PROGRESS                                = 0x38,
+    CHAR_DELETE_SUCCESS                                    = 0x39,
+    CHAR_DELETE_FAILED                                     = 0x3A,
+    CHAR_DELETE_FAILED_LOCKED_FOR_TRANSFER                 = 0x3A,/// UNSURE
+    CHAR_DELETE_FAILED_GUILD_LEADER                        = 0x3A,/// UNSURE
+    CHAR_DELETE_FAILED_ARENA_CAPTAIN                       = 0x3A,/// UNSURE
 
-    CHAR_LOGIN_IN_PROGRESS                                 = 0x3D,
-    CHAR_LOGIN_SUCCESS                                     = 0x3E,
-    CHAR_LOGIN_NO_WORLD                                    = 0x3F,
-    CHAR_LOGIN_DUPLICATE_CHARACTER                         = 0x40,
-    CHAR_LOGIN_NO_INSTANCES                                = 0x41,
-    CHAR_LOGIN_FAILED                                      = 0x42,
-    CHAR_LOGIN_DISABLED                                    = 0x43,
-    CHAR_LOGIN_NO_CHARACTER                                = 0x44,
-    CHAR_LOGIN_LOCKED_FOR_TRANSFER                         = 0x42, ///UNSURE
-    CHAR_LOGIN_LOCKED_BY_BILLING                           = 0x42, ///UNSURE
+    CHAR_LOGIN_IN_PROGRESS                                 = 0x3B,
+    CHAR_LOGIN_SUCCESS                                     = 0x3C,
+    CHAR_LOGIN_NO_WORLD                                    = 0x3D,
+    CHAR_LOGIN_DUPLICATE_CHARACTER                         = 0x3E,
+    CHAR_LOGIN_NO_INSTANCES                                = 0x3F,
+    CHAR_LOGIN_FAILED                                      = 0x40,
+    CHAR_LOGIN_DISABLED                                    = 0x41,
+    CHAR_LOGIN_NO_CHARACTER                                = 0x42,
+    CHAR_LOGIN_LOCKED_FOR_TRANSFER                         = 0x40, ///UNSURE
+    CHAR_LOGIN_LOCKED_BY_BILLING                           = 0x40, ///UNSURE
 
-    CHAR_NAME_SUCCESS                                      = 0x53,
-    CHAR_NAME_FAILURE                                      = 0x52,
-    CHAR_NAME_NO_NAME                                      = 0x46,
-    CHAR_NAME_TOO_SHORT                                    = 0x47,
-    CHAR_NAME_TOO_LONG                                     = 0x48,
-    CHAR_NAME_INVALID_CHARACTER                            = 0x49,
-    CHAR_NAME_MIXED_LANGUAGES                              = 0x4A,
-    CHAR_NAME_PROFANE                                      = 0x4B,
-    CHAR_NAME_RESERVED                                     = 0x4C,
-    CHAR_NAME_INVALID_APOSTROPHE                           = 0x4D,
-    CHAR_NAME_MULTIPLE_APOSTROPHES                         = 0x4E,
-    CHAR_NAME_THREE_CONSECUTIVE                            = 0x4F,
-    CHAR_NAME_INVALID_SPACE                                = 0x50,
-    CHAR_NAME_CONSECUTIVE_SPACES                           = 0x51,
-    CHAR_NAME_RUSSIAN_CONSECUTIVE_SILENT_CHARACTERS        = 0x49,
-    CHAR_NAME_RUSSIAN_SILENT_CHARACTER_AT_BEGINNING_OR_END = 0x49,
-    CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME            = 0x49,///UNSURE
+    CHAR_NAME_SUCCESS                                      = 0x50,
+    CHAR_NAME_FAILURE                                      = 0x4F,
+    CHAR_NAME_NO_NAME                                      = 0x43,
+    CHAR_NAME_TOO_SHORT                                    = 0x44,
+    CHAR_NAME_TOO_LONG                                     = 0x45,
+    CHAR_NAME_INVALID_CHARACTER                            = 0x46,
+    CHAR_NAME_MIXED_LANGUAGES                              = 0x47,
+    CHAR_NAME_PROFANE                                      = 0x48,
+    CHAR_NAME_RESERVED                                     = 0x49,
+    CHAR_NAME_INVALID_APOSTROPHE                           = 0x4A,
+    CHAR_NAME_MULTIPLE_APOSTROPHES                         = 0x4B,
+    CHAR_NAME_THREE_CONSECUTIVE                            = 0x4C,
+    CHAR_NAME_INVALID_SPACE                                = 0x4D,
+    CHAR_NAME_CONSECUTIVE_SPACES                           = 0x4E,
+    CHAR_NAME_RUSSIAN_CONSECUTIVE_SILENT_CHARACTERS        = 0x4E,///UNSURE
+    CHAR_NAME_RUSSIAN_SILENT_CHARACTER_AT_BEGINNING_OR_END = 0x4E,///UNSURE
+    CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME            = 0x4E,///UNSURE
 };
 
 /// Ban function modes
