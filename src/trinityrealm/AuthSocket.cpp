@@ -851,7 +851,7 @@ bool AuthSocket::_HandleRealmList()
     ///- Circle through realms in the RealmList and construct the return packet (including # of user characters in each realm)
     ByteBuffer pkt;
     pkt << (uint32) 0;
-    pkt << (uint16) m_realmList.size();
+    pkt << (uint32) m_realmList.size();
     RealmList::RealmMap::const_iterator i;
     for( i = m_realmList.begin(); i != m_realmList.end(); i++ )
     {
@@ -878,10 +878,10 @@ bool AuthSocket::_HandleRealmList()
         pkt << i->second.populationLevel;
         pkt << AmountOfCharacters;
         pkt << i->second.timezone;                          // realm category
-        pkt << (uint8) 0x2C;                                // unk, may be realm number/id?
+        pkt << (uint8) 0x0;                                // unk, may be realm number/id?
     }
-    pkt << (uint8) 0x10;
     pkt << (uint8) 0x00;
+    pkt << (uint8) 0x02;
 
     ByteBuffer hdr;
     hdr << (uint8) REALM_LIST;
