@@ -179,7 +179,7 @@ void LoadDBCStores(const std::string& dataPath)
 {
     std::string dbcPath = dataPath+"dbc/";
 
-    const uint32 DBCFilesCount = 57;
+    const uint32 DBCFilesCount = 28;
 
     barGoLink bar( DBCFilesCount );
 
@@ -442,20 +442,20 @@ void LoadDBCStores(const std::string& dataPath)
         exit(1);
     }
 
-    // check at up-to-date DBC files (53085 is last added spell in 2.4.3)
-    // check at up-to-date DBC files (17514 is last ID in SkillLineAbilities in 2.4.3)
+    // check at up-to-date DBC files (33392 is last added spell in 1.12.1)
+    // check at up-to-date DBC files (762 is last ID in SkillLineAbilities in 1.12.1)
     // check at up-to-date DBC files (598 is last map added in 2.4.3)
     // check at up-to-date DBC files (1127 is last gem property added in 2.4.3)
     // check at up-to-date DBC files (2425 is last item extended cost added in 2.4.3)
     // check at up-to-date DBC files (71 is last char title added in 2.4.3)
     // check at up-to-date DBC files (1768 is last area added in 2.4.3)
-    if( !sSpellStore.LookupEntry(53085)            ||
-        !sSkillLineAbilityStore.LookupEntry(17514) ||
-        !sMapStore.LookupEntry(598)                ||
-        !sGemPropertiesStore.LookupEntry(1127)     ||
-        !sItemExtendedCostStore.LookupEntry(2425)  ||
-        !sCharTitlesStore.LookupEntry(71)          ||
-        !sAreaStore.LookupEntry(1768)              )
+    if( !sSpellStore.LookupEntry(33392)            ||
+        !sSkillLineAbilityStore.LookupEntry(762)   ||
+//        !sMapStore.LookupEntry(598)                ||
+//        !sGemPropertiesStore.LookupEntry(1127)     ||
+//        !sItemExtendedCostStore.LookupEntry(2425)  ||
+//        !sCharTitlesStore.LookupEntry(71)          ||
+//        !sAreaStore.LookupEntry(1768)              )
     {
         sLog.outError("\nYou have _outdated_ DBC files. Please extract correct versions from current using client.");
         exit(1);
