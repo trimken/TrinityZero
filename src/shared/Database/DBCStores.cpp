@@ -450,7 +450,7 @@ void LoadDBCStores(const std::string& dataPath)
     // check at up-to-date DBC files (71 is last char title added in 2.4.3)
     // check at up-to-date DBC files (1768 is last area added in 2.4.3)
     if( !sSpellStore.LookupEntry(33392)            ||
-        !sSkillLineAbilityStore.LookupEntry(762)   ||
+        !sSkillLineAbilityStore.LookupEntry(762) )
 //        !sMapStore.LookupEntry(598)                ||
 //        !sGemPropertiesStore.LookupEntry(1127)     ||
 //        !sItemExtendedCostStore.LookupEntry(2425)  ||
