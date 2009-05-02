@@ -409,24 +409,19 @@ struct MapEntry
     //char*       internalname;                             // 1 unused
     uint32      map_type;                                   // 2
                                                             // 3 unused
-    char*       name[16];                                   // 4-19
-                                                            // 20 name flags, unused
-                                                            // 21-23 unused (something PvPZone related - levels?)
-                                                            // 24-26
-    uint32      linked_zone;                                // 27 common zone for instance and continent map
-    //char*     hordeIntro                                  // 28-43 text for PvP Zones
-                                                            // 44 intro text flags
-    //char*     allianceIntro                               // 45-60 text for PvP Zones
-                                                            // 46 intro text flags
-                                                            // 47-61 not used
-    uint32      multimap_id;                                // 62
-                                                            // 63-65 not used
-    //chat*     unknownText1                                // 66-81 unknown empty text fields, possible normal Intro text.
-                                                            // 82 text flags
-    //chat*     heroicIntroText                             // 83-98 heroic mode requirement text
-                                                            // 99 text flags
-    //chat*     unknownText2                                // 100-115 unknown empty text fields
-                                                            // 116 text flags
+    char*       name[8];                                    // 4-11
+                                                            // 12 name flags, unused
+                                                            // 13-15 unused (something PvPZone related - levels?)
+                                                            // 16-18
+    uint32      linked_zone;                                // 19 common zone for instance and continent map
+    //char*     hordeIntro                                  // 20-27 text for PvP Zones
+                                                            // 28 intro text flags
+    //char*     allianceIntro                               // 29-36 text for PvP Zones
+                                                            // 37 intro text flags
+    uint32      multimap_id;                                // 38
+															// 39-42 unused
+	/*
+	not exists in 1.12
     int32       entrance_map;                               // 117 map_id of entrance map
     float       entrance_x;                                 // 118 entrance x coordinate (if exist single entry)
     float       entrance_y;                                 // 119 entrance y coordinate (if exist single entry)
@@ -434,9 +429,9 @@ struct MapEntry
     uint32 resetTimeHeroic;                                 // 121
                                                             // 122-123
     uint32      addon;                                      // 124 (0-original maps,1-tbc addon)
-
+	*/
     // Helpers
-    uint32 Expansion() const { return addon; }
+    uint32 Expansion() const { return 0;/*addon;*/ }
 
 
     bool IsDungeon() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID; }
@@ -445,8 +440,8 @@ struct MapEntry
     bool IsBattleGround() const { return map_type == MAP_BATTLEGROUND; }
     bool IsBattleArena() const { return map_type == MAP_ARENA; }
     bool IsBattleGroundOrArena() const { return map_type == MAP_BATTLEGROUND || map_type == MAP_ARENA; }
-    bool SupportsHeroicMode() const { return resetTimeHeroic && !resetTimeRaid; }
-    bool HasResetTime() const { return resetTimeHeroic || resetTimeRaid; }
+    bool SupportsHeroicMode() const { return false; /*resetTimeHeroic && !resetTimeRaid;*/ }
+    bool HasResetTime() const { return false; /* resetTimeHeroic || resetTimeRaid; */}
 
     bool IsMountAllowed() const
     {
