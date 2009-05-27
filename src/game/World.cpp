@@ -1413,7 +1413,6 @@ void World::SetInitialWorldSettings()
 void World::DetectDBCLang()
 {
     uint32 m_lang_confid = sConfig.GetIntDefault("DBC.Locale", 255);
-
     if(m_lang_confid != 255 && m_lang_confid >= MAX_LOCALE)
     {
         sLog.outError("Incorrect DBC.Locale! Must be >= 0 and < %d (set to 0)",MAX_LOCALE);
