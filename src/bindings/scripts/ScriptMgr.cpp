@@ -988,8 +988,8 @@ void LoadDatabase()
                                 continue;
                             }
 
-                            if (temp.event_param2_s != -1 && temp.event_param2 != pSpell->SchoolMask)
-                                error_db_log("TSCR: Creature %u has param1(spellId %u) but param2 is not -1 and not equal to spell's school mask. Event %u can never trigger.", temp.creature_id, temp.event_param1, i);
+//                            if (temp.event_param2_s != -1 && temp.event_param2 != pSpell->SchoolMask)
+//                                error_db_log("TSCR: Creature %u has param1(spellId %u) but param2 is not -1 and not equal to spell's school mask. Event %u can never trigger.", temp.creature_id, temp.event_param1, i);
                         }
 
                         //TODO: fix this system with SPELL_SCHOOL_MASK. Current complicate things, using int32(-1) instead of just 0

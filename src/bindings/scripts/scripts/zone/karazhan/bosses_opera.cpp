@@ -301,8 +301,8 @@ struct TRINITY_DLL_DECL boss_strawmanAI : public ScriptedAI
 
     void SpellHit(Unit* caster, const SpellEntry *Spell)
     {
-        if((Spell->SchoolMask == SPELL_SCHOOL_MASK_FIRE) && (!(rand()%10)))
-            DoCast(m_creature, SPELL_BURNING_STRAW, true);
+//        if((Spell->SchoolMask == SPELL_SCHOOL_MASK_FIRE) && (!(rand()%10)))
+          DoCast(m_creature, SPELL_BURNING_STRAW, true);
     }
 
     void JustDied(Unit* killer)

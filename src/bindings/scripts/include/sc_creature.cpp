@@ -467,8 +467,8 @@ SpellEntry const* ScriptedAI::SelectSpell(Unit* Target, int32 School, int32 Mech
             continue;
 
         //Check for school if specified
-        if (School >= 0 && TempSpell->SchoolMask & School)
-            continue;
+//        if (School >= 0 && TempSpell->SchoolMask & School)
+//            continue;
 
         //Check for spell mechanic if specified
         if (Mechanic >= 0 && TempSpell->Mechanic != Mechanic)

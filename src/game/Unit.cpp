@@ -1143,7 +1143,7 @@ void Unit::CastSpell(GameObject *go, uint32 spellId, bool triggered, Item *castI
 uint32 Unit::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool isTriggeredSpell, bool useSpellDamage)
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellID);
-    SpellNonMeleeDamage damageInfo(this, pVictim, spellInfo->Id, spellInfo->SchoolMask);
+    SpellNonMeleeDamage damageInfo(this, pVictim, spellInfo->Id, 0);//spellInfo->SchoolMask);
     damage = SpellDamageBonus(pVictim, spellInfo, damage, SPELL_DIRECT_DAMAGE);
     CalculateSpellDamageTaken(&damageInfo, damage, spellInfo);
     SendSpellNonMeleeDamageLog(&damageInfo);
@@ -1643,7 +1643,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                WorldPacket data(SMSG_SPELLDAMAGESHIELD,(8+8+4+4));
                data << uint64(pVictim->GetGUID());
                data << uint64(GetGUID());
-               data << uint32(spellProto->SchoolMask);
+               data << uint32(0); //spellProto->SchoolMask);
                data << uint32(damage);
                pVictim->SendMessageToSet(&data, true );
 
@@ -4383,14 +4383,14 @@ void Unit::RemoveAura(AuraMap::iterator &i, AuraRemoveMode mode)
             {
                 for(int i = 0; i < 3; ++i)
                 {
-                    if(AurSpellInfo->Effect[i] == SPELL_EFFECT_SUMMON &&
+/*                    if(AurSpellInfo->Effect[i] == SPELL_EFFECT_SUMMON &&
                         (AurSpellInfo->EffectMiscValueB[i] == SUMMON_TYPE_POSESSED ||
                          AurSpellInfo->EffectMiscValueB[i] == SUMMON_TYPE_POSESSED2 ||
                          AurSpellInfo->EffectMiscValueB[i] == SUMMON_TYPE_POSESSED3))
                     {
                         ((Player*)caster)->StopCastingCharm();
                         break;
-                    }
+                    }*/
                 }
             }
         }
@@ -8647,8 +8647,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     // Spellmod SpellDamage
     //float SpellModSpellDamage = 100.0f;
     float CoefficientPtc = DotFactor * 100.0f;
-    if(spellProto->SchoolMask != SPELL_SCHOOL_MASK_NORMAL)
-        CoefficientPtc *= ((float)CastingTime/3500.0f);
+//    if(spellProto->SchoolMask != SPELL_SCHOOL_MASK_NORMAL)
+//        CoefficientPtc *= ((float)CastingTime/3500.0f);
 
     if(Player* modOwner = GetSpellModOwner())
         //modOwner->ApplySpellMod(spellProto->Id,SPELLMOD_SPELL_BONUS_DAMAGE,SpellModSpellDamage);
@@ -8661,8 +8661,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
     float DoneActualBenefit = DoneAdvertisedBenefit * CoefficientPtc * LvlPenalty;
     float TakenActualBenefit = TakenAdvertisedBenefit * DotFactor * LvlPenalty;
-    if(spellProto->SpellFamilyName && spellProto->SchoolMask != SPELL_SCHOOL_MASK_NORMAL)
-        TakenActualBenefit *= ((float)CastingTime / 3500.0f);
+//    if(spellProto->SpellFamilyName && spellProto->SchoolMask != SPELL_SCHOOL_MASK_NORMAL)
+//        TakenActualBenefit *= ((float)CastingTime / 3500.0f);
 
     float tmpDamage = (float(pdamage)+DoneActualBenefit)*DoneTotalMod;
 
@@ -11561,7 +11561,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
             case SPELL_AURA_PROC_TRIGGER_DAMAGE:
             {
                 sLog.outDebug("ProcDamageAndSpell: doing %u damage from spell id %u (triggered by %s aura of spell %u)", auraModifier->m_amount, spellInfo->Id, (isVictim?"a victim's":"an attacker's"), triggeredByAura->GetId());
-                SpellNonMeleeDamage damageInfo(this, pTarget, spellInfo->Id, spellInfo->SchoolMask);
+                SpellNonMeleeDamage damageInfo(this, pTarget, spellInfo->Id, 0);//spellInfo->SchoolMask);
                 uint32 damage = SpellDamageBonus(pTarget, spellInfo, auraModifier->m_amount, SPELL_DIRECT_DAMAGE);
                 CalculateSpellDamageTaken(&damageInfo, damage, spellInfo);
                 SendSpellNonMeleeDamageLog(&damageInfo);
@@ -11621,16 +11621,16 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 break;
             case SPELL_AURA_REFLECT_SPELLS_SCHOOL:
                 // Skip Melee hits and spells ws wrong school
-                if (procSpell == NULL || (auraModifier->m_miscvalue & procSpell->SchoolMask) == 0)
-                    continue;
+//                if (procSpell == NULL || (auraModifier->m_miscvalue & procSpell->SchoolMask) == 0)
+//                    continue;
                 break;
             case SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT:
             case SPELL_AURA_MOD_POWER_COST_SCHOOL:
                 // Skip melee hits and spells ws wrong school or zero cost
-                if (procSpell == NULL ||
+/*                if (procSpell == NULL ||
                     (procSpell->manaCost == 0 && procSpell->ManaCostPercentage == 0) || // Cost check
                     (auraModifier->m_miscvalue & procSpell->SchoolMask) == 0)         // School check
-                    continue;
+                    continue;*/
                 break;
             case SPELL_AURA_MECHANIC_IMMUNITY:
                 // Compare mechanic

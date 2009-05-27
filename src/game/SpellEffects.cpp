@@ -2186,13 +2186,14 @@ void Spell::EffectApplyAura(uint32 i)
     if(unitTarget->GetTypeId()==TYPEID_PLAYER ||( unitTarget->GetTypeId()==TYPEID_UNIT && ((Creature*)unitTarget)->isPet() ) )              // Negative buff should only be applied on players
     {
         uint32 spellId = 0;
-        if(m_spellInfo->CasterAuraStateNot==AURA_STATE_WEAKENED_SOUL || m_spellInfo->TargetAuraStateNot==AURA_STATE_WEAKENED_SOUL)
+      /*  if(m_spellInfo->CasterAuraStateNot==AURA_STATE_WEAKENED_SOUL || m_spellInfo->TargetAuraStateNot==AURA_STATE_WEAKENED_SOUL)
             spellId = 6788;                                 // Weakened Soul
         else if(m_spellInfo->CasterAuraStateNot==AURA_STATE_FORBEARANCE || m_spellInfo->TargetAuraStateNot==AURA_STATE_FORBEARANCE)
             spellId = 25771;                                // Forbearance
         else if(m_spellInfo->CasterAuraStateNot==AURA_STATE_HYPOTHERMIA)
             spellId = 41425;                                // Hypothermia
-        else if (m_spellInfo->Mechanic == MECHANIC_BANDAGE) // Bandages
+       */
+        if (m_spellInfo->Mechanic == MECHANIC_BANDAGE) // Bandages
             spellId = 11196;                                // Recently Bandaged
         else if( (m_spellInfo->AttributesEx & 0x20) && (m_spellInfo->AttributesEx2 & 0x20000) )
             spellId = 23230;                                // Blood Fury - Healing Reduction
@@ -3141,6 +3142,7 @@ void Spell::EffectApplyAreaAura(uint32 i)
 
 void Spell::EffectSummonType(uint32 i)
 {
+    /* no EffectMiscValueB for 1.12
     switch(m_spellInfo->EffectMiscValueB[i])
     {
         case SUMMON_TYPE_GUARDIAN:
@@ -3180,7 +3182,7 @@ void Spell::EffectSummonType(uint32 i)
         default:
             sLog.outError("EffectSummonType: Unhandled summon type %u", m_spellInfo->EffectMiscValueB[i]);
             break;
-    }
+    }*/
 }
 
 void Spell::EffectSummon(uint32 i)
@@ -5119,7 +5121,7 @@ void Spell::EffectActivateObject(uint32 effect_idx)
 void Spell::EffectSummonTotem(uint32 i)
 {
     uint8 slot = 0;
-    switch(m_spellInfo->EffectMiscValueB[i])
+/*    switch(m_spellInfo->EffectMiscValueB[i])
     {
         case SUMMON_TYPE_TOTEM_SLOT1: slot = 0; break;
         case SUMMON_TYPE_TOTEM_SLOT2: slot = 1; break;
@@ -5131,7 +5133,7 @@ void Spell::EffectSummonTotem(uint32 i)
         case SUMMON_TYPE_GUARDIAN:    slot = 255; break;
         default: return;
     }
-
+*/
     if(slot < MAX_TOTEM)
     {
         uint64 guid = m_caster->m_TotemSlot[slot];

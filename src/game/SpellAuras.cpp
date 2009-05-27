@@ -5839,7 +5839,7 @@ void Aura::PeriodicTick()
 
             SpellEntry const* spellProto = GetSpellProto();
             //maybe has to be sent different to client, but not by SMSG_PERIODICAURALOG
-            SpellNonMeleeDamage damageInfo(pCaster, m_target, spellProto->Id, spellProto->SchoolMask);
+            SpellNonMeleeDamage damageInfo(pCaster, m_target, spellProto->Id, 0);//spellProto->SchoolMask);
             //no SpellDamageBonus for burn mana
             pCaster->CalculateSpellDamageTaken(&damageInfo, gain, spellProto);
             pCaster->SendSpellNonMeleeDamageLog(&damageInfo);
