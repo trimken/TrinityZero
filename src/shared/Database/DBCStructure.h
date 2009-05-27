@@ -44,9 +44,9 @@ struct AreaTableEntry
     uint32    zone;                                         // 2 if 0 then it's zone, else it's zone id of this area
     uint32    exploreFlag;                                  // 3, main index
     uint32    flags;                                        // 4, unknown value but 312 for all cities
-															// 5-9 unused
-	uint32    area_level;									// 10
-    char*     area_name[8];									// 11-18 
+                                                            // 5-9 unused
+    uint32    area_level;                                   // 10
+    char*     area_name[8];                                 // 11-18 
     uint32    team;                                         // 20
 };
 
@@ -139,7 +139,7 @@ struct ChrClassesEntry
     uint32      powerType;                                  // 4
     char*       name[8];                                    // 5-12 unused
     uint32      spellfamily;                                // 15
-															// 16 unused
+                                                            // 16 unused
 };
 
 
@@ -155,8 +155,7 @@ struct ChrRacesEntry
     uint32      TeamID;                                     // 8 (7-Alliance 1-Horde)
                                                             // 9 unused
     uint32      startmovie;                                 // 10
-    char*       name[10];                                   // 14-23 used for DBC language detection/selection
-    uint32      addon;                                      // 24 (0 - original race, 1 - tbc addon, ...) //used DBC column that had all 0's for now
+    char*       name[8];                                    // 17-25 used for DBC language detection/selection
 };
 
 struct CreatureDisplayInfoEntry
