@@ -378,6 +378,8 @@ int WorldSocket::handle_input_header (void)
 
     ClientPktHeader& header = *((ClientPktHeader*) m_Header.rd_ptr ());
 
+    sLog.outDebug("REC CMD: %u SIZE: %u", header.cmd, header.size);
+
     EndianConvertReverse(header.size);
     EndianConvert(header.cmd);
 
@@ -877,7 +879,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     // NOTE ATM the socket is singlethreaded, have this in mind ...
     ACE_NEW_RETURN (m_Session, WorldSession (id, this, security, expansion, mutetime, locale), -1);
 
-    m_Crypt.SetKey (&K);
+    m_Crypt.SetKey (K.AsByteArray(), 40 );
     m_Crypt.Init ();
 
     // In case needed sometime the second arg is in microseconds 1 000 000 = 1 sec
@@ -972,12 +974,17 @@ int WorldSocket::iSendPacket (const WorldPacket& pct)
     ServerPktHeader header;
 
     header.cmd = pct.GetOpcode ();
-    EndianConvert(header.cmd);
+
 
     header.size = (uint16) pct.size () + 2;
+
+    sLog.outDebug("CMD: %u SIZE: %u", header.cmd, header.size);
+
     EndianConvertReverse(header.size);
+    EndianConvert(header.cmd);
 
     m_Crypt.EncryptSend ((uint8*) & header, sizeof (header));
+
 
     if (m_OutBuffer->copy ((char*) & header, sizeof (header)) == -1)
         ACE_ASSERT (false);
