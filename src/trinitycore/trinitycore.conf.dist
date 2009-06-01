@@ -591,7 +591,7 @@ LogColors = ""
 
 GameType = 1
 RealmZone = 1
-Expansion = 1
+Expansion = 0
 DBC.Locale = 255
 DeclinedNames = 0
 StrictPlayerNames = 0
@@ -602,7 +602,7 @@ CharactersCreatingDisabled = 0
 CharactersPerAccount = 50
 CharactersPerRealm = 10
 SkipCinematics = 0
-MaxPlayerLevel = 70
+MaxPlayerLevel = 60
 StartPlayerLevel = 1
 StartPlayerMoney = 0
 MaxHonorPoints = 75000
@@ -886,7 +886,7 @@ GM.WhisperingTo   = 2
 GM.InGMList       = 0
 GM.InWhoList      = 0
 GM.LogTrade       = 1
-GM.StartLevel     = 70
+GM.StartLevel     = 60
 
 ###################################################################################################################
 # VISIBILITY AND RADIUSES
