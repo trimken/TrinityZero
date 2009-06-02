@@ -125,7 +125,7 @@ struct ChatChannelsEntry
 {
     uint32      ChannelID;                                  // 0
     uint32      flags;                                      // 1
-  					 										// 2 unused
+                                                            // 2 unused
     char*       pattern[8];                                 // 3-10
                                                             // 11 string flags, unused
     //char*       name[8];                                  // 12-19 unused
@@ -135,9 +135,10 @@ struct ChatChannelsEntry
 struct ChrClassesEntry
  {
     uint32      ClassID;                                    // 0
-                                                            // 1-3, unused
-    uint32      powerType;                                  // 4
-    char*       name[8];                                    // 5-12 unused
+                                                            // 1-2, unused
+    uint32      powerType;                                  // 3
+                                                            // 4
+    char*       name[8];                                    // 5-12 used to detect DBC locale
     uint32      spellfamily;                                // 15
                                                             // 16 unused
 };
