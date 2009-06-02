@@ -7577,7 +7577,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
     else
         zoneid = GetZoneId();
     OutdoorPvP * pvp = sOutdoorPvPMgr.GetOutdoorPvPToZoneId(zoneid);
-    uint32 areaid = GetAreaId();
+   // uint32 areaid = GetAreaId();
     sLog.outDebug("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
     // may be exist better way to do this...
     switch(zoneid)
@@ -7645,7 +7645,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
     WorldPacket data(SMSG_INIT_WORLD_STATES, (4+4+4+2+(NumberOfFields*8)));
     data << uint32(mapid);                                  // mapid
     data << uint32(zoneid);                                 // zone id
-    data << uint32(areaid);                                 // area id, new 2.1.0
+  //  data << uint32(areaid);                                 // area id, new 2.1.0
     data << uint16(NumberOfFields);                         // count of uint64 blocks
     data << uint32(0x8d8) << uint32(0x0);                   // 1
     data << uint32(0x8d7) << uint32(0x0);                   // 2
@@ -7653,12 +7653,12 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
     data << uint32(0x8d5) << uint32(0x0);                   // 4
     data << uint32(0x8d4) << uint32(0x0);                   // 5
     data << uint32(0x8d3) << uint32(0x0);                   // 6
-    if(mapid == 530)                                        // Outland
+ /*   if(mapid == 530)                                        // Outland
     {
         data << uint32(0x9bf) << uint32(0x0);               // 7
         data << uint32(0x9bd) << uint32(0xF);               // 8
         data << uint32(0x9bb) << uint32(0xF);               // 9
-    }
+    } */
     switch(zoneid)
     {
         case 1:
@@ -7867,7 +7867,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
                 data << uint32(0x7a3) << uint32(0x708);     // 38 1955 warning limit (1800)
             }
             break;
-        case 3820:                                          // EY
+      /*  case 3820:                                          // EY
             if (bg && bg->GetTypeID() == BATTLEGROUND_EY)
                 bg->FillInitialWorldStates(data);
             else
@@ -7906,7 +7906,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
                 data << uint32(0xc0d) << uint32(0x17b);     // 38 3085 unk
                 // and some more ... unknown
             }
-            break;
+            break; */
         // any of these needs change! the client remembers the prev setting!
         // ON EVERY ZONE LEAVE, RESET THE OLD ZONE'S WORLD STATE, BUT AT LEAST THE UI STUFF!
         case 3483:                                          // Hellfire Peninsula
@@ -7934,7 +7934,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
                 }
             }
             break;
-        case 3518:
+    /*    case 3518:
             {
                 if(pvp && pvp->GetTypeId() == OUTDOOR_PVP_NA)
                     pvp->FillInitialWorldStates(data);
@@ -8085,10 +8085,11 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
             data << uint32(0x913) << uint32(0x0);           // 8
             data << uint32(0x912) << uint32(0x0);           // 9
             data << uint32(0x915) << uint32(0x0);           // 10
-            break;
-    }
+            break; */
+    } 
     GetSession()->SendPacket(&data);
 }
+
 
 uint32 Player::GetXPRestBonus(uint32 xp)
 {
@@ -17968,9 +17969,9 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     SendInitialSpells();
 
-    data.Initialize(SMSG_SEND_UNLEARN_SPELLS, 4);
+   /* data.Initialize(SMSG_SEND_UNLEARN_SPELLS, 4);
     data << uint32(0);                                      // count, for(count) uint32;
-    GetSession()->SendPacket(&data);
+    GetSession()->SendPacket(&data); */
 
     SendInitialActionButtons();
     SendInitialReputations();
@@ -17979,9 +17980,19 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     // SMSG_SET_AURA_SINGLE
 
-    data.Initialize(SMSG_LOGIN_SETTIMESPEED, 8);
+ /*   data.Initialize(SMSG_LOGIN_SETTIMESPEED, 8);
     data << uint32(secsToTimeBitFields(sWorld.GetGameTime()));
     data << (float)0.01666667f;                             // game speed
+    GetSession()->SendPacket( &data ); */
+
+    SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE );
+
+	data.Initialize(SMSG_LOGIN_SETTIMESPEED);
+    time_t minutes = sWorld.GetGameTime( ) / 60;
+    time_t hours = minutes / 60; minutes %= 60;
+    time_t gameTime = minutes + ( hours << 6 );
+    data << (uint32)gameTime;
+    data << (float)0.017f;
     GetSession()->SendPacket( &data );
 
     // set fly flag if in fly form or taxi flight to prevent visually drop at ground in showup moment
