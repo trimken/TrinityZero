@@ -504,30 +504,32 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
     SetPlayer(pCurrChar);
 
-    pCurrChar->SendDungeonDifficulty(false);
+	 WorldPacket data;
 
-    WorldPacket data( SMSG_LOGIN_VERIFY_WORLD, 20 );
+   // pCurrChar->SendDungeonDifficulty(false);
+
+/*	WorldPacket data( SMSG_LOGIN_VERIFY_WORLD, 20 );
     data << pCurrChar->GetMapId();
     data << pCurrChar->GetPositionX();
     data << pCurrChar->GetPositionY();
     data << pCurrChar->GetPositionZ();
     data << pCurrChar->GetOrientation();
-    SendPacket(&data);
+    SendPacket(&data); */
 
     data.Initialize( SMSG_ACCOUNT_DATA_TIMES, 128 );
     for(int i = 0; i < 32; i++)
         data << uint32(0);
     SendPacket(&data);
 
-    data.Initialize(SMSG_FEATURE_SYSTEM_STATUS, 2);         // added in 2.2.0
-    data << uint8(2);                                       // unknown value
-    data << uint8(0);                                       // enable(1)/disable(0) voice chat interface in client
-    SendPacket(&data);
+    
 
-    // Send MOTD
+    ChatHandler(pCurrChar).SendSysMessage(sWorld.GetMotd());
+
+     
+	pCurrChar->SendInitialPacketsBeforeAddToMap();
+
+    /* Send MOTD
     {
-        data.Initialize(SMSG_MOTD, 50);                     // new in 2.0.1
-        data << (uint32)0;
 
         uint32 linecount=0;
         std::string str_motd = sWorld.GetMotd();
@@ -560,7 +562,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
             chH.PSendSysMessage(_FULLVERSION);
 
         DEBUG_LOG( "WORLD: Sent server info" );
-    }
+    } */
 
     //QueryResult *result = CharacterDatabase.PQuery("SELECT guildid,rank FROM guild_member WHERE guid = '%u'",pCurrChar->GetGUIDLow());
     QueryResult *resultGuild = holder->GetResult(PLAYER_LOGIN_QUERY_LOADGUILD);
@@ -612,8 +614,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
     if(!pCurrChar->isAlive())
         pCurrChar->SendCorpseReclaimDelay(true);
 
-    pCurrChar->SendInitialPacketsBeforeAddToMap();
-
     //Show cinematic at the first time that player login
     if( !pCurrChar->getCinematic() )
     {
@@ -643,9 +643,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
     ObjectAccessor::Instance().AddObject(pCurrChar);
     //sLog.outDebug("Player %s added to Map.",pCurrChar->GetName());
-    pCurrChar->GetSocial()->SendSocialList();
+   // pCurrChar->GetSocial()->SendSocialList();
 
-    pCurrChar->SendInitialPacketsAfterAddToMap();
+    // pCurrChar->SendInitialPacketsAfterAddToMap();
 
     CharacterDatabase.PExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", pCurrChar->GetGUIDLow());
     LoginDatabase.PExecute("UPDATE account SET online = 1 WHERE id = '%u'", GetAccountId());

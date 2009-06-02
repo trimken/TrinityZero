@@ -1563,9 +1563,9 @@ void Map::SendInitSelf( Player * player )
         }
     }
 
-    WorldPacket packet;
-    data.BuildPacket(&packet, hasTransport);
-    player->GetSession()->SendPacket(&packet);
+  WorldPacket packet;
+  data.BuildPacket(&packet, hasTransport);
+  player->GetSession()->SendPacket(&packet);
 }
 
 void Map::SendInitTransports( Player * player )
