@@ -521,12 +521,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
         data << uint32(0);
     SendPacket(&data);
 
-    
+	pCurrChar->GetSocial()->SendSocialList();
 
     ChatHandler(pCurrChar).SendSysMessage(sWorld.GetMotd());
-
-     
-	pCurrChar->SendInitialPacketsBeforeAddToMap();
 
     /* Send MOTD
     {
@@ -614,6 +611,8 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
     if(!pCurrChar->isAlive())
         pCurrChar->SendCorpseReclaimDelay(true);
 
+	pCurrChar->SendInitialPacketsBeforeAddToMap();
+
     //Show cinematic at the first time that player login
     if( !pCurrChar->getCinematic() )
     {
@@ -643,9 +642,8 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
     ObjectAccessor::Instance().AddObject(pCurrChar);
     //sLog.outDebug("Player %s added to Map.",pCurrChar->GetName());
-   // pCurrChar->GetSocial()->SendSocialList();
 
-    // pCurrChar->SendInitialPacketsAfterAddToMap();
+    pCurrChar->SendInitialPacketsAfterAddToMap();
 
     CharacterDatabase.PExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", pCurrChar->GetGUIDLow());
     LoginDatabase.PExecute("UPDATE account SET online = 1 WHERE id = '%u'", GetAccountId());

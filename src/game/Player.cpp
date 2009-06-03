@@ -3432,13 +3432,13 @@ void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target )
 
             m_items[i]->BuildCreateUpdateBlockForPlayer( data, target );
         }
-        for(int i = KEYRING_SLOT_START; i < KEYRING_SLOT_END; i++)
+      /*  for(int i = KEYRING_SLOT_START; i < KEYRING_SLOT_END; i++)
         {
             if(m_items[i] == NULL)
                 continue;
 
             m_items[i]->BuildCreateUpdateBlockForPlayer( data, target );
-        }
+        } */
     }
 
     Unit::BuildCreateUpdateBlockForPlayer( data, target );
