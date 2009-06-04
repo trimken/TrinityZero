@@ -2975,7 +2975,7 @@ void Aura::HandleFeignDeath(bool apply, bool Real)
                                                             // blizz like 2.0.x
         m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNKNOWN6);
                                                             // blizz like 2.0.x
-        m_target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+        m_target->SetFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FEIGN_DEATH);
                                                             // blizz like 2.0.x
         m_target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
 
@@ -3000,7 +3000,7 @@ void Aura::HandleFeignDeath(bool apply, bool Real)
                                                             // blizz like 2.0.x
         m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNKNOWN6);
                                                             // blizz like 2.0.x
-        m_target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+        m_target->RemoveFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FEIGN_DEATH);
                                                             // blizz like 2.0.x
         m_target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
 
@@ -4388,9 +4388,9 @@ void Aura::HandleModManaRegen(bool /*apply*/, bool Real)
 void Aura::HandleComprehendLanguage(bool apply, bool Real)
 {
     if(apply)
-        m_target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_COMPREHEND_LANG);
+        m_target->SetFlag(UNIT_FIELD_AURA, UNIT_FLAG2_COMPREHEND_LANG);
     else
-        m_target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_COMPREHEND_LANG);
+        m_target->RemoveFlag(UNIT_FIELD_AURA, UNIT_FLAG2_COMPREHEND_LANG);
 }
 
 void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
@@ -5111,9 +5111,9 @@ void Aura::HandleForceMoveForward(bool apply, bool Real)
     if(!Real || m_target->GetTypeId() != TYPEID_PLAYER)
         return;
     if(apply)
-        m_target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FORCE_MOVE);
+        m_target->SetFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FORCE_MOVE);
     else
-        m_target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FORCE_MOVE);
+        m_target->RemoveFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FORCE_MOVE);
 }
 
 void Aura::HandleAuraModExpertise(bool /*apply*/, bool Real)
@@ -5133,12 +5133,12 @@ void Aura::HandleModTargetResistance(bool apply, bool Real)
     // applied to damage as HandleNoImmediateEffect in Unit::CalcAbsorbResist and Unit::CalcArmorReducedDamage
 
     // show armor penetration
-    if (m_target->GetTypeId() == TYPEID_PLAYER && (m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL))
+  /*  if (m_target->GetTypeId() == TYPEID_PLAYER && (m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)) [TRINITYROLLBACK]
         m_target->ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE,GetModifierValue(), apply);
 
     // show as spell penetration only full spell penetration bonuses (all resistances except armor and holy
     if (m_target->GetTypeId() == TYPEID_PLAYER && (m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_SPELL)==SPELL_SCHOOL_MASK_SPELL)
-        m_target->ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,GetModifierValue(), apply);
+        m_target->ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,GetModifierValue(), apply);  */ 
 }
 
 void Aura::HandleShieldBlockValue(bool apply, bool Real)

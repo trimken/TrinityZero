@@ -33,7 +33,7 @@
 #include "WorldSession.h"
 #include "Group.h"
 #include "Guild.h"
-#include "ArenaTeam.h"
+
 #include "Transports.h"
 #include "ProgressBar.h"
 #include "Language.h"
@@ -214,13 +214,14 @@ void ObjectMgr::LoadPlayerInfoInCache()
         pPPlayerInfo->unLevel = Player::GetUInt32ValueFromArray(tdata,UNIT_FIELD_LEVEL);
         pPPlayerInfo->unfield = Player::GetUInt32ValueFromArray(tdata,UNIT_FIELD_BYTES_0);
 
+   /* [ TrinityRollback ]     
         pPPlayerInfo->unArenaInfoId0 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6);
         pPPlayerInfo->unArenaInfoId1 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6);
         pPPlayerInfo->unArenaInfoId2 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6);
 
         pPPlayerInfo->unArenaInfoSlot0 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5);
         pPPlayerInfo->unArenaInfoSlot1 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6 + 5);
-        pPPlayerInfo->unArenaInfoSlot2 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5);
+        pPPlayerInfo->unArenaInfoSlot2 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5);  */
 
         pPPlayerInfo->unClass = (uint32)fields[3].GetUInt32();
         m_mPlayerInfoMap[fields[0].GetUInt32()] = pPPlayerInfo;
@@ -296,6 +297,9 @@ void ObjectMgr::RemoveGuild(uint32 Id)
 {
     mGuildMap.erase(Id);
 }
+
+/* [TRINITY ROLLBACK]
+
 ArenaTeam* ObjectMgr::GetArenaTeamById(const uint32 arenateamid) const
 {
     ArenaTeamMap::const_iterator itr = mArenaTeamMap.find(arenateamid);
@@ -332,6 +336,8 @@ void ObjectMgr::RemoveArenaTeam(uint32 Id)
 {
     mArenaTeamMap.erase(Id);
 }
+
+*/ 
 
 CreatureInfo const* ObjectMgr::GetCreatureTemplate(uint32 id)
 {
@@ -2456,6 +2462,7 @@ void ObjectMgr::LoadGuilds()
     sLog.outString( ">> Loaded %u guild definitions", count );
 }
 
+/* [TRINITYROLLBACK]
 void ObjectMgr::LoadArenaTeams()
 {
     uint32 count = 0;
@@ -2496,7 +2503,7 @@ void ObjectMgr::LoadArenaTeams()
 
     sLog.outString();
     sLog.outString( ">> Loaded %u arenateam definitions", count );
-}
+} */
 
 void ObjectMgr::LoadGroups()
 {

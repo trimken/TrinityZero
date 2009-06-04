@@ -1280,7 +1280,7 @@ void World::SetInitialWorldSettings()
     objmgr.LoadGuilds();
 
     sLog.outString( "Loading ArenaTeams..." );
-    objmgr.LoadArenaTeams();
+ //[TRINITYROLLBACK]   objmgr.LoadArenaTeams();
 
     sLog.outString( "Loading Groups..." );
     objmgr.LoadGroups();

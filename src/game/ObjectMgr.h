@@ -339,13 +339,14 @@ class ObjectMgr
         void AddGuild(Guild* guild);
         void RemoveGuild(uint32 Id);
 
-        ArenaTeam* GetArenaTeamById(const uint32 arenateamid) const;
+      /*[TRINITYROLLBACK] 
+	    ArenaTeam* GetArenaTeamById(const uint32 arenateamid) const;
         ArenaTeam* GetArenaTeamByName(const std::string& arenateamname) const;
         ArenaTeam* GetArenaTeamByCaptain(uint64 const& guid) const;
         void AddArenaTeam(ArenaTeam* arenaTeam);
         void RemoveArenaTeam(uint32 Id);
         ArenaTeamMap::iterator GetArenaTeamMapBegin() { return mArenaTeamMap.begin(); }
-        ArenaTeamMap::iterator GetArenaTeamMapEnd()   { return mArenaTeamMap.end(); }
+        ArenaTeamMap::iterator GetArenaTeamMapEnd()   { return mArenaTeamMap.end(); } */
 
         static CreatureInfo const *GetCreatureTemplate( uint32 id );
         CreatureModelInfo const *GetCreatureModelInfo( uint32 modelid );
@@ -478,7 +479,7 @@ class ObjectMgr
         }
 
         void LoadGuilds();
-        void LoadArenaTeams();
+//[TRINITYROLLBACK]        void LoadArenaTeams();
         void LoadGroups();
         void LoadQuests();
         void LoadQuestRelations()

@@ -58,7 +58,7 @@
 #include "BattleGroundMgr.h"
 #include "OutdoorPvP.h"
 #include "OutdoorPvPMgr.h"
-#include "ArenaTeam.h"
+
 #include "Chat.h"
 #include "Database/DatabaseImpl.h"
 #include "Spell.h"
@@ -573,12 +573,12 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
     SetUInt32Value( PLAYER_GUILD_TIMESTAMP, 0 );
 
-    SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES, 0 );        // 0=disabled
+  /* [TRINITYROLLBACK]  SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES, 0 );        // 0=disabled 
     SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
     SetUInt32Value( PLAYER_FIELD_KILLS, 0 );
     SetUInt32Value( PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, 0 );
     SetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION, 0 );
-    SetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0 );
+    SetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0 ); */
 
     // set starting level
     if (GetSession()->GetSecurity() >= SEC_MODERATOR)
@@ -586,9 +586,9 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     else
         SetUInt32Value (UNIT_FIELD_LEVEL, sWorld.getConfig(CONFIG_START_PLAYER_LEVEL));
 
-    SetUInt32Value (PLAYER_FIELD_COINAGE, sWorld.getConfig(CONFIG_START_PLAYER_MONEY));
+ /*   SetUInt32Value (PLAYER_FIELD_COINAGE, sWorld.getConfig(CONFIG_START_PLAYER_MONEY));
     SetUInt32Value (PLAYER_FIELD_HONOR_CURRENCY, sWorld.getConfig(CONFIG_START_HONOR_POINTS));
-    SetUInt32Value (PLAYER_FIELD_ARENA_CURRENCY, sWorld.getConfig(CONFIG_START_ARENA_POINTS));
+    SetUInt32Value (PLAYER_FIELD_ARENA_CURRENCY, sWorld.getConfig(CONFIG_START_ARENA_POINTS));  [TRINITYROLLBACK]  */
 
     // start with every map explored
     if(sWorld.getConfig(CONFIG_START_ALL_EXPLORED))
@@ -1880,11 +1880,11 @@ void Player::Regenerate(Powers power)
             if (recentCast)
             {
                 // Trinity Updates Mana in intervals of 2s, which is correct
-                addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT) *  ManaIncreaseRate * 2.00f;
+//[TRINITYROLLBACK]                addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT) *  ManaIncreaseRate * 2.00f;
             }
             else
             {
-                addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN) * ManaIncreaseRate * 2.00f;
+//[TRINITYROLLBACK]                addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN) * ManaIncreaseRate * 2.00f;
             }
         }   break;
         case POWER_RAGE:                                    // Regenerate rage
@@ -2279,7 +2279,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     PlayerLevelInfo info;
     objmgr.GetPlayerLevelInfo(getRace(),getClass(),getLevel(),&info);
 
-    SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) );
+//[TRINITYROLLBACK]    SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) );
     SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Trinity::XP::xp_to_level(getLevel()));
 
     UpdateSkillsForLevel ();
@@ -2310,7 +2310,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     for(uint16 index = PLAYER_FIELD_COMBAT_RATING_1; index < PLAYER_FIELD_COMBAT_RATING_1 + MAX_COMBAT_RATING; ++index)
         SetUInt32Value(index, 0);
 
-    SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
+//[TRINITYROLLBACK]    SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
     for (int i = 0; i < 7; i++)
     {
         SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+i, 0);
@@ -2339,16 +2339,16 @@ void Player::InitStatsForLevel(bool reapplyMods)
 
     // Base crit values (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
     SetFloatValue(PLAYER_CRIT_PERCENTAGE,0.0f);
-    SetFloatValue(PLAYER_OFFHAND_CRIT_PERCENTAGE,0.0f);
+    SetFloatValue(PLAYER_CRIT_PERCENTAGE,0.0f);
     SetFloatValue(PLAYER_RANGED_CRIT_PERCENTAGE,0.0f);
 
     // Init spell schools (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
-    for (uint8 i = 0; i < 7; ++i)
-        SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1+i, 0.0f);
+  /*[TRINITYROLLBACK]  for (uint8 i = 0; i < 7; ++i)
+        SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1+i, 0.0f); */
 
     SetFloatValue(PLAYER_PARRY_PERCENTAGE, 0.0f);
     SetFloatValue(PLAYER_BLOCK_PERCENTAGE, 0.0f);
-    SetUInt32Value(PLAYER_SHIELD_BLOCK, 0);
+    SetUInt32Value(PLAYER_BLOCK_PERCENTAGE, 0);
 
     // Dodge percentage
     SetFloatValue(PLAYER_DODGE_PERCENTAGE, 0.0f);
@@ -2365,8 +2365,8 @@ void Player::InitStatsForLevel(bool reapplyMods)
         SetResistanceBuffMods(SpellSchools(i), false, 0.0f);
     }
 
-    SetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,0);
-    SetUInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE,0);
+ //[TRINITYROLLBACK]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,0);
+ //[TRINITYROLLBACK]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE,0);
     for(int i = 0; i < MAX_SPELL_SCHOOL; ++i)
     {
         SetFloatValue(UNIT_FIELD_POWER_COST_MODIFIER+i,0.0f);
@@ -3353,7 +3353,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(UNIT_FIELD_FACTIONTEMPLATE);
     updateVisualBits.SetBit(UNIT_FIELD_BYTES_0);
     updateVisualBits.SetBit(UNIT_FIELD_FLAGS);
-    updateVisualBits.SetBit(UNIT_FIELD_FLAGS_2);
+    updateVisualBits.SetBit(UNIT_FIELD_AURA);
     for(uint16 i = UNIT_FIELD_AURA; i < UNIT_FIELD_AURASTATE; ++i)
         updateVisualBits.SetBit(i);
     updateVisualBits.SetBit(UNIT_FIELD_AURASTATE);
@@ -3384,7 +3384,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(PLAYER_GUILD_TIMESTAMP);
 
     // PLAYER_QUEST_LOG_x also visible bit on official (but only on party/raid)...
-    for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i+=4)
+    for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_20_2; i+=4) // [TRINITYROLLBACK] changed from 25 to 20
         updateVisualBits.SetBit(i);
 
     //Players visible items are not inventory stuff
@@ -3409,7 +3409,7 @@ void Player::InitVisibleBits()
         updateVisualBits.SetBit(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (i*MAX_VISIBLE_ITEM_OFFSET));
     }
 
-    updateVisualBits.SetBit(PLAYER_CHOSEN_TITLE);
+//[TRINITYROLLBACK]    updateVisualBits.SetBit(PLAYER_CHOSEN_TITLE);
 }
 
 void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target ) const
@@ -3432,13 +3432,13 @@ void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target )
 
             m_items[i]->BuildCreateUpdateBlockForPlayer( data, target );
         }
-      /*  for(int i = KEYRING_SLOT_START; i < KEYRING_SLOT_END; i++)
+        for(int i = KEYRING_SLOT_START; i < KEYRING_SLOT_END; i++)
         {
             if(m_items[i] == NULL)
                 continue;
 
             m_items[i]->BuildCreateUpdateBlockForPlayer( data, target );
-        } */
+        }
     }
 
     Unit::BuildCreateUpdateBlockForPlayer( data, target );
@@ -3553,7 +3553,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     }
 
     // remove from arena teams
-    uint32 at_id = GetArenaTeamIdFromDB(playerguid,ARENA_TEAM_2v2);
+ /* [TRINITYROLLBACK]   uint32 at_id = GetArenaTeamIdFromDB(playerguid,ARENA_TEAM_2v2);
     if(at_id != 0)
     {
         ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
@@ -3573,7 +3573,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
         ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
         if(at)
             at->DelMember(playerguid);
-    }
+    } */
 
     // the player was uninvited already on logout so just remove from group
     QueryResult *resultGroup = CharacterDatabase.PQuery("SELECT leaderGuid FROM group_member WHERE memberGuid='%u'", guid);
@@ -4519,7 +4519,7 @@ uint32 Player::GetDotDamageReduction(uint32 damage) const
 
 float Player::GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const
 {
-    switch (attType)
+ /* [TRINITYROLLBACK]  switch (attType)
     {
         case BASE_ATTACK:
             return GetUInt32Value(PLAYER_EXPERTISE) / 4.0f;
@@ -4527,7 +4527,7 @@ float Player::GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const
             return GetUInt32Value(PLAYER_OFFHAND_EXPERTISE) / 4.0f;
         default:
             break;
-    }
+    } */
     return 0.0f;
 }
 
@@ -5957,16 +5957,16 @@ void Player::RewardReputation(Quest const *pQuest)
 
     // TODO: implement reputation spillover
 }
-
+/*
 void Player::UpdateArenaFields(void)
 {
-    /* arena calcs go here */
+    // arena calcs go here [TRINITYROLLBACK]
 }
-
+*/
 void Player::UpdateHonorFields()
 {
     /// called when rewarding honor and at each save
-    uint64 now = time(NULL);
+/*  [TRINITYROLLBACK]  uint64 now = time(NULL);
     uint64 today = uint64(time(NULL) / DAY) * DAY;
 
     if(m_lastHonorUpdateTime < today)
@@ -5992,7 +5992,7 @@ void Player::UpdateHonorFields()
         }
     }
 
-    m_lastHonorUpdateTime = now;
+    m_lastHonorUpdateTime = now; */
 }
 
 ///Calculate the amount of honor gained based on the victim
@@ -6001,7 +6001,7 @@ void Player::UpdateHonorFields()
 bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvptoken)
 {
     // do not reward honor in arenas, but enable onkill spellproc
-    if(InArena())
+ /*   if(InArena())
     {
         if(!uVictim || uVictim == this || uVictim->GetTypeId() != TYPEID_PLAYER)
             return false;
@@ -6166,13 +6166,13 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
             ChatHandler(this).PSendSysMessage("You have been awarded a token for slaying another player.");
         }
     }
-
-    return true;
+ [TRINITYROLLBACK] */
+    return true; 
 }
 
 void Player::ModifyHonorPoints( int32 value )
 {
-    if(value < 0)
+ /*[TRINITYROLLBACK]   if(value < 0)
     {
         if (GetHonorPoints() > sWorld.getConfig(CONFIG_MAX_HONOR_POINTS))
             SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) + value);
@@ -6180,9 +6180,9 @@ void Player::ModifyHonorPoints( int32 value )
             SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, GetHonorPoints() > uint32(-value) ? GetHonorPoints() + value : 0);
     }
     else
-        SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, GetHonorPoints() < sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) - value ? GetHonorPoints() + value : sWorld.getConfig(CONFIG_MAX_HONOR_POINTS));
+        SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, GetHonorPoints() < sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) - value ? GetHonorPoints() + value : sWorld.getConfig(CONFIG_MAX_HONOR_POINTS)); */
 }
-
+/* [TRINITYROLLBACK]
 void Player::ModifyArenaPoints( int32 value )
 {
     if(value < 0)
@@ -6194,7 +6194,7 @@ void Player::ModifyArenaPoints( int32 value )
     }
     else
         SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, GetArenaPoints() < sWorld.getConfig(CONFIG_MAX_ARENA_POINTS) - value ? GetArenaPoints() + value : sWorld.getConfig(CONFIG_MAX_ARENA_POINTS));
-}
+} */ 
 
 uint32 Player::GetGuildIdFromDB(uint64 guid)
 {
@@ -6225,7 +6225,7 @@ uint32 Player::GetRankFromDB(uint64 guid)
     else
         return 0;
 }
-
+/* [TRINITYROLLBACK]
 uint32 Player::GetArenaTeamIdFromDB(uint64 guid, uint8 type)
 {
     QueryResult *result = CharacterDatabase.PQuery("SELECT arena_team_member.arenateamid FROM arena_team_member JOIN arena_team ON arena_team_member.arenateamid = arena_team.arenateamid WHERE guid='%u' AND type='%u' LIMIT 1", GUID_LOPART(guid), type);
@@ -6235,7 +6235,7 @@ uint32 Player::GetArenaTeamIdFromDB(uint64 guid, uint8 type)
     uint32 id = (*result)[0].GetUInt32();
     delete result;
     return id;
-}
+} */
 
 uint32 Player::GetZoneIdFromDB(uint64 guid)
 {
@@ -12914,7 +12914,7 @@ bool Player::SatisfyQuestPrevChain( Quest const* qInfo, bool msg )
 
 bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
 {
-    if(!qInfo->IsDaily())
+ /* [TRINITYROLLBACK]   if(!qInfo->IsDaily())
         return true;
 
     bool have_slot = false;
@@ -12934,8 +12934,8 @@ bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
             SendCanTakeQuestResponse( INVALIDREASON_DAILY_QUESTS_REMAINING );
         return false;
     }
-
-    return true;
+*/
+    return true;  
 }
 
 bool Player::GiveQuestSourceItem( Quest const *pQuest )
@@ -13673,7 +13673,7 @@ void Player::_LoadDeclinedNames(QueryResult* result)
 }
 
 void Player::_LoadArenaTeamInfo(QueryResult *result)
-{
+{ /* [TRINITYROLLBACK]
     // arenateamid, played_week, played_season, personal_rating
     memset((void*)&m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1], 0, sizeof(uint32)*18);
     if (!result)
@@ -13704,7 +13704,7 @@ void Player::_LoadArenaTeamInfo(QueryResult *result)
         m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 5] = personal_rating;  // Personal Rating
 
     }while (result->NextRow());
-    delete result;
+    delete result; */
 }
 
 bool Player::LoadPositionFromDB(uint32& mapid, float& x,float& y,float& z,float& o, bool& in_flight, uint64 guid)
@@ -13760,8 +13760,8 @@ float Player::GetFloatValueFromArray(Tokens const& data, uint16 index)
 
 uint32 Player::GetUInt32ValueFromDB(uint16 index, uint64 guid)
 {
-    // todo: cleanup in this, move to a separate function.
-    if(    index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5
+    // todo: cleanup in this, move to a separate function. [TRINITYROLLBACK]
+/*    if(    index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5 
         || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6 + 5
         || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5
         || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (0 * 6)
@@ -13790,12 +13790,12 @@ uint32 Player::GetUInt32ValueFromDB(uint16 index, uint64 guid)
                 return _iter->second->unLevel;
             }
         }
-    }
+    } */
     Tokens data;
     if(!LoadValuesArrayFromDB(data,guid))
         return 0;
 
-    return GetUInt32ValueFromArray(data,index);
+    return GetUInt32ValueFromArray(data,index); 
 }
 
 float Player::GetFloatValueFromDB(uint16 index, uint64 guid)
@@ -13900,7 +13900,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     _LoadGroup(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGROUP));
 
-    _LoadArenaTeamInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADARENAINFO));
+  /*  _LoadArenaTeamInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADARENAINFO));  [TRINITYROLLBACK]
 
     uint32 arena_currency = GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY) + fields[33].GetUInt32();
     if (arena_currency > sWorld.getConfig(CONFIG_MAX_ARENA_POINTS))
@@ -13922,7 +13922,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
         // arena team not exist or not member, cleanup fields
         for(int j =0; j < 6; ++j)
             SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arena_slot * 6 + j, 0);
-    }
+    } */
 
     _LoadBoundInstances(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES));
 
@@ -14209,11 +14209,11 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     // check PLAYER_CHOSEN_TITLE compatibility with PLAYER__FIELD_KNOWN_TITLES
     // note: PLAYER__FIELD_KNOWN_TITLES updated at quest status loaded
-    if(uint32 curTitle = GetUInt32Value(PLAYER_CHOSEN_TITLE))
+/*[TRINITYROLLBACK]    if(uint32 curTitle = GetUInt32Value(PLAYER_CHOSEN_TITLE))
     {
         if(!HasTitle(curTitle))
             SetUInt32Value(PLAYER_CHOSEN_TITLE,0);
-    }
+    }  */
 
     // Not finish taxi flight path
     if(!m_taxi.LoadTaxiDestinationsFromString(taxi_nodes))
@@ -14833,7 +14833,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
 }
 
 void Player::_LoadDailyQuestStatus(QueryResult *result)
-{
+{/* [TRINITYROLLBACK
     for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
         SetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx,0);
 
@@ -14872,7 +14872,7 @@ void Player::_LoadDailyQuestStatus(QueryResult *result)
         delete result;
     }
 
-    m_DailyQuestChanged = false;
+    m_DailyQuestChanged = false; */
 }
 
 void Player::_LoadReputation(QueryResult *result)
@@ -15493,7 +15493,7 @@ void Player::SaveToDB()
         pet->SavePetToDB(PET_SAVE_AS_CURRENT);
 
     //to prevent access to DB we should cache some data, which is used very often
-    CachePlayerInfoMap::iterator _iter = objmgr.m_mPlayerInfoMap.find(GetGUIDLow());
+ /*   CachePlayerInfoMap::iterator _iter = objmgr.m_mPlayerInfoMap.find(GetGUIDLow()); [TRINITYROLLBACK]
     if(_iter != objmgr.m_mPlayerInfoMap.end())//skip new players
     {
         _iter->second->unLevel = getLevel();
@@ -15507,7 +15507,7 @@ void Player::SaveToDB()
         _iter->second->unArenaInfoId0 = GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (0 * 6));
         _iter->second->unArenaInfoId1 = GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (1 * 6));
         _iter->second->unArenaInfoId2 = GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (2 * 6));
-    }
+    } */
 }
 
 // fast save function for item/money cheating preventing - save only inventory and money state
@@ -15756,7 +15756,7 @@ void Player::_SaveQuestStatus()
 
 void Player::_SaveDailyQuestStatus()
 {
-    if(!m_DailyQuestChanged)
+/*[TRINITYROLLBACK    if(!m_DailyQuestChanged)
         return;
 
     m_DailyQuestChanged = false;
@@ -15768,7 +15768,7 @@ void Player::_SaveDailyQuestStatus()
     for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
         if(GetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx))
             CharacterDatabase.PExecute("INSERT INTO character_queststatus_daily (guid,quest,time) VALUES ('%u', '%u','" I64FMTD "')",
-                GetGUIDLow(), GetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx),uint64(m_lastDailyQuestTime));
+                GetGUIDLow(), GetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx),uint64(m_lastDailyQuestTime)); */
 }
 
 void Player::_SaveReputation()
@@ -16688,8 +16688,8 @@ void Player::RemovePetitionsAndSigns(uint64 guid, uint32 type)
 
             // send update if charter owner in game
             Player* owner = objmgr.GetPlayer(ownerguid);
-            if(owner)
-                owner->GetSession()->SendPetitionQueryOpcode(petitionguid);
+           /*[TRINITYROLLBACK] if(owner)
+                owner->GetSession()->SendPetitionQueryOpcode(petitionguid); */
 
         } while ( result->NextRow() );
 
@@ -17060,11 +17060,11 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
         }
 
         // arena points price
-        if(GetArenaPoints() < (iece->reqarenapoints * count))
+/*   [TRINITYROLLBACK]     if(GetArenaPoints() < (iece->reqarenapoints * count))
         {
             SendEquipError(EQUIP_ERR_NOT_ENOUGH_ARENA_POINTS, NULL, NULL);
             return false;
-        }
+        } */
 
         // item base price
         for (uint8 i = 0; i < 5; ++i)
@@ -17138,8 +17138,8 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
             ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(crItem->ExtendedCost);
             if(iece->reqhonorpoints)
                 ModifyHonorPoints( - int32(iece->reqhonorpoints * count));
-            if(iece->reqarenapoints)
-                ModifyArenaPoints( - int32(iece->reqarenapoints * count));
+      /*[TRINITYROLLBACK]      if(iece->reqarenapoints)
+                ModifyArenaPoints( - int32(iece->reqarenapoints * count)); */
             for (uint8 i = 0; i < 5; ++i)
             {
                 if(iece->reqitem[i])
@@ -17183,8 +17183,8 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
             ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(crItem->ExtendedCost);
             if(iece->reqhonorpoints)
                 ModifyHonorPoints( - int32(iece->reqhonorpoints));
-            if(iece->reqarenapoints)
-                ModifyArenaPoints( - int32(iece->reqarenapoints));
+      /*[TRINITYROLLBACK]      if(iece->reqarenapoints)
+                ModifyArenaPoints( - int32(iece->reqarenapoints)); */
             for (uint8 i = 0; i < 5; ++i)
             {
                 if(iece->reqitem[i])
@@ -17222,7 +17222,7 @@ uint32 Player::GetMaxPersonalArenaRatingRequirement()
     // returns the maximal personal arena rating that can be used to purchase items requiring this condition
     // the personal rating of the arena team must match the required limit as well
     // so return max[in arenateams](min(personalrating[teamtype], teamrating[teamtype]))
-    uint32 max_personal_rating = 0;
+/*[TRINITYROLLBACK]    uint32 max_personal_rating = 0;
     for(int i = 0; i < MAX_ARENA_SLOT; ++i)
     {
         if(ArenaTeam * at = objmgr.GetArenaTeamById(GetArenaTeamId(i)))
@@ -17234,7 +17234,8 @@ uint32 Player::GetMaxPersonalArenaRatingRequirement()
                 max_personal_rating = p_rating;
         }
     }
-    return max_personal_rating;
+    return max_personal_rating; */
+	return 1; // yehonal workaround
 }
 
 void Player::UpdateHomebindTime(uint32 time)
@@ -18276,7 +18277,7 @@ void Player::SendAuraDurationsForTarget(Unit* target)
 }
 
 void Player::SetDailyQuestStatus( uint32 quest_id )
-{
+{/* [TRINITYROLLBACK
     for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
     {
         if(!GetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx))
@@ -18286,17 +18287,17 @@ void Player::SetDailyQuestStatus( uint32 quest_id )
             m_DailyQuestChanged = true;
             break;
         }
-    }
+    } */
 }
 
 void Player::ResetDailyQuestStatus()
 {
-    for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
+  /*[TRINITYROLLBACK  for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
         SetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx,0);
 
     // DB data deleted in caller
     m_DailyQuestChanged = false;
-    m_lastDailyQuestTime = 0;
+    m_lastDailyQuestTime = 0; */
 }
 
 BattleGround* Player::GetBattleGround() const
@@ -19170,20 +19171,21 @@ bool Player::isAllowUseBattleGroundObject()
 }
 
 bool Player::HasTitle(uint32 bitIndex)
-{
+{/* [TRINITYROLLBACK
     if (bitIndex > 128)
         return false;
 
     uint32 fieldIndexOffset = bitIndex/32;
     uint32 flag = 1 << (bitIndex%32);
-    return HasFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag);
+    return HasFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag); */
+	return false; //yehonal workaround
 }
 
 void Player::SetTitle(CharTitlesEntry const* title)
-{
+{/* [TRINITYROLLBACK]
     uint32 fieldIndexOffset = title->bit_index/32;
     uint32 flag = 1 << (title->bit_index%32);
-    SetFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag);
+    SetFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag); */
 }
 
 

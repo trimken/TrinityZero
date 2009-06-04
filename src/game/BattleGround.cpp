@@ -26,7 +26,7 @@
 #include "Language.h"
 #include "Chat.h"
 #include "SpellAuras.h"
-#include "ArenaTeam.h"
+
 #include "World.h"
 #include "Util.h"
 
@@ -485,7 +485,8 @@ void BattleGround::EndBattleGround(uint32 winner)
     m_EndTime = 0;
 
     // arena rating calculation
-    if(isArena() && isRated())
+/*  [TRINITYROLLBACK]
+if(isArena() && isRated())
     {
         if(winner == ALLIANCE)
         {
@@ -529,7 +530,7 @@ void BattleGround::EndBattleGround(uint32 winner)
     if(m_score[GetTeamIndexByTeamId(ALLIANCE)] > m_score[GetTeamIndexByTeamId(HORDE)])
         almost_winning_team = ALLIANCE;
 
-    }
+    } */
 
     for(std::map<uint64, BattleGroundPlayer>::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
@@ -554,13 +555,14 @@ void BattleGround::EndBattleGround(uint32 winner)
         if(!team) team = plr->GetTeam();
 
         // per player calculation
-        if(isArena() && isRated() && winner_arena_team && loser_arena_team)
+   /* [TRINITYROLLBACK]   
+   if(isArena() && isRated() && winner_arena_team && loser_arena_team)
         {
             if(team == winner)
                 winner_arena_team->MemberWon(plr,loser_rating);
             else
                 loser_arena_team->MemberLost(plr,winner_rating);
-        }
+        } */
 
         if(team == winner)
         {
@@ -598,7 +600,8 @@ void BattleGround::EndBattleGround(uint32 winner)
         plr->GetSession()->SendPacket(&data);
     }
 
-    if(isArena() && isRated() && winner_arena_team && loser_arena_team)
+  /* [TRINITYROLLBACK] 
+  if(isArena() && isRated() && winner_arena_team && loser_arena_team)
     {
         // update arena points only after increasing the player's match count!
         //obsolete: winner_arena_team->UpdateArenaPointsHelper();
@@ -611,7 +614,7 @@ void BattleGround::EndBattleGround(uint32 winner)
         winner_arena_team->NotifyStatsChanged();
         loser_arena_team->NotifyStatsChanged();
     sLog.outDebug("Rated arena match between %s and %s finished, winner: %s", loser_arena_team->GetName().c_str(),winner_arena_team->GetName().c_str(),winner_arena_team->GetName().c_str());
-    }
+    } */
 
     // inform invited players about the removal
     sBattleGroundMgr.m_BattleGroundQueues[sBattleGroundMgr.BGQueueTypeId(GetTypeID(), GetArenaType())].BGEndedRemoveInvites(this);
@@ -799,7 +802,8 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
             uint32 bgTypeId = GetTypeID();
             uint32 bgQueueTypeId = sBattleGroundMgr.BGQueueTypeId(GetTypeID(), GetArenaType());
             // if arena, remove the specific arena auras
-            if(isArena())
+      /*   [TRINITYROLLBACK]  
+	  if(isArena())
             {
                 plr->RemoveArenaAuras(true);    // removes debuffs / dots etc., we don't want the player to die after porting out
                 bgTypeId=BATTLEGROUND_AA;       // set the bg type to all arenas (it will be used for queue refreshing)
@@ -834,7 +838,7 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
                         loser_arena_team->MemberLost(plr,winner_arena_team->GetRating());
                     }
                 }
-            }
+            } */
 
             WorldPacket data;
             if(SendPacket)

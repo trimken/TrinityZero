@@ -3968,7 +3968,7 @@ bool ChatHandler::HandleDamageCommand(const char * args)
 }
 
 bool ChatHandler::HandleModifyArenaCommand(const char * args)
-{
+{ /* [TRINITYROLLBACK]
     if (!*args)
         return false;
 
@@ -3985,9 +3985,9 @@ bool ChatHandler::HandleModifyArenaCommand(const char * args)
     target->ModifyArenaPoints(amount);
 
     PSendSysMessage(LANG_COMMAND_MODIFY_ARENA, target->GetName(), target->GetArenaPoints());
-
-    return true;
-}
+*/
+    return true;  
+} 
 
 bool ChatHandler::HandleReviveCommand(const char* args)
 {
@@ -4908,11 +4908,12 @@ bool ChatHandler::HandleResetHonorCommand (const char * args)
         return true;
     }
 
-    player->SetUInt32Value(PLAYER_FIELD_KILLS, 0);
+/* [TRINITYROLLBACK]
+    player->SetUInt32Value(PLAYER_FIELD_KILLS, 0); 
     player->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, 0);
     player->SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, 0);
     player->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
-    player->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
+    player->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0); */
 
     return true;
 }

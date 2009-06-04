@@ -1026,7 +1026,7 @@ bool ChatHandler::HandleRecallCommand(const char* args)
 //Edit Player KnownTitles
 bool ChatHandler::HandleModifyKnownTitlesCommand(const char* args)
 {
-    if(!*args)
+  /*  if(!*args)
         return false;
 
     uint64 titles = 0;
@@ -1051,8 +1051,8 @@ bool ChatHandler::HandleModifyKnownTitlesCommand(const char* args)
 
     chr->SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES, titles);
     SendSysMessage(LANG_DONE);
-
-    return true;
+*/
+    return true; 
 }
 
 //Edit Player HP

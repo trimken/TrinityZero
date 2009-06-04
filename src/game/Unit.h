@@ -507,7 +507,7 @@ enum UnitFlags
     UNIT_FLAG_SHEATHE          = 0x40000000
 };
 
-// Value masks for UNIT_FIELD_FLAGS_2
+// Value masks for UNIT_FIELD_AURA
 enum UnitFlags2
 {
     UNIT_FLAG2_FEIGN_DEATH    = 0x00000001,
@@ -874,8 +874,8 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         uint32 getClassMask() const { return 1 << (getClass()-1); }
         uint8 getGender() const { return GetByteValue(UNIT_FIELD_BYTES_0, 2); }
 
-        float GetStat(Stats stat) const { return float(GetUInt32Value(UNIT_FIELD_STAT0+stat)); }
-        void SetStat(Stats stat, int32 val) { SetStatInt32Value(UNIT_FIELD_STAT0+stat, val); }
+        float GetStat(Stats stat) const { return float(GetUInt32Value(UNIT_FIELD_STR+stat)); }
+        void SetStat(Stats stat, int32 val) { SetStatInt32Value(UNIT_FIELD_STR+stat, val); }
         uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL) ; }
         void SetArmor(int32 val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
 
@@ -1169,20 +1169,20 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void RemoveAllAurasOnDeath();
         void DelayAura(uint32 spellId, uint32 effindex, int32 delaytime);
 
-        float GetResistanceBuffMods(SpellSchools school, bool positive) const { return GetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school ); }
-        void SetResistanceBuffMods(SpellSchools school, bool positive, float val) { SetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school,val); }
-        void ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply) { ApplyModSignedFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
-        void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
+        float GetResistanceBuffMods(SpellSchools school, bool positive) const { return GetFloatValue(positive ? PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE+school ); }
+        void SetResistanceBuffMods(SpellSchools school, bool positive, float val) { SetFloatValue(positive ? PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE+school,val); }
+        void ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply) { ApplyModSignedFloatValue(positive ? PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
+        void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
         void InitStatBuffMods()
         {
-            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_POSSTAT0+i, 0);
-            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_NEGSTAT0+i, 0);
+            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(PLAYER_FIELD_POSSTAT0+i, 0);
+            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(PLAYER_FIELD_NEGSTAT0+i, 0);
         }
-        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? UNIT_FIELD_POSSTAT0+stat : UNIT_FIELD_NEGSTAT0+stat), val, apply); }
+        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? PLAYER_FIELD_POSSTAT0+stat : PLAYER_FIELD_NEGSTAT0+stat), val, apply); }
         void ApplyStatPercentBuffMod(Stats stat, float val, bool apply)
         {
-            ApplyPercentModFloatValue(UNIT_FIELD_POSSTAT0+stat, val, apply);
-            ApplyPercentModFloatValue(UNIT_FIELD_NEGSTAT0+stat, val, apply);
+            ApplyPercentModFloatValue(PLAYER_FIELD_POSSTAT0+stat, val, apply);
+            ApplyPercentModFloatValue(PLAYER_FIELD_NEGSTAT0+stat, val, apply);
         }
         void SetCreateStat(Stats stat, float val) { m_createStats[stat] = val; }
         void SetCreateHealth(uint32 val) { SetUInt32Value(UNIT_FIELD_BASE_HEALTH, val); }
@@ -1190,8 +1190,8 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void SetCreateMana(uint32 val) { SetUInt32Value(UNIT_FIELD_BASE_MANA, val); }
         uint32 GetCreateMana() const { return GetUInt32Value(UNIT_FIELD_BASE_MANA); }
         uint32 GetCreatePowers(Powers power) const;
-        float GetPosStat(Stats stat) const { return GetFloatValue(UNIT_FIELD_POSSTAT0+stat); }
-        float GetNegStat(Stats stat) const { return GetFloatValue(UNIT_FIELD_NEGSTAT0+stat); }
+        float GetPosStat(Stats stat) const { return GetFloatValue(PLAYER_FIELD_POSSTAT0+stat); }
+        float GetNegStat(Stats stat) const { return GetFloatValue(PLAYER_FIELD_NEGSTAT0+stat); }
         float GetCreateStat(Stats stat) const { return m_createStats[stat]; }
 
         void SetCurrentCastedSpell(Spell * pSpell);

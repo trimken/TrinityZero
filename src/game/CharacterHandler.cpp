@@ -38,7 +38,7 @@
 #include "PlayerDump.h"
 #include "SocialMgr.h"
 #include "Util.h"
-#include "ArenaTeam.h"
+
 #include "Language.h"
 #include "Chat.h"
 #include "SystemConfig.h"
@@ -383,7 +383,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
     LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%d' AND realmid = '%d'", GetAccountId(), realmID);
     LoginDatabase.PExecute("INSERT INTO realmcharacters (numchars, acctid, realmid) VALUES (%u, %u, %u)",  charcount, GetAccountId(), realmID);
 
-    delete pNewChar;                                        // created only to call SaveToDB()
+ //[TRINITYROLLBACK: it crashes trinity, MUST be checked ]  delete pNewChar;                                        // created only to call SaveToDB()
 
     data << (uint8)CHAR_CREATE_SUCCESS;
     SendPacket( &data );
@@ -417,13 +417,14 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
     }
 
     // is arena team captain
-    if(objmgr.GetArenaTeamByCaptain(guid))
+/*[TRINITYROLLBACK]   
+   if(objmgr.GetArenaTeamByCaptain(guid))
     {
         WorldPacket data(SMSG_CHAR_DELETE, 1);
         data << (uint8)CHAR_DELETE_FAILED_ARENA_CAPTAIN;
         SendPacket( &data );
         return;
-    }
+    } */
 
     QueryResult *result = CharacterDatabase.PQuery("SELECT account,name FROM characters WHERE guid='%u'", GUID_LOPART(guid));
     if(result)

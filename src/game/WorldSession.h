@@ -588,7 +588,7 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleResetInstancesOpcode(WorldPacket& recv_data);
 
         // Arena Team
-        void HandleInspectArenaStatsOpcode(WorldPacket& recv_data);
+  /*[TRINITYROLLBACK]      void HandleInspectArenaStatsOpcode(WorldPacket& recv_data);
         void HandleArenaTeamQueryOpcode(WorldPacket& recv_data);
         void HandleArenaTeamRosterOpcode(WorldPacket& recv_data);
         void HandleArenaTeamAddMemberOpcode(WorldPacket& recv_data);
@@ -597,7 +597,7 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleArenaTeamLeaveOpcode(WorldPacket& recv_data);
         void HandleArenaTeamRemoveFromTeamOpcode(WorldPacket& recv_data);
         void HandleArenaTeamDisbandOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamPromoteToCaptainOpcode(WorldPacket& recv_data);
+        void HandleArenaTeamPromoteToCaptainOpcode(WorldPacket& recv_data); */
 
         void HandleAreaSpiritHealerQueryOpcode(WorldPacket& recv_data);
         void HandleAreaSpiritHealerQueueOpcode(WorldPacket& recv_data);

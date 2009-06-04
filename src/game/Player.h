@@ -1539,17 +1539,17 @@ class TRINITY_DLL_SPEC Player : public Unit
         int GetGuildIdInvited() { return m_GuildIdInvited; }
         static void RemovePetitionsAndSigns(uint64 guid, uint32 type);
 
-        // Arena Team
-        void SetInArenaTeam(uint32 ArenaTeamId, uint8 slot)
+        // [ TrinityRollback ] Arena Team
+       /* void SetInArenaTeam(uint32 ArenaTeamId, uint8 slot)
         {
             SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * 6), ArenaTeamId);
-        }
+        } 
         uint32 GetArenaTeamId(uint8 slot) { return GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * 6)); }
         static uint32 GetArenaTeamIdFromDB(uint64 guid, uint8 slot);
         void SetArenaTeamIdInvited(uint32 ArenaTeamId) { m_ArenaTeamIdInvited = ArenaTeamId; }
         uint32 GetArenaTeamIdInvited() { return m_ArenaTeamIdInvited; }
-
-        void SetDifficulty(uint32 dungeon_difficulty) { m_dungeonDifficulty = dungeon_difficulty; }
+      */
+        void SetDifficulty(uint32 dungeon_difficulty) { m_dungeonDifficulty = dungeon_difficulty; }  //[ TrinityRollback: instance difficulty is not a 1.12 feature [?] ] 
         uint8 GetDifficulty() { return m_dungeonDifficulty; }
 
         bool UpdateSkill(uint32 skill_id, uint32 step);
@@ -1576,7 +1576,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         void UpdateAttackPowerAndDamage(bool ranged = false);
         void UpdateShieldBlockValue();
         void UpdateDamagePhysical(WeaponAttackType attType);
-        void UpdateSpellDamageAndHealingBonus();
+        void UpdateSpellDamageAndHealingBonus(); // [TRINITYROLLBACK] should be removed
 
         void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, float& min_damage, float& max_damage);
 
@@ -1745,13 +1745,13 @@ class TRINITY_DLL_SPEC Player : public Unit
         /*********************************************************/
         /***                  PVP SYSTEM                       ***/
         /*********************************************************/
-        void UpdateArenaFields();
+       //[ TrinityRollback ] void UpdateArenaFields(); 
         void UpdateHonorFields();
         bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1, bool pvptoken = false);
-        uint32 GetHonorPoints() { return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }
-        uint32 GetArenaPoints() { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
+		uint32 GetHonorPoints() { return 1; } //[ TrinityRollback: workaround , honor system MUST be rewritten ]  return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }  
+       // [ TrinityRollback ]  uint32 GetArenaPoints() { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
         void ModifyHonorPoints( int32 value );
-        void ModifyArenaPoints( int32 value );
+       // [ TrinityRollback ] void ModifyArenaPoints( int32 value ); 
         uint32 GetMaxPersonalArenaRatingRequirement();
 
         //End of PvP System

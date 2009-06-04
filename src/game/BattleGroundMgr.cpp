@@ -23,12 +23,7 @@
 #include "BattleGroundMgr.h"
 #include "BattleGroundAV.h"
 #include "BattleGroundAB.h"
-#include "BattleGroundEY.h"
 #include "BattleGroundWS.h"
-#include "BattleGroundNA.h"
-#include "BattleGroundBE.h"
-#include "BattleGroundAA.h"
-#include "BattleGroundRL.h"
 #include "SharedDefines.h"
 #include "Policies/SingletonImp.h"
 #include "MapManager.h"
@@ -38,7 +33,7 @@
 #include "ProgressBar.h"
 #include "World.h"
 #include "Chat.h"
-#include "ArenaTeam.h"
+
 
 INSTANTIATE_SINGLETON_1( BattleGroundMgr );
 
@@ -915,7 +910,8 @@ bool BGQueueRemoveEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
         BattleGroundQueue::QueuedPlayersMap::iterator qMapItr = sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].m_QueuedPlayers[plr->GetBattleGroundQueueIdFromLevel()].find(m_PlayerGuid);
         if (qMapItr != sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].m_QueuedPlayers[plr->GetBattleGroundQueueIdFromLevel()].end() && qMapItr->second.GroupInfo && qMapItr->second.GroupInfo->IsInvitedToBGInstanceGUID == m_BgInstanceGUID)
         {
-            if (qMapItr->second.GroupInfo->IsRated)
+          /* [TRINITYROLLBACK]
+		  if (qMapItr->second.GroupInfo->IsRated) 
             {
                 ArenaTeam * at = objmgr.GetArenaTeamById(qMapItr->second.GroupInfo->ArenaTeamId);
                 if (at)
@@ -924,7 +920,7 @@ bool BGQueueRemoveEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
                     at->MemberLost(plr, qMapItr->second.GroupInfo->OpponentsTeamRating);
                     at->SaveToDB();
                 }
-            }
+            } */
             plr->RemoveBattleGroundQueueId(bgQueueTypeId);
             sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].RemovePlayer(m_PlayerGuid, true);
             sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].Update(bgQueueTypeId, bg->GetQueueType());
@@ -1114,7 +1110,8 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
 
 void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
 {
-    uint8 type = (bg->isArena() ? 1 : 0);
+  /* [TRINITYROLLBACK]
+  uint8 type = (bg->isArena() ? 1 : 0);  
                                                             // last check on 2.4.1
     data->Initialize(MSG_PVP_LOG_DATA, (1+1+4+40*bg->GetPlayerScoresSize()));
     *data << uint8(type);                                   // seems to be type (battleground=0/arena=1)
@@ -1134,10 +1131,10 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
             ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
             if(at)
                 *data << at->GetName();
-            else//*/
+            else
                 *data << (uint8)0;
         }
-    }
+    } */
 
     if(bg->GetWinner() == 2)
     {
@@ -1158,13 +1155,15 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         Player *plr = objmgr.GetPlayer(itr->first);
         uint32 team = bg->GetPlayerTeam(itr->first);
         if(!team && plr) team = plr->GetTeam();
-        if(type == 0)
-        {
+  // [TRINITYROLLBACK]      
+  //if(type == 0)
+  //      {
             *data << (int32)itr->second->HonorableKills;
             *data << (int32)itr->second->Deaths;
             *data << (int32)(itr->second->BonusHonor);
-        }
-        else
+ /*       }
+  [TRINITYROLLBACK]
+        else 
         {
             // that part probably wrong
             if(plr)
@@ -1180,7 +1179,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
             }
             else
                 *data << uint8(0);
-        }
+        } */
         *data << (int32)itr->second->DamageDone;             // damage done
         *data << (int32)itr->second->HealingDone;            // healing done
         switch(bg->GetTypeID())                              // battleground specific things
@@ -1203,7 +1202,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 *data << (uint32)((BattleGroundABScore*)itr->second)->BasesAssaulted;       // bases asssulted
                 *data << (uint32)((BattleGroundABScore*)itr->second)->BasesDefended;        // bases defended
                 break;
-            case BATTLEGROUND_EY:
+      /* [TRINITYROLLBACK]     case BATTLEGROUND_EY:
                 *data << (uint32)0x00000001;                 // count of next fields
                 *data << (uint32)((BattleGroundEYScore*)itr->second)->FlagCaptures;         // flag captures
                 break;
@@ -1211,14 +1210,14 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
             case BATTLEGROUND_BE:
             case BATTLEGROUND_AA:
             case BATTLEGROUND_RL:
-                *data << (int32)0;                          // 0
-                break;
+                *data << (int32)0;                          // 0 
+                break; */
             default:
                 sLog.outDebug("Unhandled MSG_PVP_LOG_DATA for BG id %u", bg->GetTypeID());
                 *data << (int32)0;
                 break;
         }
-    }
+    } 
 }
 
 void BattleGroundMgr::BuildGroupJoinedBattlegroundPacket(WorldPacket *data, uint32 bgTypeId)
@@ -1272,7 +1271,7 @@ void BattleGroundMgr::InvitePlayer(Player* plr, uint32 bgInstanceGUID, uint32 te
     plr->SetInviteForBattleGroundQueueType(BGQueueTypeId(bg->GetTypeID(),bg->GetArenaType()), bgInstanceGUID);
 
     // set the arena teams for rated matches
-    if(bg->isArena() && bg->isRated())
+   /* [TRINITYROLLBACK] if(bg->isArena() && bg->isRated())
     {
         switch(bg->GetArenaType())
         {
@@ -1288,7 +1287,7 @@ void BattleGroundMgr::InvitePlayer(Player* plr, uint32 bgInstanceGUID, uint32 te
         default:
             break;
         }
-    }
+    } */
 
     // create invite events:
     //add events to player's counters ---- this is not good way - there should be something like global event processor, where we should add those events
@@ -1329,7 +1328,8 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(uint32 bgTypeId)
         case BATTLEGROUND_AB:
             bg = new BattleGroundAB(*(BattleGroundAB*)bg_template);
             break;
-        case BATTLEGROUND_NA:
+     /*[TRINITYROLLBACK]   
+	    case BATTLEGROUND_NA:
             bg = new BattleGroundNA(*(BattleGroundNA*)bg_template);
             break;
         case BATTLEGROUND_BE:
@@ -1343,7 +1343,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(uint32 bgTypeId)
             break;
         case BATTLEGROUND_RL:
             bg = new BattleGroundRL(*(BattleGroundRL*)bg_template);
-            break;
+            break; */
         default:
             //bg = new BattleGround;
             return 0;
@@ -1385,11 +1385,12 @@ uint32 BattleGroundMgr::CreateBattleGround(uint32 bgTypeId, uint32 MinPlayersPer
         case BATTLEGROUND_AV: bg = new BattleGroundAV; break;
         case BATTLEGROUND_WS: bg = new BattleGroundWS; break;
         case BATTLEGROUND_AB: bg = new BattleGroundAB; break;
-        case BATTLEGROUND_NA: bg = new BattleGroundNA; break;
+    /*[TRINITYROLLBACK]   
+	    case BATTLEGROUND_NA: bg = new BattleGroundNA; break;
         case BATTLEGROUND_BE: bg = new BattleGroundBE; break;
         case BATTLEGROUND_AA: bg = new BattleGroundAA; break;
         case BATTLEGROUND_EY: bg = new BattleGroundEY; break;
-        case BATTLEGROUND_RL: bg = new BattleGroundRL; break;
+        case BATTLEGROUND_RL: bg = new BattleGroundRL; break; */
         default:bg = new BattleGround;   break;             // placeholder for non implemented BG
     }
 
@@ -1563,7 +1564,7 @@ void BattleGroundMgr::InitAutomaticArenaPointDistribution()
 }
 
 void BattleGroundMgr::DistributeArenaPoints()
-{
+{ /* [TRINITYROLLBACK]
     // used to distribute arena points based on last week's stats
     sWorld.SendGlobalText("Flushing Arena points based on team ratings, this may take a few minutes. Please stand by...", NULL);
 
@@ -1609,7 +1610,7 @@ void BattleGroundMgr::DistributeArenaPoints()
 
     sWorld.SendGlobalText("Modification done.", NULL);
 
-    sWorld.SendGlobalText("Done flushing Arena points.", NULL);
+    sWorld.SendGlobalText("Done flushing Arena points.", NULL); */
 }
 
 void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, uint64 guid, Player* plr, uint32 bgTypeId)

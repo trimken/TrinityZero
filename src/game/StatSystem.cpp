@@ -78,13 +78,13 @@ bool Player::UpdateStats(Stats stat)
         default:
             break;
     }
-    UpdateSpellDamageAndHealingBonus();
+  //  UpdateSpellDamageAndHealingBonus(); [TRINITYROLLBACK]
     UpdateManaRegen();
     return true;
 }
-
+ 
 void Player::UpdateSpellDamageAndHealingBonus()
-{
+{ /* [TRINITYROLLBACK]
     // Magic damage modifiers implemented in Unit::SpellDamageBonus
     // This information for client side use only
     // Get healing bonus for all schools
@@ -92,7 +92,8 @@ void Player::UpdateSpellDamageAndHealingBonus()
     // Get damage bonus for all schools
     for(int i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; i++)
         SetStatInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+i, SpellBaseDamageBonus(SpellSchoolMask(1 << i)));
-}
+  */
+} 
 
 bool Player::UpdateAllStats()
 {
@@ -114,7 +115,7 @@ bool Player::UpdateAllStats()
     UpdateAllSpellCritChances();
     UpdateDefenseBonusesMod();
     UpdateShieldBlockValue();
-    UpdateSpellDamageAndHealingBonus();
+ // [TRINITYROLLBACK]   UpdateSpellDamageAndHealingBonus();
     UpdateManaRegen();
     UpdateExpertise(BASE_ATTACK);
     UpdateExpertise(OFF_ATTACK);
@@ -336,14 +337,14 @@ void Player::UpdateAttackPowerAndDamage(bool ranged )
         UpdateDamagePhysical(BASE_ATTACK);
         if(CanDualWield() && haveOffhandWeapon())           //allow update offhand damage only if player knows DualWield Spec and has equipped offhand weapon
             UpdateDamagePhysical(OFF_ATTACK);
-        if(getClass() == CLASS_SHAMAN)                      // mental quickness
-            UpdateSpellDamageAndHealingBonus();
+   /*[TRINITYROLLBACK]     if(getClass() == CLASS_SHAMAN)                      // mental quickness
+           UpdateSpellDamageAndHealingBonus();  */
     }
 }
 
 void Player::UpdateShieldBlockValue()
 {
-    SetUInt32Value(PLAYER_SHIELD_BLOCK, GetShieldBlockValue());
+    // [TRINITYROLLBACK] SetUInt32Value(PLAYER_BLOCK_PERCENTAGE, GetShieldBlockValue());
 }
 
 void Player::CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, float& min_damage, float& max_damage)
@@ -461,8 +462,8 @@ void Player::UpdateCritPercentage(WeaponAttackType attType)
     switch(attType)
     {
         case OFF_ATTACK:
-            modGroup = OFFHAND_CRIT_PERCENTAGE;
-            index = PLAYER_OFFHAND_CRIT_PERCENTAGE;
+            modGroup = OFFHAND_CRIT_PERCENTAGE;  // [TRINITYROLLBACK] PLAYER_CRIT_PERCENTAGE
+            index = PLAYER_CRIT_PERCENTAGE;
             cr = CR_CRIT_MELEE;
             break;
         case RANGED_ATTACK:
@@ -536,7 +537,7 @@ void Player::UpdateSpellCritChance(uint32 school)
     // For normal school set zero crit chance
     if(school == SPELL_SCHOOL_NORMAL)
     {
-        SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1, 0.0f);
+       //[TRINITYROLLBACK] SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1, 0.0f); 
         return;
     }
     // For others recalculate it from:
@@ -551,7 +552,7 @@ void Player::UpdateSpellCritChance(uint32 school)
     crit += GetRatingBonusValue(CR_CRIT_SPELL);
 
     // Store crit value
-    SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + school, crit);
+// [TRINITYROLLBACK]    SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + school, crit);
 }
 
 void Player::UpdateAllSpellCritChances()
@@ -583,12 +584,13 @@ void Player::UpdateExpertise(WeaponAttackType attack)
     if(expertise < 0)
         expertise = 0;
 
+   /*[TRINITYROLLBACK]
     switch(attack)
     {
-        case BASE_ATTACK: SetUInt32Value(PLAYER_EXPERTISE, expertise);         break;
-        case OFF_ATTACK:  SetUInt32Value(PLAYER_OFFHAND_EXPERTISE, expertise); break;
+         case BASE_ATTACK: SetUInt32Value(PLAYER_EXPERTISE, expertise);         break; 
+        case OFF_ATTACK:  SetUInt32Value(PLAYER_OFFHAND_EXPERTISE, expertise); break; 
         default: break;
-    }
+    }*/
 }
 
 void Player::UpdateManaRegen()
@@ -624,9 +626,9 @@ void Player::UpdateManaRegen()
     int32 modManaRegenInterrupt = GetTotalAuraModifier(SPELL_AURA_MOD_MANA_REGEN_INTERRUPT);
     if (modManaRegenInterrupt > 100)
         modManaRegenInterrupt = 100;
-    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT, power_regen_mp5 + power_regen * modManaRegenInterrupt / 100.0f);
-
-    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN, power_regen_mp5 + power_regen);
+  /*[TRINITYROLLBACK]
+    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT, power_regen_mp5 + power_regen * modManaRegenInterrupt / 100.0f); 
+    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN, power_regen_mp5 + power_regen); */ 
 }
 
 void Player::_ApplyAllStatBonuses()

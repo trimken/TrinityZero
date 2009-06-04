@@ -48,7 +48,7 @@
 #include "Totem.h"
 #include "CreatureAI.h"
 #include "BattleGround.h"
-#include "BattleGroundEY.h"
+
 #include "BattleGroundWS.h"
 #include "OutdoorPvPMgr.h"
 #include "VMapFactory.h"
@@ -4436,7 +4436,7 @@ void Spell::EffectSummonObjectWild(uint32 i)
         }
     }
 
-    if(pGameObj->GetMapId() == 566 && pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)  //EY
+  /*[TRINITYROLLBACK]  if(pGameObj->GetMapId() == 566 && pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)  //EY
     {
         if(m_caster->GetTypeId() == TYPEID_PLAYER)
         {
@@ -4446,7 +4446,7 @@ void Spell::EffectSummonObjectWild(uint32 i)
                 ((BattleGroundEY*)bg)->SetDroppedFlagGUID(pGameObj->GetGUID());
             }
         }
-    }
+    } */
 
     if(uint32 linkedEntry = pGameObj->GetLinkedGameObjectEntry())
     {

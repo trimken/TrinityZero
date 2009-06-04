@@ -1331,7 +1331,7 @@ uint32 Group::CanJoinBattleGroundQueue(uint32 bgTypeId, uint32 bgQueueType, uint
         return BG_JOIN_ERR_OFFLINE_MEMBER;
 
     uint32 bgQueueId = reference->GetBattleGroundQueueIdFromLevel();
-    uint32 arenaTeamId = reference->GetArenaTeamId(arenaSlot);
+ //  [TRINITYROLLBACK]  uint32 arenaTeamId = reference->GetArenaTeamId(arenaSlot);
     uint32 team = reference->GetTeam();
 
     // check every member of the group to be able to join
@@ -1348,8 +1348,8 @@ uint32 Group::CanJoinBattleGroundQueue(uint32 bgTypeId, uint32 bgQueueType, uint
         if(member->GetBattleGroundQueueIdFromLevel() != bgQueueId)
             return BG_JOIN_ERR_MIXED_LEVELS;
         // don't let join rated matches if the arena team id doesn't match
-        if(isRated && member->GetArenaTeamId(arenaSlot) != arenaTeamId)
-            return BG_JOIN_ERR_MIXED_ARENATEAM;
+  /* [TRINITYROLLBACK]     if(isRated && member->GetArenaTeamId(arenaSlot) != arenaTeamId) 
+            return BG_JOIN_ERR_MIXED_ARENATEAM; */
         // don't let join if someone from the group is already in that bg queue
         if(member->InBattleGroundQueueForBattleGroundQueueType(bgQueueType))
             return BG_JOIN_ERR_GROUP_MEMBER_ALREADY_IN_QUEUE;

@@ -32,7 +32,7 @@
 #include "BattleGroundMgr.h"
 #include "BattleGroundWS.h"
 #include "BattleGround.h"
-#include "ArenaTeam.h"
+
 #include "Language.h"
 
 void WorldSession::HandleBattleGroundHelloOpcode( WorldPacket & recv_data )
@@ -465,7 +465,8 @@ void WorldSession::HandleBattleGroundPlayerPortOpcode( WorldPacket &recv_data )
                 /*
                 if player leaves rated arena match before match start, it is counted as he played but he lost
                 */
-                if (israted)
+       /*      [TRINITYROLLBACK]
+	      if (israted) 
                 {
                     ArenaTeam * at = objmgr.GetArenaTeamById(team);
                     if (at)
@@ -474,7 +475,7 @@ void WorldSession::HandleBattleGroundPlayerPortOpcode( WorldPacket &recv_data )
                         at->MemberLost(_player, opponentsRating);
                         at->SaveToDB();
                     }
-                }
+                } */
                 _player->RemoveBattleGroundQueueId(bgQueueTypeId); // must be called this way, because if you move this call to queue->removeplayer, it causes bugs
                 sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, _player->GetTeam(), queueSlot, STATUS_NONE, 0, 0);
                 sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].RemovePlayer(_player->GetGUID(), true);
@@ -726,7 +727,8 @@ void WorldSession::HandleBattleGroundArenaJoin( WorldPacket & recv_data )
 
     uint32 ateamId = 0;
 
-    if(isRated)
+  /*[TRINITYROLLBACK]
+    if(isRated) 
     {
         ateamId = _player->GetArenaTeamId(type);
         // check real arenateam existence only here (if it was moved to group->CanJoin .. () then we would ahve to get it twice)
@@ -755,14 +757,14 @@ void WorldSession::HandleBattleGroundArenaJoin( WorldPacket & recv_data )
         // if avg personal rating is more than 150 points below the teams rating, the team will be queued against an opponent matching or similar to the average personal rating
         if(avg_pers_rating + 150 < arenaRating)
             arenaRating = avg_pers_rating;
-    }
+    } */
 
     if(asGroup)
     {
         GroupQueueInfo * ginfo = sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].AddGroup(_player, bgTypeId, arenatype, isRated, arenaRating, ateamId);
         sLog.outDebug("Battleground: arena join as group start");
         if(isRated)
-            sLog.outDebug("Battleground: arena team id %u, leader %s queued with rating %u for type %u",_player->GetArenaTeamId(type),_player->GetName(),arenaRating,arenatype);
+//[TRINITYROLLBACK]            sLog.outDebug("Battleground: arena team id %u, leader %s queued with rating %u for type %u",_player->GetArenaTeamId(type),_player->GetName(),arenaRating,arenatype);
         for(GroupReference *itr = grp->GetFirstMember(); itr != NULL; itr = itr->next())
         {
             Player *member = itr->getSource();

@@ -3184,7 +3184,7 @@ float Unit::GetUnitCriticalChance(WeaponAttackType attackType, const Unit *pVict
                 crit = GetFloatValue( PLAYER_CRIT_PERCENTAGE );
                 break;
             case OFF_ATTACK:
-                crit = GetFloatValue( PLAYER_OFFHAND_CRIT_PERCENTAGE );
+                crit = GetFloatValue( PLAYER_CRIT_PERCENTAGE );
                 break;
             case RANGED_ATTACK:
                 crit = GetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE );
@@ -8010,7 +8010,7 @@ void Unit::CombatStop(bool cast)
     AttackStop();
     RemoveAllAttackers();
     if( GetTypeId()==TYPEID_PLAYER )
-        ((Player*)this)->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
+        ((Player*)this)->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel  [TRINITYROLLBACK: maybe uncorrect [?] ]
     ClearInCombat();
 }
 
@@ -8760,8 +8760,8 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
             if (schoolMask & SPELL_SCHOOL_MASK_NORMAL)
                 crit_chance = 0.0f;
             // For other schools
-            else if (GetTypeId() == TYPEID_PLAYER)
-                crit_chance = GetFloatValue( PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask));
+         //   else if (GetTypeId() == TYPEID_PLAYER)
+           //     crit_chance = GetFloatValue( PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask)); [TRINITYROLLBACK]
             else
             {
                 crit_chance = m_baseSpellCritChance;

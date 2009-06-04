@@ -27,7 +27,6 @@
 #include "Log.h"
 #include "Opcodes.h"
 #include "Guild.h"
-#include "ArenaTeam.h"
 #include "MapManager.h"
 #include "GossipDef.h"
 #include "SocialMgr.h"
@@ -110,7 +109,8 @@ void WorldSession::HandlePetitionBuyOpcode(WorldPacket & recv_data)
     }
     else
     {
-        // TODO: find correct opcode
+  /*[TRINITYROLLBACK]      
+      // TODO: find correct opcode
         if(_player->getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
         {
             SendNotification(LANG_ARENA_ONE_TOOLOW, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL));
@@ -143,7 +143,7 @@ void WorldSession::HandlePetitionBuyOpcode(WorldPacket & recv_data)
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, name, "", ERR_ALREADY_IN_ARENA_TEAM);
             return;
-        }
+        } */
     }
 
     if(type == 9)
@@ -161,7 +161,8 @@ void WorldSession::HandlePetitionBuyOpcode(WorldPacket & recv_data)
     }
     else
     {
-        if(objmgr.GetArenaTeamByName(name))
+      /*[TRINITYROLLBACK]
+	    if(objmgr.GetArenaTeamByName(name))
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, name, "", ERR_ARENA_TEAM_NAME_EXISTS_S);
             return;
@@ -170,7 +171,7 @@ void WorldSession::HandlePetitionBuyOpcode(WorldPacket & recv_data)
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, name, "", ERR_ARENA_TEAM_NAME_INVALID);
             return;
-        }
+        } */
     }
 
     ItemPrototype const *pProto = objmgr.GetItemPrototype(charterid);
@@ -418,7 +419,8 @@ void WorldSession::HandlePetitionRenameOpcode(WorldPacket & recv_data)
     }
     else
     {
-        if(objmgr.GetArenaTeamByName(newname))
+      /*[TRINITYROLLBACK]  
+	    if(objmgr.GetArenaTeamByName(newname))
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, newname, "", ERR_ARENA_TEAM_NAME_EXISTS_S);
             return;
@@ -427,7 +429,7 @@ void WorldSession::HandlePetitionRenameOpcode(WorldPacket & recv_data)
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, newname, "", ERR_ARENA_TEAM_NAME_INVALID);
             return;
-        }
+        } */
     }
 
     std::string db_newname = newname;
@@ -481,15 +483,16 @@ void WorldSession::HandlePetitionSignOpcode(WorldPacket & recv_data)
     // not let enemies sign guild charter
     if(!sWorld.getConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD) && GetPlayer()->GetTeam() != objmgr.GetPlayerTeamByGUID(ownerguid))
     {
-        if(type != 9)
+ /*[TRINITYROLLBACK]    
+    if(type != 9)
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_INVITE_SS, "", "", ERR_ARENA_TEAM_NOT_ALLIED);
-        else
+        else */
             SendGuildCommandResult(GUILD_CREATE_S, "", GUILD_NOT_ALLIED);
         return;
     }
 
     if(type != 9)
-    {
+    { /*[TRINITYROLLBACK]
         if(_player->getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, "", _player->GetName(), ERR_ARENA_TEAM_PLAYER_TO_LOW);
@@ -510,7 +513,7 @@ void WorldSession::HandlePetitionSignOpcode(WorldPacket & recv_data)
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_INVITE_SS, "", _player->GetName(), ERR_ALREADY_INVITED_TO_ARENA_TEAM_S);
             return;
-        }
+        } */
     }
     else
     {
@@ -632,15 +635,16 @@ void WorldSession::HandleOfferPetitionOpcode(WorldPacket & recv_data)
 
     if (!sWorld.getConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD) && GetPlayer()->GetTeam() != player->GetTeam() )
     {
-        if(type != 9)
+    /*[TRINITYROLLBACK]  
+	  if(type != 9)
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_INVITE_SS, "", "", ERR_ARENA_TEAM_NOT_ALLIED);
-        else
+        else */
             SendGuildCommandResult(GUILD_CREATE_S, "", GUILD_NOT_ALLIED);
         return;
     }
 
     if(type != 9)
-    {
+    {/*[TRINITYROLLBACK]
         if(player->getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
         {
             // player is too low level to join an arena team
@@ -663,7 +667,7 @@ void WorldSession::HandleOfferPetitionOpcode(WorldPacket & recv_data)
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_INVITE_SS, "", _player->GetName(), ERR_ALREADY_INVITED_TO_ARENA_TEAM_S);
             return;
-        }
+        } */
     }
     else
     {
@@ -752,7 +756,8 @@ void WorldSession::HandleTurnInPetitionOpcode(WorldPacket & recv_data)
     }
     else
     {
-        uint8 slot = ArenaTeam::GetSlotByType(type);
+  /* [TRINITYROLLBACK]    
+     uint8 slot = ArenaTeam::GetSlotByType(type);
         if(slot >= MAX_ARENA_SLOT)
             return;
 
@@ -763,7 +768,7 @@ void WorldSession::HandleTurnInPetitionOpcode(WorldPacket & recv_data)
             //_player->GetSession()->SendPacket(&data);
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, name, "", ERR_ALREADY_IN_ARENA_TEAM);
             return;
-        }
+        } */
     }
 
     if(_player->GetGUIDLow() != ownerguidlo)
@@ -803,12 +808,13 @@ void WorldSession::HandleTurnInPetitionOpcode(WorldPacket & recv_data)
     }
     else
     {
-        if(objmgr.GetArenaTeamByName(name))
+     /*[TRINITYROLLBACK]  
+	   if(objmgr.GetArenaTeamByName(name))
         {
             SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, name, "", ERR_ARENA_TEAM_NAME_EXISTS_S);
             delete result;
             return;
-        }
+        } */
     }
 
     // and at last charter item check
@@ -847,7 +853,8 @@ void WorldSession::HandleTurnInPetitionOpcode(WorldPacket & recv_data)
     }
     else                                                    // or arena team
     {
-        ArenaTeam* at = new ArenaTeam;
+      /*[TRINITYROLLBACK]  
+	    ArenaTeam* at = new ArenaTeam;
         if(!at->Create(_player->GetGUID(), type, name))
         {
             sLog.outError("PetitionsHandler: arena team create failed.");
@@ -874,7 +881,7 @@ void WorldSession::HandleTurnInPetitionOpcode(WorldPacket & recv_data)
             sLog.outDebug("PetitionsHandler: adding arena member %u", GUID_LOPART(memberGUID));
             at->AddMember(memberGUID);
             result->NextRow();
-        }
+        } */
     }
 
     delete result;
