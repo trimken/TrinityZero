@@ -178,7 +178,7 @@ void WorldSession::HandleMoveWorldportAckOpcode()
 
 void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 4+1+4+4+4+4+4);
+    CHECK_PACKET_SIZE(recv_data,4+4+4+4+4+4);
 
     /* extract packet */
     MovementInfo movementInfo;
@@ -195,7 +195,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     if(MovementFlags & MOVEMENTFLAG_ONTRANSPORT)
     {
         // recheck
-        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+8+4+4+4+4+4);
+        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+4+4);
 
         recv_data >> movementInfo.t_guid;
         recv_data >> movementInfo.t_x;
@@ -396,7 +396,7 @@ void WorldSession::HandlePossessedMovement(WorldPacket& recv_data, MovementInfo&
 
 void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
 {
-    CHECK_PACKET_SIZE(recv_data, 8+4+4+1+4+4+4+4+4);
+    CHECK_PACKET_SIZE(recv_data, 8+4+4+4+4+4+4+4+4);
 
     /* extract packet */
     uint64 guid;
@@ -426,7 +426,7 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
     if (flags & MOVEMENTFLAG_ONTRANSPORT)
     {
         // recheck
-        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+8+4+4+4+4+4);
+        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+4+4);
 
         recv_data >> t_GUID;
         recv_data >> t_x >> t_y >> t_z >> t_o >> t_time;
@@ -521,14 +521,16 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_SET_ACTIVE_MOVER");
 
-    CHECK_PACKET_SIZE(recv_data,8);
+    CHECK_PACKET_SIZE(recv_data,4+4);
 
     uint64 guid;
     recv_data >> guid;
 
+   /* [TRINITYROLLBACK]
     WorldPacket data(SMSG_TIME_SYNC_REQ, 4);                // new 2.0.x, enable movement
     data << uint32(0x00000000);                             // on blizz it increments periodically
     SendPacket(&data);
+   */
 }
 
 void WorldSession::HandleNotActiveMoverOpcode(WorldPacket& /*recv_data*/)
