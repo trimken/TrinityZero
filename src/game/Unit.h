@@ -561,29 +561,32 @@ enum MoveFlags
 
 enum MovementFlags
 {
-    MOVEMENTFLAG_NONE           = 0x00000000,
-    MOVEMENTFLAG_FORWARD        = 0x00000001,
-    MOVEMENTFLAG_BACKWARD       = 0x00000002,
-    MOVEMENTFLAG_STRAFE_LEFT    = 0x00000004,
-    MOVEMENTFLAG_STRAFE_RIGHT   = 0x00000008,
-    MOVEMENTFLAG_LEFT           = 0x00000010,
-    MOVEMENTFLAG_RIGHT          = 0x00000020,
-    MOVEMENTFLAG_PITCH_UP       = 0x00000040,
-    MOVEMENTFLAG_PITCH_DOWN     = 0x00000080,
-    MOVEMENTFLAG_WALK_MODE      = 0x00000100,
-    MOVEMENTFLAG_ONTRANSPORT    = 0x00000200,
+    MOVEMENTFLAG_FORWARD        = 0x1,
+    MOVEMENTFLAG_BACKWARD       = 0x2,
+    MOVEMENTFLAG_STRAFE_LEFT    = 0x4,
+    MOVEMENTFLAG_STRAFE_RIGHT   = 0x8,
+    MOVEMENTFLAG_LEFT           = 0x10,
+    MOVEMENTFLAG_RIGHT          = 0x20,
+    MOVEMENTFLAG_PITCH_UP       = 0x40,
+    MOVEMENTFLAG_PITCH_DOWN     = 0x80,
+
+    MOVEMENTFLAG_WALK_MODE      = 0x100,
+    MOVEMENTFLAG_JUMPING        = 0x2000,
+    MOVEMENTFLAG_FALLING        = 0x4000,
+    MOVEMENTFLAG_SWIMMING       = 0x200000,
+    MOVEMENTFLAG_ONTRANSPORT    = 0x2000000,
+    MOVEMENTFLAG_SPLINE         = 0x4000000,
+
+    //[TRINITYROLLBACK] other enumeration to delete or check  
+	MOVEMENTFLAG_NONE           = 0x00000000,
     MOVEMENTFLAG_LEVITATING     = 0x00000400,
     MOVEMENTFLAG_FLY_UNK1       = 0x00000800,
-    MOVEMENTFLAG_JUMPING        = 0x00001000,
     MOVEMENTFLAG_UNK4           = 0x00002000,
-    MOVEMENTFLAG_FALLING        = 0x00004000,
     // 0x8000, 0x10000, 0x20000, 0x40000, 0x80000, 0x100000
-    MOVEMENTFLAG_SWIMMING       = 0x00200000,               // appears with fly flag also
     MOVEMENTFLAG_FLY_UP         = 0x00400000,
     MOVEMENTFLAG_CAN_FLY        = 0x00800000,
     MOVEMENTFLAG_FLYING         = 0x01000000,
     MOVEMENTFLAG_FLYING2        = 0x02000000,               // Actual flying mode
-    MOVEMENTFLAG_SPLINE         = 0x04000000,               // used for flight paths
     MOVEMENTFLAG_SPLINE2        = 0x08000000,               // used for flight paths
     MOVEMENTFLAG_WATERWALKING   = 0x10000000,               // prevent unit from falling through water
     MOVEMENTFLAG_SAFE_FALL      = 0x20000000,               // active rogue safe fall spell (passive)

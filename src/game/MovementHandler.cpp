@@ -238,12 +238,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     }
     /*----------------*/
 
-/*    if(recv_data.size() != recv_data.rpos())
+    if(recv_data.size() != recv_data.rpos())
     {
         sLog.outError("MovementHandler: player %s (guid %d, account %u) sent a packet (opcode %u) that is %u bytes larger than it should be. Kicked as cheater.", _player->GetName(), _player->GetGUIDLow(), _player->GetSession()->GetAccountId(), recv_data.GetOpcode(), recv_data.size() - recv_data.rpos());
         KickPlayer();
         return;
-    }*/
+    }
 
     if (!Trinity::IsValidMapCoord(movementInfo.x, movementInfo.y, movementInfo.z, movementInfo.o))
         return;
