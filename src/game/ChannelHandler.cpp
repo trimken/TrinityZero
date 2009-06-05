@@ -29,36 +29,35 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 {
     sLog.outDebug("Opcode %u", recvPacket.GetOpcode());
     //recvPacket.hexlike();
-    CHECK_PACKET_SIZE(recvPacket, 4+1+1+1);
+    CHECK_PACKET_SIZE(recvPacket,1+1);
 
-    uint32 channel_id;
-    uint8 unknown1, unknown2;
+//    uint32 channel_id;
+//    uint8 unknown1, unknown2;
     std::string channelname, pass;
 
-    recvPacket >> channel_id >> unknown1 >> unknown2;
+ //   recvPacket >> channel_id >> unknown1 >> unknown2;
     recvPacket >> channelname;
 
     if(channelname.empty())
         return;
 
     // recheck
-    CHECK_PACKET_SIZE(recvPacket, 4+1+1+(channelname.size()+1)+1);
+    CHECK_PACKET_SIZE(recvPacket,(channelname.size()+1)+1);
 
     recvPacket >> pass;
     if(ChannelMgr* cMgr = channelMgr(_player->GetTeam()))
-        if(Channel *chn = cMgr->GetJoinChannel(channelname, channel_id))
-            chn->Join(_player->GetGUID(), pass.c_str());
+        cMgr->GetJoinChannel(channelname,_player->GetGUID())->Join(_player->GetGUID(), pass.c_str());
 }
 
 void WorldSession::HandleChannelLeave(WorldPacket& recvPacket)
 {
     sLog.outDebug("Opcode %u", recvPacket.GetOpcode());
     //recvPacket.hexlike();
-    CHECK_PACKET_SIZE(recvPacket, 4+1);
+    CHECK_PACKET_SIZE(recvPacket, 1);
 
-    uint32 unk;
+ //   uint32 unk;
     std::string channelname;
-    recvPacket >> unk;                                      // channel id?
+//    recvPacket >> unk;                                      // channel id?
     recvPacket >> channelname;
 
     if(channelname.empty())
