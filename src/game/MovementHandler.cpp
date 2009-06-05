@@ -185,7 +185,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     uint32 MovementFlags;
 
     recv_data >> MovementFlags;
-    recv_data >> movementInfo.unk1;
+    //recv_data >> movementInfo.unk1;
     recv_data >> movementInfo.time;
     recv_data >> movementInfo.x;
     recv_data >> movementInfo.y;
