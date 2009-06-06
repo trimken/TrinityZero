@@ -43,8 +43,8 @@ enum Races
     RACE_GNOME          = 7,
     RACE_TROLL          = 8,
     //RACE_GOBLIN         = 9,
-    RACE_BLOODELF       = 10,
-    RACE_DRAENEI        = 11,
+    //RACE_BLOODELF       = 10,
+    //RACE_DRAENEI        = 11,
     //RACE_FEL_ORC        = 12,
     //RACE_NAGA           = 13,
     //RACE_BROKEN         = 14,
@@ -58,13 +58,12 @@ enum Races
 };
 
 // max+1 for player race
-#define MAX_RACES         12
+#define MAX_RACES         9
 
 #define RACEMASK_ALL_PLAYABLE \
     ((1<<(RACE_HUMAN-1))   |(1<<(RACE_ORC-1))          |(1<<(RACE_DWARF-1))   | \
     (1<<(RACE_NIGHTELF-1))|(1<<(RACE_UNDEAD_PLAYER-1))|(1<<(RACE_TAUREN-1))  | \
-    (1<<(RACE_GNOME-1))   |(1<<(RACE_TROLL-1))        |(1<<(RACE_BLOODELF-1))| \
-    (1<<(RACE_DRAENEI-1)) )
+    (1<<(RACE_GNOME-1))   |(1<<(RACE_TROLL-1)) )
 
 // Class value is index in ChrClasses.dbc
 enum Classes
@@ -134,7 +133,7 @@ enum Powers
     POWER_FOCUS                         = 2,
     POWER_ENERGY                        = 3,
     POWER_HAPPINESS                     = 4,
-    POWER_RUNES                         = 5,
+   // POWER_RUNES                         = 5, wotlk ?
     POWER_HEALTH                        = 0xFFFFFFFE    // (-2 as signed value)
 };
 
@@ -499,6 +498,7 @@ enum Language
     LANG_GNOMISH        = 13,
     LANG_TROLL          = 14,
     LANG_GUTTERSPEAK    = 33,
+	// [TRINITYROLLBACK] tbc enumerations [?]
     LANG_DRAENEI        = 35,
     LANG_ZOMBIE         = 36,
     LANG_GNOMISH_BINARY = 37,
@@ -644,6 +644,8 @@ enum SpellEffects
     SPELL_EFFECT_TELEPORT_GRAVEYARD        = 120,
     SPELL_EFFECT_NORMALIZED_WEAPON_DMG     = 121,
     SPELL_EFFECT_122                       = 122,
+
+	// [TRINITYROLLBACK] Tbc enumerations [?]
     SPELL_EFFECT_SEND_TAXI                 = 123,
     SPELL_EFFECT_PLAYER_PULL               = 124,
     SPELL_EFFECT_MODIFY_THREAT_PERCENT     = 125,
@@ -951,6 +953,8 @@ enum GameobjectTypes
     GAMEOBJECT_TYPE_FISHINGHOLE            = 25,
     GAMEOBJECT_TYPE_FLAGDROP               = 26,
     GAMEOBJECT_TYPE_MINI_GAME              = 27,
+
+	//[TRINITYROLLBACK] tbc enumerations [?]
     GAMEOBJECT_TYPE_LOTTERY_KIOSK          = 28,
     GAMEOBJECT_TYPE_CAPTURE_POINT          = 29,
     GAMEOBJECT_TYPE_AURA_GENERATOR         = 30,
@@ -977,6 +981,7 @@ enum GameObjectFlags
 
 enum TextEmotes
 {
+	// [TRINITYROLLBACK] some of this enum could be only for tbc
     TEXTEMOTE_AGREE                = 1,
     TEXTEMOTE_AMAZE                = 2,
     TEXTEMOTE_ANGRY                = 3,
@@ -1153,6 +1158,7 @@ enum TextEmotes
 
 enum Emote
 {
+	// [TRINITYROLLBACK] some of this enum could be only for tbc
     EMOTE_ONESHOT_NONE                 = 0,
     EMOTE_ONESHOT_TALK                 = 1,
     EMOTE_ONESHOT_BOW                  = 2,
@@ -1418,7 +1424,7 @@ enum Anim
     ANIM_SPELL_KNEEL_END           = 0x8E,
     ANIM_SPRINT                    = 0x8F,
     ANIM_IN_FIGHT                  = 0x90,
-
+	//[TRINITYROLLBACK] changed in tbc
     ANIM_GAMEOBJ_SPAWN             = 145,
     ANIM_GAMEOBJ_CLOSE             = 146,
     ANIM_GAMEOBJ_CLOSED            = 147,
@@ -1527,7 +1533,7 @@ enum LockType
     LOCKTYPE_BLASTING              = 16,
     LOCKTYPE_SLOW_OPEN             = 17,
     LOCKTYPE_SLOW_CLOSE            = 18,
-    LOCKTYPE_FISHING               = 19
+    LOCKTYPE_FISHING               = 19  //tbc?
 };
 
 enum TrainerType                                            // this is important type for npcs!
@@ -1552,6 +1558,7 @@ enum CreatureType
     CREATURE_TYPE_CRITTER          = 8,
     CREATURE_TYPE_MECHANICAL       = 9,
     CREATURE_TYPE_NOT_SPECIFIED    = 10,
+	// [TRINITYROLLBAC] tbc enumerations [?]
     CREATURE_TYPE_TOTEM            = 11,
     CREATURE_TYPE_NON_COMBAT_PET   = 12,
     CREATURE_TYPE_GAS_CLOUD        = 13
@@ -1583,6 +1590,7 @@ enum CreatureFamily
     CREATURE_FAMILY_HYENA          = 25,
     CREATURE_FAMILY_OWL            = 26,
     CREATURE_FAMILY_WIND_SERPENT   = 27,
+	// [TRINITYROLLBACK] tbc enumerations [?]
     CREATURE_FAMILY_REMOTE_CONTROL = 28,
     CREATURE_FAMILY_FELGUARD       = 29,
     CREATURE_FAMILY_DRAGONHAWK     = 30,
@@ -1608,7 +1616,6 @@ enum CreatureEliteType
     CREATURE_ELITE_RAREELITE       = 2,
     CREATURE_ELITE_WORLDBOSS       = 3,
     CREATURE_ELITE_RARE            = 4,
-    CREATURE_UNKNOWN               = 5                      // found in 2.2.3 for 2 mobs
 };
 
 // values based at QuestInfo.dbc
@@ -1619,15 +1626,16 @@ enum QuestTypes
     QUEST_TYPE_PVP                 = 41,
     QUEST_TYPE_RAID                = 62,
     QUEST_TYPE_DUNGEON             = 81,
-    QUEST_TYPE_WORLD_EVENT         = 82,
-    QUEST_TYPE_LEGENDARY           = 83,
+    QUEST_TYPE_WORLD_EVENT         = 82, // tbc ?
+    QUEST_TYPE_LEGENDARY           = 83, // tbc ?
     QUEST_TYPE_ESCORT              = 84,
-    QUEST_TYPE_HEROIC              = 85,
+    QUEST_TYPE_HEROIC              = 85, // tbc ?
 };
 
 // values based at QuestSort.dbc
 enum QuestSort
 {
+	// [TRINITYROLLBACK] some of this enum could be only for tbc
     QUEST_SORT_EPIC                = 1,
     QUEST_SORT_WAILING_CAVERNS_OLD = 21,
     QUEST_SORT_SEASONAL            = 22,
@@ -1906,8 +1914,8 @@ enum WeatherType
     WEATHER_TYPE_RAIN       = 1,
     WEATHER_TYPE_SNOW       = 2,
     WEATHER_TYPE_STORM      = 3,
-    WEATHER_TYPE_THUNDERS   = 86,
-    WEATHER_TYPE_BLACKRAIN  = 90
+    WEATHER_TYPE_THUNDERS   = 86, //tbc?
+    WEATHER_TYPE_BLACKRAIN  = 90  //tbc?
 };
 
 #define MAX_WEATHER_TYPE 4

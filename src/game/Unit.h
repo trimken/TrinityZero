@@ -51,7 +51,7 @@ enum SpellInterruptFlags
 enum SpellChannelInterruptFlags
 {
     CHANNEL_FLAG_DAMAGE      = 0x0002,
-    CHANNEL_FLAG_MOVEMENT    = 0x0008,
+    CHANNEL_FLAG_MOVEMENT    = 0x0008, // tbc?
     CHANNEL_FLAG_TURNING     = 0x0010,
     CHANNEL_FLAG_DAMAGE2     = 0x0080,
     CHANNEL_FLAG_DELAY       = 0x4000
@@ -111,6 +111,7 @@ enum SpellModOp
     SPELLMOD_EFFECT_PAST_FIRST      = 20,
     SPELLMOD_CASTING_TIME_OLD       = 21,
     SPELLMOD_DOT                    = 22,
+	 //[TRINITYROLLBACK] next enumerations changed in tbc
     SPELLMOD_EFFECT3                = 23,
     SPELLMOD_SPELL_BONUS_DAMAGE     = 24,
     // spellmod 25, 26 unused
@@ -160,19 +161,19 @@ enum ShapeshiftForm
     FORM_GHOUL              = 0x07,
     FORM_DIREBEAR           = 0x08,
     FORM_CREATUREBEAR       = 0x0E,
-    FORM_CREATURECAT        = 0x0F,
+    FORM_CREATURECAT        = 0x0F,  //[TRINITYROLLBACK] added in TBC
     FORM_GHOSTWOLF          = 0x10,
     FORM_BATTLESTANCE       = 0x11,
     FORM_DEFENSIVESTANCE    = 0x12,
     FORM_BERSERKERSTANCE    = 0x13,
-    FORM_TEST               = 0x14,
-    FORM_ZOMBIE             = 0x15,
-    FORM_FLIGHT_EPIC        = 0x1B,
+    FORM_TEST               = 0x14, //added in TBC
+    FORM_ZOMBIE             = 0x15, //added in TBC
+    FORM_FLIGHT_EPIC        = 0x1B, //added in TBC
     FORM_SHADOW             = 0x1C,
-    FORM_FLIGHT             = 0x1D,
+    FORM_FLIGHT             = 0x1D, //added in TBC
     FORM_STEALTH            = 0x1E,
     FORM_MOONKIN            = 0x1F,
-    FORM_SPIRITOFREDEMPTION = 0x20
+    FORM_SPIRITOFREDEMPTION = 0x20 //added in TBC
 };
 
 // low byte ( 0 from 0..3 ) of UNIT_FIELD_BYTES_2
@@ -227,20 +228,21 @@ enum VictimState
 
 enum HitInfo
 {
-    HITINFO_NORMALSWING         = 0x00000000,
+    HITINFO_NORMALSWING        = 0x00,
+    HITINFO_NORMALSWING2       = 0x02,
+    HITINFO_LEFTSWING          = 0x04,
+    HITINFO_MISS               = 0x10,
+    HITINFO_ABSORB             = 0x20,                      // plays absorb sound
+    HITINFO_RESIST             = 0x40,                      // resisted atleast some damage
+    HITINFO_CRITICALHIT        = 0x80,
+    HITINFO_GLANCING           = 0x4000,
+    HITINFO_CRUSHING           = 0x8000,
+    HITINFO_NOACTION           = 0x10000,
+    HITINFO_SWINGNOHITSOUND    = 0x80000,
+	//[TRINITYROLLBACK] tbc enumerations [?]
     HITINFO_UNK1                = 0x00000001,               // req correct packet structure
-    HITINFO_NORMALSWING2        = 0x00000002,
-    HITINFO_LEFTSWING           = 0x00000004,
-    HITINFO_MISS                = 0x00000010,
-    HITINFO_ABSORB              = 0x00000020,               // plays absorb sound
-    HITINFO_RESIST              = 0x00000040,               // resisted at least some damage
-    HITINFO_CRITICALHIT         = 0x00000080,
     HITINFO_UNK2                = 0x00000100,               // wotlk?
     HITINFO_UNK3                = 0x00002000,               // wotlk?
-    HITINFO_GLANCING            = 0x00004000,
-    HITINFO_CRUSHING            = 0x00008000,
-    HITINFO_NOACTION            = 0x00010000,
-    HITINFO_SWINGNOHITSOUND     = 0x00080000
 };
 
 //i would like to remove this: (it is defined in item.h
@@ -362,24 +364,32 @@ enum DeathState
     JUST_DIED   = 1,
     CORPSE      = 2,
     DEAD        = 3,
+	//[TRINITYROLLBACK] Tbc enumerations [?]
     JUST_ALIVED = 4,
     DEAD_FALLING= 5
 };
 
 enum UnitState
 {
+	UNIT_STAT_STOPPED       = 0,
     UNIT_STAT_DIED            = 0x00000001,
     UNIT_STAT_MELEE_ATTACKING = 0x00000002,                     // player is melee attacking someone
-    //UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone
+    UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone
+                                                                // player is in combat mode
+    UNIT_STAT_IN_COMBAT       = (UNIT_STAT_MELEE_ATTACKING | UNIT_STAT_MELEE_ATTACK_BY),
     UNIT_STAT_STUNNED         = 0x00000008,
     UNIT_STAT_ROAMING         = 0x00000010,
     UNIT_STAT_CHASE           = 0x00000020,
-    //UNIT_STAT_SEARCHING       = 0x00000040,
+    UNIT_STAT_SEARCHING       = 0x00000040,
     UNIT_STAT_FLEEING         = 0x00000080,
+    UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE | UNIT_STAT_SEARCHING | UNIT_STAT_FLEEING),
     UNIT_STAT_IN_FLIGHT       = 0x00000100,                     // player is in flight mode
     UNIT_STAT_FOLLOW          = 0x00000200,
     UNIT_STAT_ROOT            = 0x00000400,
     UNIT_STAT_CONFUSED        = 0x00000800,
+    UNIT_STAT_ALL_STATE       = 0xffffffff,                      //(UNIT_STAT_STOPPED | UNIT_STAT_MOVING | UNIT_STAT_IN_COMBAT | UNIT_STAT_IN_FLIGHT)
+
+    //[TRINITYROLLBACK] Tbc enumerations [?]
     UNIT_STAT_DISTRACTED      = 0x00001000,
     UNIT_STAT_ISOLATED        = 0x00002000,                     // area auras do not affect other players
     UNIT_STAT_ATTACK_PLAYER   = 0x00004000,
@@ -387,11 +397,11 @@ enum UnitState
     UNIT_STAT_POSSESSED       = 0x00010000,
     UNIT_STAT_CHARGING        = 0x00020000,
     UNIT_STAT_MOVE            = 0x00040000,
-    UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE),
+    // UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE),
     UNIT_STAT_LOST_CONTROL    = (UNIT_STAT_CONFUSED | UNIT_STAT_STUNNED | UNIT_STAT_FLEEING | UNIT_STAT_CHARGING),
     UNIT_STAT_SIGHTLESS       = (UNIT_STAT_LOST_CONTROL),
     UNIT_STAT_CANNOT_AUTOATTACK     = (UNIT_STAT_LOST_CONTROL | UNIT_STAT_CASTING),
-    UNIT_STAT_ALL_STATE       = 0xffffffff                      //(UNIT_STAT_STOPPED | UNIT_STAT_MOVING | UNIT_STAT_IN_COMBAT | UNIT_STAT_IN_FLIGHT)
+    
 };
 
 enum UnitMoveType
@@ -402,8 +412,8 @@ enum UnitMoveType
     MOVE_SWIM           = 3,
     MOVE_SWIM_BACK      = 4,
     MOVE_TURN_RATE      = 5,
-    MOVE_FLIGHT         = 6,
-    MOVE_FLIGHT_BACK    = 7,
+    MOVE_FLIGHT         = 6, //[TRINITYROLLBACK] added in TBC
+    MOVE_FLIGHT_BACK    = 7, //added in TBC
 };
 
 #define MAX_MOVE_TYPE 8
@@ -474,37 +484,40 @@ enum UnitVisibility
 // Value masks for UNIT_FIELD_FLAGS
 enum UnitFlags
 {
+    UNIT_FLAG_NONE           = 0x00000000,
+    UNIT_FLAG_DISABLE_MOVE   = 0x00000004,
+    UNIT_FLAG_PVP_ATTACKABLE = 0x00000008,                // allow apply pvp rules to attackable state in addition to faction dependent state, UNIT_FLAG_UNKNOWN1 in pre-bc mangos
+    UNIT_FLAG_RENAME         = 0x00000010,                // rename creature
+    UNIT_FLAG_PREPARATION    = 0x00000020,                // don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP   // UNIT_FLAG_RESTING in pre-bc mangos
+    UNIT_FLAG_PVP            = 0x00001000,				  
+    UNIT_FLAG_MOUNT          = 0x00002000,
+    UNIT_FLAG_DISABLE_ROTATE = 0x00040000,
+    UNIT_FLAG_IN_COMBAT      = 0x00080000,
+    UNIT_FLAG_SKINNABLE      = 0x04000000,
+    UNIT_FLAG_SHEATHE        = 0x40000000,
+
+	// [TRINITYROLLBACK] TBC enumerations [?]
     UNIT_FLAG_UNKNOWN7         = 0x00000001,
     UNIT_FLAG_NON_ATTACKABLE   = 0x00000002,                // not attackable
-    UNIT_FLAG_DISABLE_MOVE     = 0x00000004,
-    UNIT_FLAG_PVP_ATTACKABLE   = 0x00000008,                // allow apply pvp rules to attackable state in addition to faction dependent state
-    UNIT_FLAG_RENAME           = 0x00000010,
-    UNIT_FLAG_PREPARATION      = 0x00000020,                // don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP
     UNIT_FLAG_UNKNOWN9         = 0x00000040,
     UNIT_FLAG_NOT_ATTACKABLE_1 = 0x00000080,                // ?? (UNIT_FLAG_PVP_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1) is NON_PVP_ATTACKABLE
     UNIT_FLAG_NOT_ATTACKABLE_2 = 0x00000100,                // 2.0.8
     UNIT_FLAG_UNKNOWN11        = 0x00000200,
     UNIT_FLAG_LOOTING          = 0x00000400,                // loot animation
     UNIT_FLAG_PET_IN_COMBAT    = 0x00000800,                // in combat?, 2.0.8
-    UNIT_FLAG_PVP              = 0x00001000,
     UNIT_FLAG_SILENCED         = 0x00002000,                // silenced, 2.1.1
     UNIT_FLAG_UNKNOWN4         = 0x00004000,                // 2.0.8
     UNIT_FLAG_UNKNOWN13        = 0x00008000,
     UNIT_FLAG_UNKNOWN14        = 0x00010000,
     UNIT_FLAG_PACIFIED         = 0x00020000,
-    UNIT_FLAG_DISABLE_ROTATE   = 0x00040000,                // stunned, 2.1.1
-    UNIT_FLAG_IN_COMBAT        = 0x00080000,
     UNIT_FLAG_TAXI_FLIGHT      = 0x00100000,                // disable casting at client side spell not allowed by taxi flight (mounted?), probably used with 0x4 flag
     UNIT_FLAG_DISARMED         = 0x00200000,                // disable melee spells casting..., "Required melee weapon" added to melee spells tooltip.
     UNIT_FLAG_CONFUSED         = 0x00400000,
     UNIT_FLAG_FLEEING          = 0x00800000,
     UNIT_FLAG_UNKNOWN5         = 0x01000000,                // used in spell Eyes of the Beast for pet...
     UNIT_FLAG_NOT_SELECTABLE   = 0x02000000,
-    UNIT_FLAG_SKINNABLE        = 0x04000000,
-    UNIT_FLAG_MOUNT            = 0x08000000,
     UNIT_FLAG_UNKNOWN17        = 0x10000000,
     UNIT_FLAG_UNKNOWN6         = 0x20000000,                // used in Feing Death spell
-    UNIT_FLAG_SHEATHE          = 0x40000000
 };
 
 // Value masks for UNIT_FIELD_AURA

@@ -28,14 +28,12 @@ INSTANTIATE_SINGLETON_1( HordeChannelMgr );
 void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 {
     sLog.outDebug("Opcode %u", recvPacket.GetOpcode());
-    //recvPacket.hexlike();
-    CHECK_PACKET_SIZE(recvPacket,1+1);
+    recvPacket.hexlike();
+    CHECK_PACKET_SIZE(recvPacket,4+1);
 
-//    uint32 channel_id;
-//    uint8 unknown1, unknown2;
+	uint32 channel_id=0;
     std::string channelname, pass;
 
- //   recvPacket >> channel_id >> unknown1 >> unknown2;
     recvPacket >> channelname;
 
     if(channelname.empty())
@@ -45,8 +43,10 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
     CHECK_PACKET_SIZE(recvPacket,(channelname.size()+1)+1);
 
     recvPacket >> pass;
+
     if(ChannelMgr* cMgr = channelMgr(_player->GetTeam()))
-        cMgr->GetJoinChannel(channelname,_player->GetGUID())->Join(_player->GetGUID(), pass.c_str());
+       if(Channel *chn = cMgr->GetJoinChannel(channelname, channel_id)) // channel id seems to be useless but must be checked for LFG
+            chn->Join(_player->GetGUID(), pass.c_str());
 }
 
 void WorldSession::HandleChannelLeave(WorldPacket& recvPacket)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="game"
 	ProjectGUID="{1DC6C4DA-A028-41F3-877D-D5400C594F88}"
 	RootNamespace="game"
@@ -836,27 +836,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPHP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPHP.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\OutdoorPvPMgr.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\game\OutdoorPvPMgr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPNA.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPNA.h"
 				>
 			</File>
 			<File
@@ -873,22 +857,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\OutdoorPvPSI.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPTF.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPTF.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPZM.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPZM.h"
 				>
 			</File>
 		</Filter>

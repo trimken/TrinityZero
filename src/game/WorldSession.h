@@ -574,11 +574,7 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleMoveFlyModeChangeAckOpcode(WorldPacket& recv_data);
         void HandleLfgAutoJoinOpcode(WorldPacket& recv_data);
         void HandleLfgCancelAutoJoinOpcode(WorldPacket& recv_data);
-        void HandleLfmAutoAddMembersOpcode(WorldPacket& recv_data);
-        void HandleLfmCancelAutoAddmembersOpcode(WorldPacket& recv_data);
         void HandleLfgClearOpcode(WorldPacket& recv_data);
-        void HandleLfmSetNoneOpcode(WorldPacket& recv_data);
-        void HandleLfmSetOpcode(WorldPacket& recv_data);
         void HandleLfgSetCommentOpcode(WorldPacket& recv_data);
         void HandleNewUnknownOpcode(WorldPacket& recv_data);
         void HandleChooseTitleOpcode(WorldPacket& recv_data);

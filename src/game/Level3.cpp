@@ -7146,7 +7146,7 @@ bool ChatHandler::HandleModifyGenderCommand(const char *args)
             return true;
 
         gender_full = "male";
-        new_displayId = player->getRace() == RACE_BLOODELF ? displayId+1 : displayId-1;
+        new_displayId =  displayId-1; //[TRINITYROLLBACK] player->getRace() == RACE_BLOODELF ? displayId+1 : displayId-1
         gender = GENDER_MALE;
     }
     else if (!strncmp(gender_str,"female",gender_len))      // FEMALE
@@ -7155,7 +7155,7 @@ bool ChatHandler::HandleModifyGenderCommand(const char *args)
             return true;
 
         gender_full = "female";
-        new_displayId = player->getRace() == RACE_BLOODELF ? displayId-1 : displayId+1;
+        new_displayId = displayId+1; // [TRINITYROLLBACK] player->getRace() == RACE_BLOODELF ? displayId-1 : displayId+1;
         gender = GENDER_FEMALE;
     }
     else

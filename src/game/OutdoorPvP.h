@@ -37,10 +37,6 @@ enum ObjectiveStates{
 };
 
 enum OutdoorPvPTypes{
-    OUTDOOR_PVP_HP = 1,
-    OUTDOOR_PVP_NA = 2,
-    OUTDOOR_PVP_TF = 3,
-    OUTDOOR_PVP_ZM = 4,
     OUTDOOR_PVP_SI = 5,
     OUTDOOR_PVP_EP = 6
 };

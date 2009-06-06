@@ -32,7 +32,8 @@ enum ItemModType
     ITEM_MOD_INTELLECT                = 5,
     ITEM_MOD_SPIRIT                   = 6,
     ITEM_MOD_STAMINA                  = 7,
-    ITEM_MOD_DEFENSE_SKILL_RATING     = 12,
+	// [TRINITYROLLBACK] tbc enumerations [?]
+	ITEM_MOD_DEFENSE_SKILL_RATING     = 12,
     ITEM_MOD_DODGE_RATING             = 13,
     ITEM_MOD_PARRY_RATING             = 14,
     ITEM_MOD_BLOCK_RATING             = 15,
@@ -68,6 +69,7 @@ enum ItemSpelltriggerType
     ITEM_SPELLTRIGGER_ON_EQUIP        = 1,
     ITEM_SPELLTRIGGER_CHANCE_ON_HIT   = 2,
     ITEM_SPELLTRIGGER_SOULSTONE       = 4,
+	// [TRINITYROLLBACK] tbc enumerations [?]
     ITEM_SPELLTRIGGER_ON_NO_DELAY_USE = 5,                  // no equip cooldown
     ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6                   // used in item_template.spell_2 with spell_id with SPELL_GENERIC_LEARN in spell_1
 };
@@ -106,17 +108,22 @@ enum ITEM_FLAGS
 
 enum BAG_FAMILY_MASK
 {
-    BAG_FAMILY_MASK_ARROWS                    = 0x00000001,
-    BAG_FAMILY_MASK_BULLETS                   = 0x00000002,
-    BAG_FAMILY_MASK_SOUL_SHARDS               = 0x00000004,
+
+	BAG_FAMILY_NONE                             = 0,
+    BAG_FAMILY_MASK_ARROWS                           = 1,
+    BAG_FAMILY_MASK_BULLETS                          = 2,
+    BAG_FAMILY_MASK_SOUL_SHARDS                      = 3,
     BAG_FAMILY_MASK_LEATHERWORKING_SUPP       = 0x00000008,
     BAG_FAMILY_MASK_INSCRIPTION_SUPP          = 0x00000010,
-    BAG_FAMILY_MASK_HERBS                     = 0x00000020,
-    BAG_FAMILY_MASK_ENCHANTING_SUPP           = 0x00000040,
-    BAG_FAMILY_MASK_ENGINEERING_SUPP          = 0x00000080,
-    BAG_FAMILY_MASK_KEYS                      = 0x00000100,
-    BAG_FAMILY_MASK_GEMS                      = 0x00000200,
-    BAG_FAMILY_MASK_MINING_SUPP               = 0x00000400,
+    BAG_FAMILY_MASK_HERBS                            = 6,
+    BAG_FAMILY_MASK_ENCHANTING_SUPP                  = 7,
+    BAG_FAMILY_MASK_ENGINEERING_SUPP                 = 8,
+    BAG_FAMILY_MASK_KEYS                             = 9,
+    BAG_FAMILY_MASK_GEMS                             = 10,
+    //BAG_FAMILY_UNK3                           = 11,
+    BAG_FAMILY_MASK_MINING_SUPP                      = 12,
+
+	// [TRINITYROLLBACK] tbc enumerations [?]
     BAG_FAMILY_MASK_SOULBOUND_EQUIPMENT       = 0x00000800,
     BAG_FAMILY_MASK_VANITY_PETS               = 0x00001000,
     BAG_FAMILY_MASK_CURRENCY_TOKENS           = 0x00002000,
@@ -192,15 +199,15 @@ enum ItemClass
 
 enum ItemSubclassConsumable
 {
-    ITEM_SUBCLASS_CONSUMABLE                    = 0,
-    ITEM_SUBCLASS_POTION                        = 1,
-    ITEM_SUBCLASS_ELIXIR                        = 2,
-    ITEM_SUBCLASS_FLASK                         = 3,
-    ITEM_SUBCLASS_SCROLL                        = 4,
-    ITEM_SUBCLASS_FOOD                          = 5,
-    ITEM_SUBCLASS_ITEM_ENHANCEMENT              = 6,
-    ITEM_SUBCLASS_BANDAGE                       = 7,
-    ITEM_SUBCLASS_CONSUMABLE_OTHER              = 8
+
+	ITEM_SUBCLASS_FOOD                    = 1,
+    ITEM_SUBCLASS_LIQUID                  = 2,
+    ITEM_SUBCLASS_POTION                  = 3,
+    ITEM_SUBCLASS_SCROLL                  = 4,
+    ITEM_SUBCLASS_BANDAGE                 = 5,
+    ITEM_SUBCLASS_HEALTHSTONE             = 6,
+    ITEM_SUBCLASS_COMBAT_EFFECT           = 7,
+    ITEM_SUBCLASS_CONSUMABLE_OTHER        = 8 //tbc ?
 };
 
 #define MAX_ITEM_SUBCLASS_CONSUMABLE              9
@@ -212,6 +219,7 @@ enum ItemSubclassContainer
     ITEM_SUBCLASS_HERB_CONTAINER                = 2,
     ITEM_SUBCLASS_ENCHANTING_CONTAINER          = 3,
     ITEM_SUBCLASS_ENGINEERING_CONTAINER         = 4,
+	
     ITEM_SUBCLASS_GEM_CONTAINER                 = 5,
     ITEM_SUBCLASS_MINING_CONTAINER              = 6,
     ITEM_SUBCLASS_LEATHERWORKING_CONTAINER      = 7
@@ -246,6 +254,7 @@ enum ItemSubclassWeapon
 
 #define MAX_ITEM_SUBCLASS_WEAPON                  21
 
+/* [TRINITYROLLBACK] tbc enumerations
 enum ItemSubclassGem
 {
     ITEM_SUBCLASS_GEM_RED                       = 0,
@@ -257,7 +266,7 @@ enum ItemSubclassGem
     ITEM_SUBCLASS_GEM_META                      = 6,
     ITEM_SUBCLASS_GEM_SIMPLE                    = 7,
     ITEM_SUBCLASS_GEM_PRISMATIC                 = 8
-};
+}; */
 
 #define MAX_ITEM_SUBCLASS_GEM                     9
 
@@ -270,6 +279,7 @@ enum ItemSubclassArmor
     ITEM_SUBCLASS_ARMOR_PLATE                   = 4,
     ITEM_SUBCLASS_ARMOR_BUCKLER                 = 5,
     ITEM_SUBCLASS_ARMOR_SHIELD                  = 6,
+	// [TRINITYROLLBACK] tbc enumerations [?]
     ITEM_SUBCLASS_ARMOR_LIBRAM                  = 7,
     ITEM_SUBCLASS_ARMOR_IDOL                    = 8,
     ITEM_SUBCLASS_ARMOR_TOTEM                   = 9
@@ -390,6 +400,7 @@ enum ItemSubclassJunk
 
 #define MAX_ITEM_SUBCLASS_JUNK                    6
 
+/* [TRINITYROLLBACK] tbc enumerations [?]
 enum ItemSubclassGlyph
 {
     ITEM_SUBCLASS_GLYPH_WARRIOR                 = 1,
@@ -403,7 +414,7 @@ enum ItemSubclassGlyph
     ITEM_SUBCLASS_GLYPH_WARLOCK                 = 9,
     ITEM_SUBCLASS_GLYPH_DRUID                   = 11
 };
-
+*/
 #define MAX_ITEM_SUBCLASS_GLYPH                   12
 
 const uint32 MaxItemSubclassValues[MAX_ITEM_CLASS] =

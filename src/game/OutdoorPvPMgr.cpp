@@ -17,10 +17,6 @@
  */
 
 #include "OutdoorPvPMgr.h"
-#include "OutdoorPvPHP.h"
-#include "OutdoorPvPNA.h"
-#include "OutdoorPvPTF.h"
-#include "OutdoorPvPZM.h"
 #include "OutdoorPvPSI.h"
 #include "OutdoorPvPEP.h"
 #include "Player.h"
@@ -46,61 +42,8 @@ OutdoorPvPMgr::~OutdoorPvPMgr()
 void OutdoorPvPMgr::InitOutdoorPvP()
 {
     // create new opvp
-    OutdoorPvP * pOP = new OutdoorPvPHP;
-    // respawn, init variables
-    if(!pOP->SetupOutdoorPvP())
-    {
-        sLog.outDebug("OutdoorPvP : HP init failed.");
-        delete pOP;
-    }
-    else
-    {
-        m_OutdoorPvPSet.push_back(pOP);
-        sLog.outDebug("OutdoorPvP : HP successfully initiated.");
-    }
 
-
-    pOP = new OutdoorPvPNA;
-    // respawn, init variables
-    if(!pOP->SetupOutdoorPvP())
-    {
-        sLog.outDebug("OutdoorPvP : NA init failed.");
-        delete pOP;
-    }
-    else
-    {
-        m_OutdoorPvPSet.push_back(pOP);
-        sLog.outDebug("OutdoorPvP : NA successfully initiated.");
-    }
-
-
-    pOP = new OutdoorPvPTF;
-    // respawn, init variables
-    if(!pOP->SetupOutdoorPvP())
-    {
-        sLog.outDebug("OutdoorPvP : TF init failed.");
-        delete pOP;
-    }
-    else
-    {
-        m_OutdoorPvPSet.push_back(pOP);
-        sLog.outDebug("OutdoorPvP : TF successfully initiated.");
-    }
-
-    pOP = new OutdoorPvPZM;
-    // respawn, init variables
-    if(!pOP->SetupOutdoorPvP())
-    {
-        sLog.outDebug("OutdoorPvP : ZM init failed.");
-        delete pOP;
-    }
-    else
-    {
-        m_OutdoorPvPSet.push_back(pOP);
-        sLog.outDebug("OutdoorPvP : ZM successfully initiated.");
-    }
-
-    pOP = new OutdoorPvPSI;
+     OutdoorPvP * pOP = new OutdoorPvPSI;
     // respawn, init variables
     if(!pOP->SetupOutdoorPvP())
     {

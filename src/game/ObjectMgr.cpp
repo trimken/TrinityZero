@@ -2287,8 +2287,9 @@ void ObjectMgr::LoadPlayerInfo()
                 continue;
 
             // skip expansion races if not playing with expansion
-            if (sWorld.getConfig(CONFIG_EXPANSION) < 1 && (race == RACE_BLOODELF || race == RACE_DRAENEI))
-                continue;
+           /*[TRINITYROLLBACK]
+		      if (sWorld.getConfig(CONFIG_EXPANSION) < 1 && (race == RACE_BLOODELF || race == RACE_DRAENEI))
+                continue; */
 
             // skip expansion classes if not playing with expansion
             if (sWorld.getConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
@@ -2737,14 +2738,6 @@ void ObjectMgr::LoadQuests()
             qinfo->QuestFlags &= QUEST_TRINITY_FLAGS_DB_ALLOWED;
         }
 
-        if(qinfo->QuestFlags & QUEST_FLAGS_DAILY)
-        {
-            if(!(qinfo->QuestFlags & QUEST_TRINITY_FLAGS_REPEATABLE))
-            {
-                sLog.outErrorDb("Daily Quest %u not marked as repeatable in `SpecialFlags`, added.",qinfo->GetQuestId());
-                qinfo->QuestFlags |= QUEST_TRINITY_FLAGS_REPEATABLE;
-            }
-        }
 
         if(qinfo->QuestFlags & QUEST_FLAGS_AUTO_REWARDED)
         {

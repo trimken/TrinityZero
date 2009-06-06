@@ -146,8 +146,8 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
         case RACE_TAUREN:   SetTaximaskNode(22); break;     // Tauren
         case RACE_GNOME:    SetTaximaskNode(6);  break;     // Gnome
         case RACE_TROLL:    SetTaximaskNode(23); break;     // Troll
-        case RACE_BLOODELF: SetTaximaskNode(82); break;     // Blood Elf
-        case RACE_DRAENEI:  SetTaximaskNode(94); break;     // Draenei
+        /* [TRINITYROLLBACK] case RACE_BLOODELF: SetTaximaskNode(82); break;     // Blood Elf
+        case RACE_DRAENEI:  SetTaximaskNode(94); break;     // Draenei */
     }
     // new continent starting masks (It will be accessible only at new map)
     switch(Player::TeamForRace(race))
@@ -7911,10 +7911,6 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
         // ON EVERY ZONE LEAVE, RESET THE OLD ZONE'S WORLD STATE, BUT AT LEAST THE UI STUFF!
         case 3483:                                          // Hellfire Peninsula
             {
-                if(pvp && pvp->GetTypeId() == OUTDOOR_PVP_HP)
-                    pvp->FillInitialWorldStates(data);
-                else
-                {
                     data << uint32(0x9ba) << uint32(0x1);           // 10 // add ally tower main gui icon       // maybe should be sent only on login?
                     data << uint32(0x9b9) << uint32(0x1);           // 11 // add horde tower main gui icon      // maybe should be sent only on login?
                     data << uint32(0x9b5) << uint32(0x0);           // 12 // show neutral broken hill icon      // 2485
@@ -7931,7 +7927,6 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
                     data << uint32(0x9a8) << uint32(0x0);           // 20 // show the neutral stadium icon      // 2472
                     data << uint32(0x9a7) << uint32(0x0);           // 21 // show the ally stadium icon         // 2471
                     data << uint32(0x9a6) << uint32(0x1);           // 22 // show the horde stadium icon        // 2470
-                }
             }
             break;
     /*    case 3518:
@@ -11991,8 +11986,6 @@ void Player::SendPreparedQuest( uint64 guid )
             else if( status == DIALOG_STATUS_INCOMPLETE )
                 PlayerTalkClass->SendQuestGiverRequestItems( pQuest, guid, false, true );
             // Send completable on repeatable quest if player don't have quest
-            else if( pQuest->IsRepeatable() && !pQuest->IsDaily() )
-                PlayerTalkClass->SendQuestGiverRequestItems( pQuest, guid, CanCompleteRepeatableQuest(pQuest), true );
             else
                 PlayerTalkClass->SendQuestGiverQuestDetails( pQuest, guid, true );
         }
@@ -12535,8 +12528,6 @@ void Player::RewardQuest( Quest const *pQuest, uint32 reward, Object* questGiver
         WorldSession::SendMailTo(this, mailType, MAIL_STATIONERY_NORMAL, senderGuidOrEntry, GetGUIDLow(), "", 0, &mi, 0, 0, MAIL_CHECK_MASK_NONE,pQuest->GetRewMailDelaySecs(),pQuest->GetRewMailTemplateId());
     }
 
-    if(pQuest->IsDaily())
-        SetDailyQuestStatus(quest_id);
 
     if ( !pQuest->IsRepeatable() )
         SetQuestStatus(quest_id, QUEST_STATUS_COMPLETE);
@@ -14792,7 +14783,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
                 if( slot < MAX_QUEST_LOG_SIZE &&
                     ( questStatusData.m_status==QUEST_STATUS_INCOMPLETE ||
                     questStatusData.m_status==QUEST_STATUS_COMPLETE &&
-                    (!questStatusData.m_rewarded || pQuest->IsDaily()) ) )
+                    !questStatusData.m_rewarded ) )
                 {
                     SetQuestSlot(slot,quest_id,quest_time);
 
@@ -18823,7 +18814,7 @@ void Player::UpdateZoneDependentAuras( uint32 newZone )
         if( GetTeam() == HORDE )
             spellid = getGender() == GENDER_FEMALE ? 35481 : 35480;
         // and some alliance races
-        else if( getRace() == RACE_NIGHTELF || getRace() == RACE_DRAENEI )
+        else if( getRace() == RACE_NIGHTELF ) //|| getRace() == RACE_DRAENEI )
             spellid = getGender() == GENDER_FEMALE ? 35483 : 35482;
 
         if(spellid && !HasAura(spellid,0) )

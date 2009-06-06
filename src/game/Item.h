@@ -105,6 +105,8 @@ enum InventoryChangeFailure
     EQUIP_ERR_CANT_EQUIP_RANK                    = 63,
     EQUIP_ERR_CANT_EQUIP_REPUTATION              = 64,
     EQUIP_ERR_TOO_MANY_SPECIAL_BAGS              = 65,
+
+	//[TRINITYROLLBACK] TBC Enumerations
     EQUIP_ERR_LOOT_CANT_LOOT_THAT_NOW            = 66,
     EQUIP_ERR_ITEM_UNIQUE_EQUIPABLE              = 67,
     EQUIP_ERR_VENDOR_MISSING_TURNINS             = 68,
@@ -129,7 +131,7 @@ enum BuyFailure
     BUY_ERR_NOT_ENOUGHT_MONEY                   = 2,
     BUY_ERR_SELLER_DONT_LIKE_YOU                = 4,
     BUY_ERR_DISTANCE_TOO_FAR                    = 5,
-    BUY_ERR_ITEM_SOLD_OUT                       = 7,
+    BUY_ERR_ITEM_SOLD_OUT                       = 7, //tbc?
     BUY_ERR_CANT_CARRY_MORE                     = 8,
     BUY_ERR_RANK_REQUIRE                        = 11,
     BUY_ERR_REPUTATION_REQUIRE                  = 12
@@ -140,6 +142,7 @@ enum SellFailure
     SELL_ERR_CANT_FIND_ITEM                      = 1,
     SELL_ERR_CANT_SELL_ITEM                      = 2,       // merchant doesn't like that item
     SELL_ERR_CANT_FIND_VENDOR                    = 3,       // merchant doesn't like you
+	//[TRINITYROLLBACK] tbc enumerations [?]
     SELL_ERR_YOU_DONT_OWN_THAT_ITEM              = 4,       // you don't own that item
     SELL_ERR_UNK                                 = 5,       // nothing appears...
     SELL_ERR_ONLY_EMPTY_BAG                      = 6        // can only do with empty bags

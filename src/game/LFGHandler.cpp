@@ -159,22 +159,7 @@ void WorldSession::HandleLfgCancelAutoJoinOpcode( WorldPacket & /*recv_data*/ )
     LookingForGroup_auto_join = false;
 }
 
-void WorldSession::HandleLfmAutoAddMembersOpcode( WorldPacket & /*recv_data*/ )
-{
-    sLog.outDebug("CMSG_SET_LFM_AUTOADD");
-    LookingForGroup_auto_add = true;
 
-    if(!_player)                                            // needed because STATUS_AUTHED
-        return;
-
-    AttemptAddMore(_player);
-}
-
-void WorldSession::HandleLfmCancelAutoAddmembersOpcode( WorldPacket & /*recv_data*/ )
-{
-    sLog.outDebug("CMSG_UNSET_LFM_AUTOADD");
-    LookingForGroup_auto_add = false;
-}
 
 void WorldSession::HandleLfgClearOpcode( WorldPacket & /*recv_data */ )
 {
@@ -185,35 +170,6 @@ void WorldSession::HandleLfgClearOpcode( WorldPacket & /*recv_data */ )
 
     if( sWorld.getConfig(CONFIG_RESTRICTED_LFG_CHANNEL) && _player->GetSession()->GetSecurity() == SEC_PLAYER )
         _player->LeaveLFGChannel();
-}
-
-void WorldSession::HandleLfmSetNoneOpcode( WorldPacket & /*recv_data */)
-{
-    sLog.outDebug("CMSG_SET_LOOKING_FOR_NONE");
-
-    _player->m_lookingForGroup.more.Clear();
-}
-
-void WorldSession::HandleLfmSetOpcode( WorldPacket & recv_data )
-{
-    CHECK_PACKET_SIZE(recv_data,4);
-
-    sLog.outDebug("CMSG_SET_LOOKING_FOR_MORE");
-    //recv_data.hexlike();
-    uint32 temp, entry, type;
-
-    recv_data >> temp;
-
-    entry = ( temp & 0xFFFF);
-    type = ( (temp >> 24) & 0xFFFF);
-
-    _player->m_lookingForGroup.more.Set(entry,type);
-    sLog.outDebug("LFM set: temp %u, zone %u, type %u", temp, entry, type);
-
-    if(LookingForGroup_auto_add)
-        AttemptAddMore(_player);
-
-    SendLfgResult(type, entry, 1);
 }
 
 void WorldSession::HandleLfgSetCommentOpcode( WorldPacket & recv_data )

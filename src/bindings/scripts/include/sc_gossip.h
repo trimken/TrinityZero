@@ -85,14 +85,12 @@
 #define TRADESKILL_MINING                   11
 #define TRADESKILL_FISHING                  12
 #define TRADESKILL_SKINNING                 13
-#define TRADESKILL_JEWLCRAFTING             14
 
 #define TRADESKILL_LEVEL_NONE               0
 #define TRADESKILL_LEVEL_APPRENTICE         1
 #define TRADESKILL_LEVEL_JOURNEYMAN         2
 #define TRADESKILL_LEVEL_EXPERT             3
 #define TRADESKILL_LEVEL_ARTISAN            4
-#define TRADESKILL_LEVEL_MASTER             5
 
 // Gossip defines
 

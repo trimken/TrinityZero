@@ -559,8 +559,6 @@ uint32 WorldSession::getDialogStatus(Player *pPlayer, Object* questgiver, uint32
         {
             if ( pQuest->IsAutoComplete() && pQuest->IsRepeatable() )
                 result2 = DIALOG_STATUS_REWARD_REP;
-            else
-                result2 = DIALOG_STATUS_REWARD;
         }
         else if ( status == QUEST_STATUS_INCOMPLETE )
             result2 = DIALOG_STATUS_INCOMPLETE;
@@ -588,9 +586,9 @@ uint32 WorldSession::getDialogStatus(Player *pPlayer, Object* questgiver, uint32
                         result2 = DIALOG_STATUS_REWARD_REP;
                     else if (pPlayer->getLevel() <= pQuest->GetQuestLevel() + sWorld.getConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF) )
                     {
-                        if (pQuest->HasFlag(QUEST_FLAGS_DAILY))
-                            result2 = DIALOG_STATUS_AVAILABLE_REP;
-                        else
+                       /*[TRINITYROLLBACK] if (pQuest->HasFlag(QUEST_FLAGS_DAILY))
+                            result2 = DIALOG_STATUS_AVAILABLE_REP; 
+                        else */
                             result2 = DIALOG_STATUS_AVAILABLE;
                     }
                     else
