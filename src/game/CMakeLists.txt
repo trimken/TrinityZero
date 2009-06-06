@@ -144,20 +144,12 @@ SET(game_STAT_SRCS
    OutdoorPvP.h
    OutdoorPvPEP.cpp
    OutdoorPvPEP.h
-   OutdoorPvPHP.cpp
-   OutdoorPvPHP.h
    OutdoorPvPMgr.cpp
    OutdoorPvPMgr.h
-   OutdoorPvPNA.cpp
-   OutdoorPvPNA.h
    OutdoorPvPObjectiveAI.cpp
    OutdoorPvPObjectiveAI.h
    OutdoorPvPSI.cpp
    OutdoorPvPSI.h
-   OutdoorPvPTF.cpp
-   OutdoorPvPTF.h
-   OutdoorPvPZM.cpp
-   OutdoorPvPZM.h
    Path.h
    PetAI.cpp
    PetAI.h
