@@ -1504,9 +1504,9 @@ uint8 Player::chatTag() const
     // 0x2 - dnd
     // 0x1 - afk
     if(isGMChat())
-        return 4;
-    else if(isDND())
         return 3;
+    else if(isDND())
+        return 2;
     if(isAFK())
         return 1;
     else
@@ -14282,7 +14282,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
             case 0:                  break;                 // disable
             case 1: SetGMChat(true); break;                 // enable
             case 2:                                         // save state
-                if(extraflags & PLAYER_EXTRA_GM_CHAT)
+                if(extraflags & PLAYER_EXTRA_GM_ON)
                     SetGMChat(true);
                 break;
         }
@@ -16300,8 +16300,8 @@ void Player::BuildPlayerChat(WorldPacket *data, uint8 msgtype, const std::string
     *data << (uint8)msgtype;
     *data << (uint32)language;
     *data << (uint64)GetGUID();
-    *data << (uint32)language;                               //language 2.1.0 ?
-    *data << (uint64)GetGUID();
+    if (msgtype == CHAT_MSG_SAY || msgtype == CHAT_MSG_YELL || msgtype == CHAT_MSG_PARTY) 
+		 *data << (uint64)GetGUID(); //targetguid
     *data << (uint32)(text.length()+1);
     *data << text;
     *data << (uint8)chatTag();
@@ -16309,21 +16309,21 @@ void Player::BuildPlayerChat(WorldPacket *data, uint8 msgtype, const std::string
 
 void Player::Say(const std::string& text, const uint32 language)
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
+    WorldPacket data(SMSG_MESSAGECHAT, 100);
     BuildPlayerChat(&data, CHAT_MSG_SAY, text, language);
     SendMessageToSetInRange(&data,sWorld.getConfig(CONFIG_LISTEN_RANGE_SAY),true);
 }
 
 void Player::Yell(const std::string& text, const uint32 language)
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
+    WorldPacket data(SMSG_MESSAGECHAT, 100);
     BuildPlayerChat(&data, CHAT_MSG_YELL, text, language);
     SendMessageToSetInRange(&data,sWorld.getConfig(CONFIG_LISTEN_RANGE_YELL),true);
 }
 
 void Player::TextEmote(const std::string& text)
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
+    WorldPacket data(SMSG_MESSAGECHAT, 100);
     BuildPlayerChat(&data, CHAT_MSG_EMOTE, text, LANG_UNIVERSAL);
     SendMessageToSetInRange(&data,sWorld.getConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE),true, !sWorld.getConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_CHAT), true );
 }
@@ -16342,9 +16342,9 @@ void Player::Whisper(const std::string& text, uint32 language,uint64 receiver)
         BuildPlayerChat(&data, CHAT_MSG_WHISPER, text, language);
         rPlayer->GetSession()->SendPacket(&data);
 
-        data.Initialize(SMSG_MESSAGECHAT, 200);
+       /* data.Initialize(SMSG_MESSAGECHAT, 200);
         rPlayer->BuildPlayerChat(&data, CHAT_MSG_REPLY, text, language);
-        GetSession()->SendPacket(&data);
+        GetSession()->SendPacket(&data); */
     }
     else
     {

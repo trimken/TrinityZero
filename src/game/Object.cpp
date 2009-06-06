@@ -1044,7 +1044,7 @@ void WorldObject::MonsterWhisper(const char* text, uint64 receiver, bool IsBossW
         return;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data,IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER,text,LANG_UNIVERSAL,GetName(),receiver);
+    BuildMonsterChat(&data,IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_SAY,text,LANG_UNIVERSAL,GetName(),receiver); // CHAT_MSG_MONSTER_SAY instead CHAT_MSG_MONSTER_WHISPER [tbc ? ]
 
     player->GetSession()->SendPacket(&data);
 }
@@ -1186,7 +1186,7 @@ void WorldObject::MonsterWhisper(int32 textId, uint64 receiver, bool IsBossWhisp
     char const* text = objmgr.GetTrinityString(textId,loc_idx);
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data,IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER,text,LANG_UNIVERSAL,GetName(),receiver);
+    BuildMonsterChat(&data,IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_SAY,text,LANG_UNIVERSAL,GetName(),receiver); // CHAT_MSG_MONSTER_SAY instead CHAT_MSG_MONSTER_WHISPER [tbc ? ]
 
     player->GetSession()->SendPacket(&data);
 }

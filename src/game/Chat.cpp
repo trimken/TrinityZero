@@ -1007,6 +1007,12 @@ void ChatHandler::FillMessageData( WorldPacket *data, WorldSession* session, uin
     else
         *data << uint32(LANG_UNIVERSAL);
 
+	if (type == CHAT_MSG_CHANNEL)
+    {
+        ASSERT(channelName);
+        *data << channelName;
+    }
+
     switch(type)
     {
         case CHAT_MSG_SAY:
@@ -1027,15 +1033,14 @@ void ChatHandler::FillMessageData( WorldPacket *data, WorldSession* session, uin
             target_guid = session ? session->GetPlayer()->GetGUID() : 0;
             break;
         case CHAT_MSG_MONSTER_SAY:
-        case CHAT_MSG_MONSTER_PARTY:
+  //      case CHAT_MSG_MONSTER_PARTY:
         case CHAT_MSG_MONSTER_YELL:
-        case CHAT_MSG_MONSTER_WHISPER:
+  //      case CHAT_MSG_MONSTER_WHISPER:
         case CHAT_MSG_MONSTER_EMOTE:
         case CHAT_MSG_RAID_BOSS_WHISPER:
         case CHAT_MSG_RAID_BOSS_EMOTE:
         {
             *data << uint64(speaker->GetGUID());
-            *data << uint32(0);                             // 2.1.0
             *data << uint32(strlen(speaker->GetName()) + 1);
             *data << speaker->GetName();
             uint64 listener_guid = 0;
@@ -1051,24 +1056,21 @@ void ChatHandler::FillMessageData( WorldPacket *data, WorldSession* session, uin
             return;
         }
         default:
-            if (type != CHAT_MSG_REPLY && type != CHAT_MSG_IGNORED && type != CHAT_MSG_DND && type != CHAT_MSG_AFK)
+            if (type != CHAT_MSG_IGNORED && type != CHAT_MSG_DND && type != CHAT_MSG_AFK) // type != CHAT_MSG_REPLY && tbc[?]
                 target_guid = 0;                            // only for CHAT_MSG_WHISPER_INFORM used original value target_guid
             break;
     }
 
     *data << uint64(target_guid);                           // there 0 for BG messages
-    *data << uint32(0);                                     // can be chat msg group or something
 
-    if (type == CHAT_MSG_CHANNEL)
-    {
-        ASSERT(channelName);
-        *data << channelName;
-    }
+	//[TRINITYROLLBACK] must be checked  *data << uint32(0);     // can be chat msg group or something 
 
-    *data << uint64(target_guid);
+	if (type == CHAT_MSG_SAY || type == CHAT_MSG_YELL || type == CHAT_MSG_PARTY)
+     *data << uint64(target_guid);
+
     *data << uint32(messageLength);
     *data << message;
-    if(session != 0 && type != CHAT_MSG_REPLY && type != CHAT_MSG_DND && type != CHAT_MSG_AFK)
+    if(session != 0 && type != CHAT_MSG_DND && type != CHAT_MSG_AFK) //  && type != CHAT_MSG_REPLY tbc[?]
         *data << uint8(session->GetPlayer()->chatTag());
     else
         *data << uint8(0);
