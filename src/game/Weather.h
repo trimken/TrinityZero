@@ -64,7 +64,7 @@ class Weather
         uint32 GetZone() { return m_zone; };
         bool Update(time_t diff);
     private:
-        WeatherState GetWeatherState() const;
+        uint32 GetSound();
         uint32 m_zone;
         WeatherType m_type;
         float m_grade;

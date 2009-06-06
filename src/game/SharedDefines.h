@@ -1914,8 +1914,8 @@ enum WeatherType
     WEATHER_TYPE_RAIN       = 1,
     WEATHER_TYPE_SNOW       = 2,
     WEATHER_TYPE_STORM      = 3,
-    WEATHER_TYPE_THUNDERS   = 86, //tbc?
-    WEATHER_TYPE_BLACKRAIN  = 90  //tbc?
+    WEATHER_TYPE_THUNDERS   = 86, //tbc
+    WEATHER_TYPE_BLACKRAIN  = 90  //tbc
 };
 
 #define MAX_WEATHER_TYPE 4
