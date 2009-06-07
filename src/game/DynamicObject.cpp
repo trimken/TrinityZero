@@ -85,7 +85,6 @@ bool DynamicObject::Create( uint32 guidlow, Unit *caster, uint32 spellId, uint32
     SetFloatValue( DYNAMICOBJECT_POS_X, x );
     SetFloatValue( DYNAMICOBJECT_POS_Y, y );
     SetFloatValue( DYNAMICOBJECT_POS_Z, z );
- // [TRINITYROLLBACK]   SetUInt32Value( DYNAMICOBJECT_CASTTIME, getMSTime() );  // new 2.4.0
 
     m_aliveDuration = duration;
     m_radius = radius;

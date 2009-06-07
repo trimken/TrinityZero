@@ -388,7 +388,7 @@ void WorldSession::LogoutPlayer(bool Save)
         _player->CleanupsBeforeDelete();                    // do some cleanup before deleting to prevent crash at crossreferences to already deleted data
 
         sSocialMgr.RemovePlayerSocial (_player->GetGUIDLow ());
-       //[TRINITYROLLBACK: it crashes trinity, MUST be checked ] delete _player;
+        delete _player;
         _player = NULL;
 
         ///- Send the 'logout complete' packet to the client

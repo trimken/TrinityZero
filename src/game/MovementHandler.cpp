@@ -400,7 +400,6 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
 
     /* extract packet */
     uint64 guid;
-    uint8  unkB;
     uint32 unk1, flags, time, fallTime;
     float x, y, z, orientation;
 
@@ -421,7 +420,7 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
     // continue parse packet
 
     recv_data >> unk1;
-    recv_data >> flags >> unkB >> time;
+    recv_data >> flags >> time;
     recv_data >> x >> y >> z >> orientation;
     if (flags & MOVEMENTFLAG_ONTRANSPORT)
     {

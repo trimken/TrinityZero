@@ -2247,18 +2247,7 @@ void Spell::EffectPowerDrain(uint32 i)
     //add spell damage bonus
     damage=m_caster->SpellDamageBonus(unitTarget,m_spellInfo,uint32(damage),SPELL_DIRECT_DAMAGE);
 
-    // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-    uint32 power = damage;
-    if ( drain_power == POWER_MANA && unitTarget->GetTypeId() == TYPEID_PLAYER )
-        power -= ((Player*)unitTarget)->GetSpellCritDamageReduction(power);
-
-    int32 new_damage;
-    if(curPower < power)
-        new_damage = curPower;
-    else
-        new_damage = power;
-
-    unitTarget->ModifyPower(drain_power,-new_damage);
+    unitTarget->ModifyPower(drain_power,-(int32)curPower);
 
     if(drain_power == POWER_MANA)
     {
@@ -2269,7 +2258,7 @@ void Spell::EffectPowerDrain(uint32 i)
         if(Player *modOwner = m_caster->GetSpellModOwner())
             modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_MULTIPLE_VALUE, manaMultiplier);
 
-        int32 gain = int32(new_damage*manaMultiplier);
+        int32 gain = int32(curPower*manaMultiplier);
 
         m_caster->ModifyPower(POWER_MANA,gain);
         //send log
@@ -2355,20 +2344,13 @@ void Spell::EffectPowerBurn(uint32 i)
 
     int32 curPower = int32(unitTarget->GetPower(powertype));
 
-    // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-    uint32 power = damage;
-    if ( powertype == POWER_MANA && unitTarget->GetTypeId() == TYPEID_PLAYER )
-        power -= ((Player*)unitTarget)->GetSpellCritDamageReduction(power);
-
-    int32 new_damage = (curPower < power) ? curPower : power;
-
-    unitTarget->ModifyPower(powertype,-new_damage);
+    unitTarget->ModifyPower(powertype,-(int32)curPower);
     float multiplier = m_spellInfo->EffectMultipleValue[i];
 
     if(Player *modOwner = m_caster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_MULTIPLE_VALUE, multiplier);
 
-    new_damage = int32(new_damage*multiplier);
+    int32 new_damage = int32(curPower*multiplier);
     //m_damage+=new_damage; should not apply spell bonus
     //TODO: no log
     //unitTarget->ModifyHealth(-new_damage);

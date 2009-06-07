@@ -173,7 +173,7 @@ class SpellCastTargets
         int32 m_mapId;
         std::string m_strTarget;
 
-        uint32 m_targetMask;
+        uint16 m_targetMask;
     private:
         // objects (can be used at spell creating and after Update at casting
         Unit *m_unitTarget;

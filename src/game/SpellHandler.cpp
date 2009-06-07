@@ -283,15 +283,15 @@ void WorldSession::HandleGameObjectUseOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
-    CHECK_PACKET_SIZE(recvPacket,4+1+2);
+    CHECK_PACKET_SIZE(recvPacket,4);
 
     uint32 spellId;
-    uint8  cast_count;
+   //[TRINITYROLLBACK] uint8  cast_count;
     recvPacket >> spellId;
-    recvPacket >> cast_count;
+  //[TRINITYROLLBACK]  recvPacket >> cast_count;
 
-    sLog.outDebug("WORLD: got cast spell packet, spellId - %u, cast_count: %u data length = %i",
-        spellId, cast_count, recvPacket.size());
+    sLog.outDebug("WORLD: got cast spell packet, spellId - %u, data length = %i",
+        spellId, recvPacket.size());
 
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId );
 
@@ -328,7 +328,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     }
 
     Spell *spell = new Spell(_player, spellInfo, false);
-    spell->m_cast_count = cast_count;                       // set count of casts
+    spell->m_cast_count = 1;                       // set count of casts [TRINITYROLLBACK ] must be checked
     spell->prepare(&targets);
 }
 

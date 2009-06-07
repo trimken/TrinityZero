@@ -243,7 +243,6 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNoImmediateEffect,                         //186 SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE  implemented in Unit::MagicSpellHitResult
     &Aura::HandleNoImmediateEffect,                         //187 SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE  implemented in Unit::GetUnitCriticalChance
     &Aura::HandleNoImmediateEffect,                         //188 SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE implemented in Unit::GetUnitCriticalChance
-    &Aura::HandleModRating,                                 //189 SPELL_AURA_MOD_RATING
     &Aura::HandleNULL,                                      //190 SPELL_AURA_MOD_FACTION_REPUTATION_GAIN
     &Aura::HandleAuraModUseNormalSpeed,                     //191 SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED
     &Aura::HandleModMeleeRangedSpeedPct,                    //192 SPELL_AURA_HASTE_MELEE
@@ -294,7 +293,6 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleModSpellDamagePercentFromAttackPower,      //237 SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER  implemented in Unit::SpellBaseDamageBonus
     &Aura::HandleModSpellHealingPercentFromAttackPower,     //238 SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER implemented in Unit::SpellBaseHealingBonus
     &Aura::HandleAuraModScale,                              //239 SPELL_AURA_MOD_SCALE_2 only in Noggenfogger Elixir (16595) before 2.3.0 aura 61
-    &Aura::HandleAuraModExpertise,                          //240 SPELL_AURA_MOD_EXPERTISE
     &Aura::HandleForceMoveForward,                          //241 Forces the player to move forward
     &Aura::HandleUnused,                                    //242 SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING
     &Aura::HandleUnused,                                    //243 used by two test spells
@@ -5092,20 +5090,6 @@ void Aura::HandleAuraAllowFlight(bool apply, bool Real)
     m_target->SendMessageToSet(&data, true);
 }
 
-void Aura::HandleModRating(bool apply, bool Real)
-{
-    // spells required only Real aura add/remove
-    if(!Real)
-        return;
-
-    if(m_target->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    for (uint32 rating = 0; rating < MAX_COMBAT_RATING; ++rating)
-        if (m_modifier.m_miscvalue & (1 << rating))
-            ((Player*)m_target)->ApplyRatingMod(CombatRating(rating), GetModifierValue(), apply);
-}
-
 void Aura::HandleForceMoveForward(bool apply, bool Real)
 {
     if(!Real || m_target->GetTypeId() != TYPEID_PLAYER)
@@ -5114,15 +5098,6 @@ void Aura::HandleForceMoveForward(bool apply, bool Real)
         m_target->SetFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FORCE_MOVE);
     else
         m_target->RemoveFlag(UNIT_FIELD_AURA, UNIT_FLAG2_FORCE_MOVE);
-}
-
-void Aura::HandleAuraModExpertise(bool /*apply*/, bool Real)
-{
-    if(m_target->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    ((Player*)m_target)->UpdateExpertise(BASE_ATTACK);
-    ((Player*)m_target)->UpdateExpertise(OFF_ATTACK);
 }
 
 void Aura::HandleModTargetResistance(bool apply, bool Real)
@@ -5394,11 +5369,6 @@ void Aura::PeriodicTick()
             else
                 pdamage = uint32(m_target->GetMaxHealth()*amount/100);
 
-            //As of 2.2 resilience reduces damage from DoT ticks as much as the chance to not be critically hit
-            // Reduce dot damage from resilience for players
-            if (m_target->GetTypeId()==TYPEID_PLAYER)
-                pdamage-=((Player*)m_target)->GetDotDamageReduction(pdamage);
-
             pdamage *= GetStackAmount();
 
             pCaster->CalcAbsorbResist(m_target, GetSpellSchoolMask(GetSpellProto()), DOT, pdamage, &absorb, &resist);
@@ -5518,11 +5488,6 @@ void Aura::PeriodicTick()
                     }
                 }
             }
-
-            //As of 2.2 resilience reduces damage from DoT ticks as much as the chance to not be critically hit
-            // Reduce dot damage from resilience for players
-            if (m_target->GetTypeId()==TYPEID_PLAYER)
-                pdamage-=((Player*)m_target)->GetDotDamageReduction(pdamage);
 
             pdamage *= GetStackAmount();
 
@@ -5693,10 +5658,6 @@ void Aura::PeriodicTick()
 
             int32 drain_amount = m_target->GetPower(power) > pdamage ? pdamage : m_target->GetPower(power);
 
-            // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-            if (power == POWER_MANA && m_target->GetTypeId() == TYPEID_PLAYER)
-                drain_amount -= ((Player*)m_target)->GetSpellCritDamageReduction(drain_amount);
-
             m_target->ModifyPower(power, -drain_amount);
 
             float gain_multiplier = 0;
@@ -5828,10 +5789,6 @@ void Aura::PeriodicTick()
 
             if(!m_target->isAlive() || m_target->getPowerType() != powerType)
                 return;
-
-            // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-            if (powerType == POWER_MANA && m_target->GetTypeId() == TYPEID_PLAYER)
-                pdamage -= ((Player*)m_target)->GetSpellCritDamageReduction(pdamage);
 
             uint32 gain = uint32(-m_target->ModifyPower(powerType, -pdamage));
 

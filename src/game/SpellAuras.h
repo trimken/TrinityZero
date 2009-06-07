@@ -183,7 +183,6 @@ class TRINITY_DLL_SPEC Aura
         void HandleAuraModPacify(bool Apply, bool Real);
         void HandleAuraGhost(bool Apply, bool Real);
         void HandleAuraAllowFlight(bool Apply, bool Real);
-        void HandleModRating(bool apply, bool Real);
         void HandleModTargetResistance(bool apply, bool Real);
         void HandleAuraModAttackPowerPercent(bool apply, bool Real);
         void HandleAuraModRangedAttackPowerPercent(bool apply, bool Real);
@@ -201,7 +200,6 @@ class TRINITY_DLL_SPEC Aura
         void HandleModSpellHealingPercentFromAttackPower(bool apply, bool Real);
         void HandleAuraModPacifyAndSilence(bool Apply, bool Real);
         void HandleAuraModIncreaseMaxHealth(bool apply, bool Real);
-        void HandleAuraModExpertise(bool apply, bool Real);
         void HandleForceMoveForward(bool apply, bool Real);
         void HandleAuraModResistenceOfStatPercent(bool apply, bool Real);
         void HandleAuraPowerBurn(bool apply, bool Real);

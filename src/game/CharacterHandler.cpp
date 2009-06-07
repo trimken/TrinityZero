@@ -383,7 +383,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
     LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%d' AND realmid = '%d'", GetAccountId(), realmID);
     LoginDatabase.PExecute("INSERT INTO realmcharacters (numchars, acctid, realmid) VALUES (%u, %u, %u)",  charcount, GetAccountId(), realmID);
 
- //[TRINITYROLLBACK: it crashes trinity, MUST be checked ]  delete pNewChar;                                        // created only to call SaveToDB()
+	delete pNewChar;                                        // created only to call SaveToDB()
 
     data << (uint8)CHAR_CREATE_SUCCESS;
     SendPacket( &data );

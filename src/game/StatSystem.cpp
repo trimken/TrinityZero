@@ -117,8 +117,6 @@ bool Player::UpdateAllStats()
     UpdateShieldBlockValue();
  // [TRINITYROLLBACK]   UpdateSpellDamageAndHealingBonus();
     UpdateManaRegen();
-    UpdateExpertise(BASE_ATTACK);
-    UpdateExpertise(OFF_ATTACK);
     for (int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; i++)
         UpdateResistances(i);
 
@@ -446,8 +444,7 @@ void Player::UpdateBlockPercentage()
         value += (int32(GetDefenseSkillValue()) - int32(GetMaxSkillValueForLevel())) * 0.04f;
         // Increase from SPELL_AURA_MOD_BLOCK_PERCENT aura
         value += GetTotalAuraModifier(SPELL_AURA_MOD_BLOCK_PERCENT);
-        // Increase from rating
-        value += GetRatingBonusValue(CR_BLOCK);
+
         value = value < 0.0f ? 0.0f : value;
     }
     SetStatFloatValue(PLAYER_BLOCK_PERCENTAGE, value);
@@ -457,29 +454,25 @@ void Player::UpdateCritPercentage(WeaponAttackType attType)
 {
     BaseModGroup modGroup;
     uint16 index;
-    CombatRating cr;
 
     switch(attType)
     {
         case OFF_ATTACK:
             modGroup = OFFHAND_CRIT_PERCENTAGE;  // [TRINITYROLLBACK] PLAYER_CRIT_PERCENTAGE
             index = PLAYER_CRIT_PERCENTAGE;
-            cr = CR_CRIT_MELEE;
             break;
         case RANGED_ATTACK:
             modGroup = RANGED_CRIT_PERCENTAGE;
             index = PLAYER_RANGED_CRIT_PERCENTAGE;
-            cr = CR_CRIT_RANGED;
             break;
         case BASE_ATTACK:
         default:
             modGroup = CRIT_PERCENTAGE;
             index = PLAYER_CRIT_PERCENTAGE;
-            cr = CR_CRIT_MELEE;
             break;
     }
 
-    float value = GetTotalPercentageModValue(modGroup) + GetRatingBonusValue(cr);
+    float value = GetTotalPercentageModValue(modGroup);
     // Modify crit from weapon skill and maximized defense skill of same level victim difference
     value += (int32(GetWeaponSkillValue(attType)) - int32(GetMaxSkillValueForLevel())) * 0.04f;
     value = value < 0.0f ? 0.0f : value;
@@ -511,8 +504,7 @@ void Player::UpdateParryPercentage()
         value += (int32(GetDefenseSkillValue()) - int32(GetMaxSkillValueForLevel())) * 0.04f;
         // Parry from SPELL_AURA_MOD_PARRY_PERCENT aura
         value += GetTotalAuraModifier(SPELL_AURA_MOD_PARRY_PERCENT);
-        // Parry from rating
-        value += GetRatingBonusValue(CR_PARRY);
+
         value = value < 0.0f ? 0.0f : value;
     }
     SetStatFloatValue(PLAYER_PARRY_PERCENTAGE, value);
@@ -526,8 +518,7 @@ void Player::UpdateDodgePercentage()
     value += (int32(GetDefenseSkillValue()) - int32(GetMaxSkillValueForLevel())) * 0.04f;
     // Dodge from SPELL_AURA_MOD_DODGE_PERCENT aura
     value += GetTotalAuraModifier(SPELL_AURA_MOD_DODGE_PERCENT);
-    // Dodge from rating
-    value += GetRatingBonusValue(CR_DODGE);
+
     value = value < 0.0f ? 0.0f : value;
     SetStatFloatValue(PLAYER_DODGE_PERCENTAGE, value);
 }
@@ -548,8 +539,6 @@ void Player::UpdateSpellCritChance(uint32 school)
     crit += GetTotalAuraModifier(SPELL_AURA_MOD_SPELL_CRIT_CHANCE);
     // Increase crit by school from SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL
     crit += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL, 1<<school);
-    // Increase crit from spell crit ratings
-    crit += GetRatingBonusValue(CR_CRIT_SPELL);
 
     // Store crit value
 // [TRINITYROLLBACK]    SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + school, crit);
@@ -559,38 +548,6 @@ void Player::UpdateAllSpellCritChances()
 {
     for (int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; i++)
         UpdateSpellCritChance(i);
-}
-
-void Player::UpdateExpertise(WeaponAttackType attack)
-{
-    if(attack==RANGED_ATTACK)
-        return;
-
-    int32 expertise = int32(GetRatingBonusValue(CR_EXPERTISE));
-
-    Item *weapon = GetWeaponForAttack(attack);
-
-    AuraList const& expAuras = GetAurasByType(SPELL_AURA_MOD_EXPERTISE);
-    for(AuraList::const_iterator itr = expAuras.begin(); itr != expAuras.end(); ++itr)
-    {
-        // item neutral spell
-        if((*itr)->GetSpellProto()->EquippedItemClass == -1)
-            expertise += (*itr)->GetModifierValue();
-        // item dependent spell
-        else if(weapon && weapon->IsFitToSpellRequirements((*itr)->GetSpellProto()))
-            expertise += (*itr)->GetModifierValue();
-    }
-
-    if(expertise < 0)
-        expertise = 0;
-
-   /*[TRINITYROLLBACK]
-    switch(attack)
-    {
-         case BASE_ATTACK: SetUInt32Value(PLAYER_EXPERTISE, expertise);         break; 
-        case OFF_ATTACK:  SetUInt32Value(PLAYER_OFFHAND_EXPERTISE, expertise); break; 
-        default: break;
-    }*/
 }
 
 void Player::UpdateManaRegen()

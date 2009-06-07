@@ -179,8 +179,8 @@ void SpellCastTargets::Update(Unit* caster)
 
 bool SpellCastTargets::read ( WorldPacket * data, Unit *caster )
 {
-    if(data->rpos()+4 > data->size())
-        return false;
+  /*  if(data->rpos()+4 > data->size())
+        return false; */
 
     *data >> m_targetMask;
     sLog.outDebug("Spell read, target mask = %u", m_targetMask);
