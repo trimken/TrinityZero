@@ -124,7 +124,7 @@ struct TRINITY_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
         if(pInstance)
             pInstance->SetData(DATA_HIGHASTROMANCERSOLARIANEVENT, NOT_STARTED);
 
-        m_creature->SetArmor(defaultarmor);
+        m_creature->SetArmor(float(defaultarmor));
         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         m_creature->SetVisibility(VISIBILITY_ON);
         m_creature->SetFloatValue(OBJECT_FIELD_SCALE_X, defaultsize);
@@ -379,7 +379,7 @@ struct TRINITY_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
             m_creature->SetVisibility(VISIBILITY_ON);
             DoScriptText(SAY_VOIDA, m_creature);
             DoScriptText(SAY_VOIDB, m_creature);
-            m_creature->SetArmor(WV_ARMOR);
+            m_creature->SetArmor(float(WV_ARMOR));
             m_creature->SetUInt32Value(UNIT_FIELD_DISPLAYID, MODEL_VOIDWALKER);
             m_creature->SetFloatValue(OBJECT_FIELD_SCALE_X, defaultsize*2.5f);
         }

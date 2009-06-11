@@ -10669,7 +10669,7 @@ void Unit::SetHealth(uint32 val)
 void Unit::SetMaxHealth(uint32 val)
 {
     uint32 health = GetHealth();
-    SetUInt32Value(UNIT_FIELD_MAXHEALTH, val);
+    SetFloatValue(UNIT_FIELD_MAXHEALTH, val);
 
     // group update
     if(GetTypeId() == TYPEID_PLAYER)
@@ -10701,7 +10701,7 @@ void Unit::SetPower(Powers power, uint32 val)
     if(maxPower < val)
         val = maxPower;
 
-    SetStatInt32Value(UNIT_FIELD_POWER1 + power, val);
+    SetStatFloatValue(UNIT_FIELD_POWER1 + power, val);
 
     // group update
     if(GetTypeId() == TYPEID_PLAYER)
@@ -10730,7 +10730,7 @@ void Unit::SetPower(Powers power, uint32 val)
 void Unit::SetMaxPower(Powers power, uint32 val)
 {
     uint32 cur_power = GetPower(power);
-    SetStatInt32Value(UNIT_FIELD_MAXPOWER1 + power, val);
+    SetStatFloatValue(UNIT_FIELD_MAXPOWER1 + power, val);
 
     // group update
     if(GetTypeId() == TYPEID_PLAYER)
@@ -10777,7 +10777,7 @@ void Unit::ApplyPowerMod(Powers power, uint32 val, bool apply)
 
 void Unit::ApplyMaxPowerMod(Powers power, uint32 val, bool apply)
 {
-    ApplyModUInt32Value(UNIT_FIELD_MAXPOWER1+power, val, apply);
+    ApplyModPositiveFloatValue(UNIT_FIELD_MAXPOWER1+power, val, apply);
 
     // group update
     if(GetTypeId() == TYPEID_PLAYER)
@@ -10846,7 +10846,8 @@ void Unit::RemoveFromWorld()
 
 void Unit::CleanupsBeforeDelete()
 {
-    assert(m_uint32Values);
+     
+	assert(m_uint32Values);
 
     //A unit may be in removelist and not in world, but it is still in grid
     //and may have some references during delete

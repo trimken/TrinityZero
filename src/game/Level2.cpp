@@ -3210,7 +3210,8 @@ bool ChatHandler::HandleStandStateCommand(const char* args)
 
 bool ChatHandler::HandleAddHonorCommand(const char* args)
 {
-    if (!*args)
+   /*[TRINITYCORE] to rewrite
+   if (!*args)
         return false;
 
     Player *target = getSelectedPlayer();
@@ -3223,11 +3224,13 @@ bool ChatHandler::HandleAddHonorCommand(const char* args)
 
     uint32 amount = (uint32)atoi(args);
     target->RewardHonor(NULL, 1, amount);
+  */
     return true;
 }
 
 bool ChatHandler::HandleHonorAddKillCommand(const char* /*args*/)
 {
+   /*[TRINITYROLLBACK] to rewrite ?
     Unit *target = getSelectedUnit();
     if(!target)
     {
@@ -3237,7 +3240,8 @@ bool ChatHandler::HandleHonorAddKillCommand(const char* /*args*/)
     }
 
     m_session->GetPlayer()->RewardHonor(target, 1);
-    return true;
+    return true; */
+	return false;
 }
 
 bool ChatHandler::HandleUpdateHonorFieldsCommand(const char* /*args*/)
@@ -3250,7 +3254,7 @@ bool ChatHandler::HandleUpdateHonorFieldsCommand(const char* /*args*/)
         return false;
     }
 
-    target->UpdateHonorFields();
+    target->UpdateHonor();
     return true;
 }
 

@@ -1123,9 +1123,10 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             // do not add honor in arenas
             if(isBattleGround())
             {
-                // reward honor instantly
+               /* [TRINITYROLLBACK] to replace?
+			   // reward honor instantly
                 if(Source->RewardHonor(NULL, 1, value))
-                    itr->second->BonusHonor += value;
+                    itr->second->BonusHonor += value; */
             }
             break;
             //used only in EY, but in MSG_PVP_LOG_DATA opcode

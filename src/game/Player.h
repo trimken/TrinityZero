@@ -374,6 +374,15 @@ enum PlayerStateType
     PLAYER_STATE_FLAG_ALL          = 0xFF000000,
 };
 
+enum TYPE_OF_KILL
+{
+    HONORABLE_KILL    = 1,
+    DISHONORABLE_KILL = 2,
+};
+
+#define HONOR_RANK_COUNT 16
+
+
 enum PlayerFlags
 {
 	PLAYER_FLAGS_GROUP_LEADER   = 0x00000001,
@@ -391,10 +400,7 @@ enum PlayerFlags
 	//[TRINITYROLLBACK] Tbc enumeration [?]
     PLAYER_FLAGS_FFA_PVP        = 0x00000080,
     PLAYER_FLAGS_CONTESTED_PVP  = 0x00000100,               // Player has been involved in a PvP combat and will be attacked by contested guards
-    PLAYER_FLAGS_UNK3           = 0x00008000,               // strange visual effect (2.0.1), looks like PLAYER_FLAGS_GHOST flag
     PLAYER_FLAGS_SANCTUARY      = 0x00010000,               // player entered sanctuary
-    PLAYER_FLAGS_UNK4           = 0x00020000,               // taxi benchmark mode (on/off) (2.0.1)
-    PLAYER_UNK                  = 0x00040000,               // 2.0.8...
 };
 
 // used for PLAYER__FIELD_KNOWN_TITLES field (uint64), (1<<bit_index) without (-1)
@@ -1203,9 +1209,6 @@ class TRINITY_DLL_SPEC Player : public Unit
         QuestStatus GetQuestStatus( uint32 quest_id ) const;
         void SetQuestStatus( uint32 quest_id, QuestStatus status );
 
-        void SetDailyQuestStatus( uint32 quest_id );
-        void ResetDailyQuestStatus();
-
         uint16 FindQuestSlot( uint32 quest_id ) const;
         uint32 GetQuestSlotQuestId(uint16 slot) const { return GetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot*MAX_QUEST_OFFSET + QUEST_ID_OFFSET); }
         uint32 GetQuestSlotState(uint16 slot)   const { return GetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot*MAX_QUEST_OFFSET + QUEST_STATE_OFFSET); }
@@ -1536,16 +1539,6 @@ class TRINITY_DLL_SPEC Player : public Unit
         int GetGuildIdInvited() { return m_GuildIdInvited; }
         static void RemovePetitionsAndSigns(uint64 guid, uint32 type);
 
-        // [ TrinityRollback ] Arena Team
-       /* void SetInArenaTeam(uint32 ArenaTeamId, uint8 slot)
-        {
-            SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * 6), ArenaTeamId);
-        } 
-        uint32 GetArenaTeamId(uint8 slot) { return GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * 6)); }
-        static uint32 GetArenaTeamIdFromDB(uint64 guid, uint8 slot);
-        void SetArenaTeamIdInvited(uint32 ArenaTeamId) { m_ArenaTeamIdInvited = ArenaTeamId; }
-        uint32 GetArenaTeamIdInvited() { return m_ArenaTeamIdInvited; }
-      */
         void SetDifficulty(uint32 dungeon_difficulty) { m_dungeonDifficulty = dungeon_difficulty; }  //[ TrinityRollback: instance difficulty is not a 1.12 feature [?] ] 
         uint8 GetDifficulty() { return m_dungeonDifficulty; }
 
@@ -1730,19 +1723,33 @@ class TRINITY_DLL_SPEC Player : public Unit
         void UpdateSkillsToMaxSkillsForLevel();             // for .levelup
         void ModifySkillBonus(uint32 skillid,int32 val, bool talent);
 
+	    /*********************************************************/
+        /***                  HONOR SYSTEM                     ***/
         /*********************************************************/
-        /***                  PVP SYSTEM                       ***/
-        /*********************************************************/
-       //[ TrinityRollback ] void UpdateArenaFields(); 
-        void UpdateHonorFields();
-        bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1, bool pvptoken = false);
-		uint32 GetHonorPoints() { return 1; } //[ TrinityRollback: workaround , honor system MUST be rewritten ]  return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }  
-       // [ TrinityRollback ]  uint32 GetArenaPoints() { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
-        void ModifyHonorPoints( int32 value );
-       // [ TrinityRollback ] void ModifyArenaPoints( int32 value ); 
-        uint32 GetMaxPersonalArenaRatingRequirement();
+		void UpdateHonor();
+        void CalculateHonor(Unit *pVictim);
+        uint32 CalculateHonorRank(float honor) const;
+        uint32 GetHonorRank() const;
+        int  CalculateTotalKills(Player *pVictim) const;
+        //Acessors of total honor points
+        void SetTotalHonor(float total_honor_points) { m_total_honor_points = total_honor_points; };
+        float GetTotalHonor(void) const { return m_total_honor_points; };
+        //Acessors of righest rank
+        uint32 GetHonorHighestRank() const { return m_highest_rank; }
+        void SetHonorHighestRank(uint32 hr) { m_highest_rank = hr; }
+        //Acessors of rating
+        float GetHonorRating() const { return m_rating; }
+        void SetHonorRating(float rating) { m_rating = rating; }
+        //Acessors of last week standing
+        int32 GetHonorLastWeekStanding() const { return m_standing; }
+        void SetHonorLastWeekStanding(int32 standing){ m_standing = standing; }
 
-        //End of PvP System
+		float m_total_honor_points;
+        float m_rating;
+        uint32 m_highest_rank;
+        int32 m_standing;
+
+        //End of Honor System
 
         void SetDrunkValue(uint16 newDrunkValue, uint32 itemid=0);
         uint16 GetDrunkValue() const { return m_drunk; }
@@ -1949,6 +1956,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         /*********************************************************/
         /***                 VARIOUS SYSTEMS                   ***/
         /*********************************************************/
+		float m_modManaRegen[2];  // 0: mana regen 1: mana regen interrupt
         MovementInfo m_movementInfo;
         uint32 m_lastFallTime;
         float  m_lastFallZ;
@@ -2176,10 +2184,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         uint8 m_isunderwater;
         bool m_isInWater;
 
-        /*********************************************************/
-        /***                  HONOR SYSTEM                     ***/
-        /*********************************************************/
-        time_t m_lastHonorUpdateTime;
+
 
         void outDebugValues() const;
         bool _removeSpell(uint16 spell_id);

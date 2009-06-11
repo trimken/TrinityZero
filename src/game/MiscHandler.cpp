@@ -331,7 +331,6 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
         data << uint32( lvl );                              // player level
         data << uint32( class_ );                           // player class
         data << uint32( race );                             // player race
-        data << uint8(0);                                   // new 2.4.0
         data << uint32( pzoneid );                          // player zone id
 
         // 49 is maximum player count sent to client - can be overridden
@@ -1269,7 +1268,7 @@ void WorldSession::HandleInspectHonorStatsOpcode(WorldPacket& recv_data)
         data << pl->GetUInt32Value(PLAYER_FIELD_THIS_WEEK_CONTRIBUTION);
                                                             // Last Week Standing
         data << pl->GetUInt32Value(PLAYER_FIELD_LAST_WEEK_RANK);
-        data << 2; // [ TRINITYROLLBACK: GetHonorHighestRank() it's not implemented yet ] data << (uint8)pl->GetHonorHighestRank();           // Highest Rank, ?? 
+        data << (uint8)pl->GetHonorHighestRank();           // Highest Rank, ??
         SendPacket(&data);
     }
     else

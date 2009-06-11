@@ -861,24 +861,24 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         uint32 getClassMask() const { return 1 << (getClass()-1); }
         uint8 getGender() const { return GetByteValue(UNIT_FIELD_BYTES_0, 2); }
 
-        float GetStat(Stats stat) const { return float(GetUInt32Value(UNIT_FIELD_STR+stat)); }
-        void SetStat(Stats stat, int32 val) { SetStatInt32Value(UNIT_FIELD_STR+stat, val); }
+        float GetStat(Stats stat) const { return float(GetFloatValue(UNIT_FIELD_STR+stat)); }
+        void SetStat(Stats stat, float val) { SetFloatValue(UNIT_FIELD_STR+stat, val); }
         uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL) ; }
-        void SetArmor(int32 val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
+        void SetArmor(float val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
 
-        uint32 GetResistance(SpellSchools school) const { return GetUInt32Value(UNIT_FIELD_RESISTANCES+school); }
-        void SetResistance(SpellSchools school, int32 val) { SetStatInt32Value(UNIT_FIELD_RESISTANCES+school,val); }
+        uint32 GetResistance(SpellSchools school) const { return GetFloatValue(UNIT_FIELD_RESISTANCES+school); }
+        void SetResistance(SpellSchools school, float val) { SetStatFloatValue(UNIT_FIELD_RESISTANCES+school,val); }
 
         uint32 GetHealth()    const { return GetUInt32Value(UNIT_FIELD_HEALTH); }
-        uint32 GetMaxHealth() const { return GetUInt32Value(UNIT_FIELD_MAXHEALTH); }
+        uint32 GetMaxHealth() const { return (uint32)GetFloatValue(UNIT_FIELD_MAXHEALTH); }
         void SetHealth(   uint32 val);
         void SetMaxHealth(uint32 val);
         int32 ModifyHealth(int32 val);
 
         Powers getPowerType() const { return Powers(GetByteValue(UNIT_FIELD_BYTES_0, 3)); }
         void setPowerType(Powers power);
-        uint32 GetPower(   Powers power) const { return GetUInt32Value(UNIT_FIELD_POWER1   +power); }
-        uint32 GetMaxPower(Powers power) const { return GetUInt32Value(UNIT_FIELD_MAXPOWER1+power); }
+        uint32 GetPower(   Powers power) const { return (uint32)GetFloatValue(UNIT_FIELD_POWER1   +power); }
+        uint32 GetMaxPower(Powers power) const { return (uint32)GetFloatValue(UNIT_FIELD_MAXPOWER1+power); }
         void SetPower(   Powers power, uint32 val);
         void SetMaxPower(Powers power, uint32 val);
         int32 ModifyPower(Powers power, int32 val);

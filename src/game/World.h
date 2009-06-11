@@ -530,8 +530,6 @@ class World
         // callback for UpdateRealmCharacters
         void _UpdateRealmCharCount(QueryResult *resultCharCount, uint32 accountId);
 
-        void InitDailyQuestResetTime();
-        void ResetDailyQuests();
     private:
         static volatile bool m_stopEvent;
         static uint8 m_ExitCode;
@@ -583,9 +581,6 @@ class World
         // CLI command holder to be thread safe
         ZThread::LockedQueue<CliCommandHolder*, ZThread::FastMutex> cliCmdQueue;
         SqlResultQueue *m_resultQueue;
-
-        // next daily quests reset time
-        time_t m_NextDailyQuestReset;
 
         //Player Queue
         Queue m_QueuedPlayer;

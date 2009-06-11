@@ -84,15 +84,14 @@ bool Player::UpdateStats(Stats stat)
 }
  
 void Player::UpdateSpellDamageAndHealingBonus()
-{ /* [TRINITYROLLBACK]
+{
     // Magic damage modifiers implemented in Unit::SpellDamageBonus
     // This information for client side use only
     // Get healing bonus for all schools
-    SetStatInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, SpellBaseHealingBonus(SPELL_SCHOOL_MASK_ALL));
+    //SetStatInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, SpellBaseHealingBonus(SPELL_SCHOOL_MASK_ALL));
     // Get damage bonus for all schools
     for(int i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; i++)
         SetStatInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+i, SpellBaseDamageBonus(SpellSchoolMask(1 << i)));
-  */
 } 
 
 bool Player::UpdateAllStats()
@@ -128,7 +127,7 @@ void Player::UpdateResistances(uint32 school)
     if(school > SPELL_SCHOOL_NORMAL)
     {
         float value  = GetTotalAuraModValue(UnitMods(UNIT_MOD_RESISTANCE_START + school));
-        SetResistance(SpellSchools(school), int32(value));
+        SetResistance(SpellSchools(school), value);
 
         Pet *pet = GetPet();
         if(pet)
@@ -159,7 +158,7 @@ void Player::UpdateArmor()
 
     value *= GetModifierValue(unitMod, TOTAL_PCT);
 
-    SetArmor(int32(value));
+    SetArmor(value);
 
     Pet *pet = GetPet();
     if(pet)
@@ -553,8 +552,8 @@ void Player::UpdateAllSpellCritChances()
 void Player::UpdateManaRegen()
 {
     float Intellect = GetStat(STAT_INTELLECT);
-    // Mana regen from spirit and intellect
-    float power_regen = sqrt(Intellect) * OCTRegenMPPerSpirit();
+    // Mana regen from spirit
+    float power_regen = OCTRegenMPPerSpirit();
     // Apply PCT bonus from SPELL_AURA_MOD_POWER_REGEN_PERCENT aura on spirit base regen
     power_regen *= GetTotalAuraMultiplierByMiscValue(SPELL_AURA_MOD_POWER_REGEN_PERCENT, POWER_MANA);
 
@@ -583,9 +582,10 @@ void Player::UpdateManaRegen()
     int32 modManaRegenInterrupt = GetTotalAuraModifier(SPELL_AURA_MOD_MANA_REGEN_INTERRUPT);
     if (modManaRegenInterrupt > 100)
         modManaRegenInterrupt = 100;
-  /*[TRINITYROLLBACK]
-    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT, power_regen_mp5 + power_regen * modManaRegenInterrupt / 100.0f); 
-    SetStatFloatValue(PLAYER_FIELD_MOD_MANA_REGEN, power_regen_mp5 + power_regen); */ 
+
+    m_modManaRegen[1] = power_regen_mp5 + power_regen * modManaRegenInterrupt / 100.0f ; // recent cast
+
+    m_modManaRegen[0] = power_regen_mp5 + power_regen;
 }
 
 void Player::_ApplyAllStatBonuses()
@@ -643,7 +643,7 @@ void Creature::UpdateResistances(uint32 school)
     if(school > SPELL_SCHOOL_NORMAL)
     {
         float value  = GetTotalAuraModValue(UnitMods(UNIT_MOD_RESISTANCE_START + school));
-        SetResistance(SpellSchools(school), int32(value));
+        SetResistance(SpellSchools(school), value);
     }
     else
         UpdateArmor();
@@ -652,7 +652,7 @@ void Creature::UpdateResistances(uint32 school)
 void Creature::UpdateArmor()
 {
     float value = GetTotalAuraModValue(UNIT_MOD_ARMOR);
-    SetArmor(int32(value));
+    SetArmor(value);
 }
 
 void Creature::UpdateMaxHealth()
@@ -809,7 +809,7 @@ void Pet::UpdateResistances(uint32 school)
         if(owner && (getPetType() == HUNTER_PET || getPetType() == SUMMON_PET && owner->getClass() == CLASS_WARLOCK))
             value += float(owner->GetResistance(SpellSchools(school))) * 0.4f;
 
-        SetResistance(SpellSchools(school), int32(value));
+        SetResistance(SpellSchools(school), value);
     }
     else
         UpdateArmor();
@@ -832,7 +832,7 @@ void Pet::UpdateArmor()
     value += GetModifierValue(unitMod, TOTAL_VALUE) + bonus_armor;
     value *= GetModifierValue(unitMod, TOTAL_PCT);
 
-    SetArmor(int32(value));
+    SetArmor(value);
 }
 
 void Pet::UpdateMaxHealth()

@@ -64,7 +64,7 @@ bool LoginQueryHolder::Initialize()
 
     // NOTE: all fields in `characters` must be read to prevent lost character data at next save in case wrong DB structure.
     // !!! NOTE: including unused `zone`,`online`
-    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADFROM,            "SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, dungeon_difficulty, arena_pending_points FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
+    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADFROM,            "SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, dungeon_difficulty, honor_highest_rank, honor_standing, honor_rating FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADGROUP,           "SELECT leaderGuid FROM group_member WHERE memberGuid ='%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES,  "SELECT id, permanent, map, difficulty, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADAURAS,           "SELECT caster_guid,spell,effect_index,stackcount,amount,maxduration,remaintime,remaincharges FROM character_aura WHERE guid = '%u'", GUID_LOPART(m_guid));
@@ -416,15 +416,6 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
         return;
     }
 
-    // is arena team captain
-/*[TRINITYROLLBACK]   
-   if(objmgr.GetArenaTeamByCaptain(guid))
-    {
-        WorldPacket data(SMSG_CHAR_DELETE, 1);
-        data << (uint8)CHAR_DELETE_FAILED_ARENA_CAPTAIN;
-        SendPacket( &data );
-        return;
-    } */
 
     QueryResult *result = CharacterDatabase.PQuery("SELECT account,name FROM characters WHERE guid='%u'", GUID_LOPART(guid));
     if(result)
@@ -457,8 +448,7 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 }
 
 void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
-{
-    CHECK_PACKET_SIZE(recv_data,8);
+{    CHECK_PACKET_SIZE(recv_data,8);
 
     if(PlayerLoading() || GetPlayer() != NULL)
     {
@@ -509,36 +499,35 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
    // pCurrChar->SendDungeonDifficulty(false);
 
-/*	WorldPacket data( SMSG_LOGIN_VERIFY_WORLD, 20 );
+	data.Initialize( SMSG_LOGIN_VERIFY_WORLD, 20 );
     data << pCurrChar->GetMapId();
     data << pCurrChar->GetPositionX();
     data << pCurrChar->GetPositionY();
     data << pCurrChar->GetPositionZ();
     data << pCurrChar->GetOrientation();
-    SendPacket(&data); */
+    SendPacket(&data);
 
     data.Initialize( SMSG_ACCOUNT_DATA_TIMES, 128 );
-    for(int i = 0; i < 32; i++)
-        data << uint32(0);
+    for(int i = 0; i < 80; i++)
+        data << uint8(0);
     SendPacket(&data);
 
 	pCurrChar->GetSocial()->SendSocialList();
 
-    ChatHandler(pCurrChar).SendSysMessage(sWorld.GetMotd());
-
-    /* Send MOTD
+     //Send MOTD
     {
 
         uint32 linecount=0;
         std::string str_motd = sWorld.GetMotd();
         std::string::size_type pos, nextpos;
+		std::string motd;
 
         pos = 0;
         while ( (nextpos= str_motd.find('@',pos)) != std::string::npos )
         {
             if (nextpos != pos)
             {
-                data << str_motd.substr(pos,nextpos-pos);
+                chH.PSendSysMessage(str_motd.substr(pos,nextpos-pos).c_str());
                 ++linecount;
             }
             pos = nextpos+1;
@@ -546,13 +535,10 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
         if (pos<str_motd.length())
         {
-            data << str_motd.substr(pos);
+            chH.PSendSysMessage(str_motd.substr(pos).c_str());
             ++linecount;
         }
 
-        data.put(0, linecount);
-
-        SendPacket( &data );
         DEBUG_LOG( "WORLD: Sent motd (SMSG_MOTD)" );
 
         // send server info
@@ -560,7 +546,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
             chH.PSendSysMessage(_FULLVERSION);
 
         DEBUG_LOG( "WORLD: Sent server info" );
-    } */
+    }
 
     //QueryResult *result = CharacterDatabase.PQuery("SELECT guildid,rank FROM guild_member WHERE guid = '%u'",pCurrChar->GetGUIDLow());
     QueryResult *resultGuild = holder->GetResult(PLAYER_LOGIN_QUERY_LOADGUILD);

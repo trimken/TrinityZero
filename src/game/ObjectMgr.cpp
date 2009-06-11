@@ -2463,49 +2463,6 @@ void ObjectMgr::LoadGuilds()
     sLog.outString( ">> Loaded %u guild definitions", count );
 }
 
-/* [TRINITYROLLBACK]
-void ObjectMgr::LoadArenaTeams()
-{
-    uint32 count = 0;
-
-    QueryResult *result = CharacterDatabase.Query( "SELECT arenateamid FROM arena_team" );
-
-    if( !result )
-    {
-
-        barGoLink bar( 1 );
-
-        bar.step();
-
-        sLog.outString();
-        sLog.outString( ">> Loaded %u arenateam definitions", count );
-        return;
-    }
-
-    barGoLink bar( result->GetRowCount() );
-
-    do
-    {
-        Field *fields = result->Fetch();
-
-        bar.step();
-        ++count;
-
-        ArenaTeam *newarenateam = new ArenaTeam;
-        if(!newarenateam->LoadArenaTeamFromDB(fields[0].GetUInt32()))
-        {
-            delete newarenateam;
-            continue;
-        }
-        AddArenaTeam(newarenateam);
-    }while( result->NextRow() );
-
-    delete result;
-
-    sLog.outString();
-    sLog.outString( ">> Loaded %u arenateam definitions", count );
-} */
-
 void ObjectMgr::LoadGroups()
 {
     // -- loading groups --
@@ -7188,15 +7145,6 @@ bool ObjectMgr::IsVendorItemValid( uint32 vendor_entry, uint32 item_id, uint32 m
             ChatHandler(pl).PSendSysMessage(LANG_ITEM_NOT_FOUND, item_id);
         else
             sLog.outErrorDb("Table `(game_event_)npc_vendor` for Vendor (Entry: %u) have in item list non-existed item (%u), ignore",vendor_entry,item_id);
-        return false;
-    }
-
-    if(ExtendedCost && !sItemExtendedCostStore.LookupEntry(ExtendedCost))
-    {
-        if(pl)
-            ChatHandler(pl).PSendSysMessage(LANG_EXTENDED_COST_NOT_EXIST,ExtendedCost);
-        else
-            sLog.outErrorDb("Table `(game_event_)npc_vendor` have Item (Entry: %u) with wrong ExtendedCost (%u) for vendor (%u), ignore",item_id,ExtendedCost,vendor_entry);
         return false;
     }
 

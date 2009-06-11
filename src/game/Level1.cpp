@@ -2014,7 +2014,8 @@ bool ChatHandler::HandleModifyBitCommand(const char* args)
 
 bool ChatHandler::HandleModifyHonorCommand (const char* args)
 {
-    if (!*args)
+ /* [TRINITYROLLBACK] to replace ?
+  if (!*args)
         return false;
 
     Player *target = getSelectedPlayer();
@@ -2031,7 +2032,8 @@ bool ChatHandler::HandleModifyHonorCommand (const char* args)
 
     PSendSysMessage(LANG_COMMAND_MODIFY_HONOR, target->GetName(), target->GetHonorPoints());
 
-    return true;
+    return true; */
+	return false;
 }
 
 bool ChatHandler::HandleTeleCommand(const char * args)

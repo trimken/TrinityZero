@@ -38,6 +38,8 @@ const char TaxiNodesEntryfmt[]="nifffxxxxxxxxxii";
 const char TalentTabEntryfmt[]="nxxxxxxxxxxxiix";
 const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
 const char WorldMapAreaEntryfmt[]="xinxffff";
+const char TalentEntryfmt[]="niiiiiiiixxxxixxixxxi";
+const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffii";
 const char SpellFocusObjectfmt[]="nxxxxxxxxx";
 const char SpellItemEnchantmentfmt[]="niiiiiixxxiiissssssssxii";
@@ -45,7 +47,7 @@ const char SpellShapeshiftfmt[]="nxxxxxxxxxxixx";
 const char SpellRangefmt[]="nffixxxxxxxxxxxxxxxxxx";
 const char MapEntryfmt[]="nxixssssssssxxxxxxxixxxxxxxxxxxxxxxxxxixxx";
 const char SpellEntryfmt[]="niixiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifxixxiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffiiiiiiiiiiiiiiiiiiiiifffiiiiiiiiiiiifffixiixssssssssxssssssssxxxxxxxxxxxxxxxxxxxiiiiiiiiiixfffxxx";
-const char ChrRacesEntryfmt[]="nxixiixxixixxxxxxssssssssxxxx";
+const char ChrRacesEntryfmt[]="nxixiixxixxxxxixissssssssxxxx";
 // endof correct for 1.12
 
 
@@ -86,7 +88,5 @@ const char SpellDurationfmt[]="niii";
 const char SpellItemEnchantmentConditionfmt[]="nbbbbbxxxxxbbbbbbbbbbiiiiiXXXXX";
 const char SpellRadiusfmt[]="nfxf";
 const char StableSlotPricesfmt[] = "ni";
-const char TalentEntryfmt[]="niiiiiiiixxxxixxixxxi";
-const char TaxiPathEntryfmt[]="niii";
 const char TotemCategoryEntryfmt[]="nxxxxxxxxxxxxxxxxxii";
 

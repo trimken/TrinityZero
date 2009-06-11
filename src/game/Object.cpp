@@ -214,6 +214,7 @@ void Object::SendUpdateToPlayer(Player* player)
     UpdateData upd;
     WorldPacket packet;
 
+	upd.Clear();
     BuildCreateUpdateBlockForPlayer(&upd, player);
     upd.BuildPacket(&packet);
     player->GetSession()->SendPacket(&packet);
@@ -227,7 +228,7 @@ void Object::BuildValuesUpdateBlockForPlayer(UpdateData *data, Player *target) c
 
     buf << (uint8) UPDATETYPE_VALUES;
     //buf.append(GetPackGUID());    //client crashes when using this. but not have crash in debug mode
-    buf << (uint8)0xFF;
+    buf << (uint8) 0xFF;
     buf << GetGUID();
 
     UpdateMask updateMask;
@@ -540,7 +541,7 @@ void Object::SetUInt64Value( uint16 index, const uint64 &value )
 
 void Object::SetFloatValue( uint16 index, float value )
 {
-    ASSERT( index+1 < m_valuesCount || PrintIndexError( index , true ) ); //[TRINITYROLLBACK : not sure of it ] ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); 
+    ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); //[TRINITYROLLBACK : not sure of it ] ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); 
 
     if(m_floatValues[ index ] != value)
     {

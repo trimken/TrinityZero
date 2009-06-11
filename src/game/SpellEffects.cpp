@@ -3689,8 +3689,9 @@ void Spell::EffectAddHonor(uint32 /*i*/)
     // TODO: find formula for honor reward based on player's level!
 
     // now fixed only for level 70 players:
+   /*[TRINITYROLLBACK] to replace ? 
     if (((Player*)unitTarget)->getLevel() == 70)
-        ((Player*)unitTarget)->RewardHonor(NULL, 1, damage);
+        ((Player*)unitTarget)->RewardHonor(NULL, 1, damage); */
 }
 
 void Spell::EffectTradeSkill(uint32 /*i*/)
