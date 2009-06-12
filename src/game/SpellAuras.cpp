@@ -268,7 +268,6 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleAuraModRangedAttackPowerOfStatPercent,     //212 SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT
     &Aura::HandleNoImmediateEffect,                         //213 SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT implemented in Player::RewardRage
     &Aura::HandleNULL,                                      //214 Tamed Pet Passive
-    &Aura::HandleArenaPreparation,                          //215 SPELL_AURA_ARENA_PREPARATION
     &Aura::HandleModCastingSpeed,                           //216 SPELL_AURA_HASTE_SPELLS
     &Aura::HandleUnused,                                    //217                                   unused
     &Aura::HandleAuraModRangedHaste,                        //218 SPELL_AURA_HASTE_RANGED
@@ -363,29 +362,6 @@ m_periodicTimer(0), m_PeriodicEventId(0), m_AuraDRGroup(DIMINISHING_NONE)
         //damage        = caster->CalculateSpellDamage(m_spellProto,m_effIndex,m_currentBasePoints,target);
         m_maxduration = caster->CalculateSpellDuration(m_spellProto, m_effIndex, target);
 
-        if (!damage && castItem && castItem->GetItemSuffixFactor())
-        {
-            ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(castItem->GetItemRandomPropertyId()));
-            if(item_rand_suffix)
-            {
-                for (int k=0; k<3; k++)
-                {
-                    SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(item_rand_suffix->enchant_id[k]);
-                    if(pEnchant)
-                    {
-                        for (int t=0; t<3; t++)
-                            if(pEnchant->spellid[t] == m_spellProto->Id)
-                        {
-                            damage = uint32((item_rand_suffix->prefix[k]*castItem->GetItemSuffixFactor()) / 10000 );
-                            break;
-                        }
-                    }
-
-                    if(damage)
-                        break;
-                }
-            }
-        }
     }
 
     if(m_maxduration == -1 || m_isPassive && m_spellProto->DurationIndex == 0)
@@ -3565,12 +3541,6 @@ void Aura::HandleAuraModEffectImmunity(bool apply, bool Real)
                         {
                             break;
                         }
-                        case BATTLEGROUND_EY:
-                        {
-                           if(GetId() == 34976)
-                                bg->EventPlayerDroppedFlag(((Player*)m_target));
-                            break;
-                        }
                     }
                 }
             }
@@ -5853,7 +5823,6 @@ void Aura::PeriodicDummyTick()
                 {
                     // Get tick number
                     int32 tick = (m_maxduration - m_duration) / m_modifier.periodictime;
-                    // Default case (not on arenas)
                     if (tick == 0)
                     {
                         (*i)->GetModifier()->m_amount = m_modifier.m_amount;
@@ -5862,36 +5831,6 @@ void Aura::PeriodicDummyTick()
                         m_isPeriodic = false;
                     }
                     return;
-                    //**********************************************
-                    // Code commended since arena patch not added
-                    // This feature uses only in arenas
-                    //**********************************************
-                    // Here need increase mana regen per tick (6 second rule)
-                    // on 0 tick -   0  (handled in 2 second)
-                    // on 1 tick - 166% (handled in 4 second)
-                    // on 2 tick - 133% (handled in 6 second)
-                    // Not need update after 3 tick
-                    /*
-                    if (tick > 3)
-                        return;
-                    // Apply bonus for 0 - 3 tick
-                    switch (tick)
-                    {
-                        case 0:   // 0%
-                            (*i)->GetModifier()->m_amount = m_modifier.m_amount = 0;
-                            break;
-                        case 1:   // 166%
-                            (*i)->GetModifier()->m_amount = m_modifier.m_amount * 5 / 3;
-                            break;
-                        case 2:   // 133%
-                            (*i)->GetModifier()->m_amount = m_modifier.m_amount * 4 / 3;
-                            break;
-                        default:  // 100% - normal regen
-                            (*i)->GetModifier()->m_amount = m_modifier.m_amount;
-                            break;
-                    }
-                    ((Player*)m_target)->UpdateManaRegen();
-                    return;*/
                 }
             }
             return;
@@ -6121,15 +6060,3 @@ void Aura::HandleManaShield(bool apply, bool Real)
         }
     }
 }
-
-void Aura::HandleArenaPreparation(bool apply, bool Real)
-{
-    if(!Real)
-        return;
-
-    if(apply)
-        m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION);
-    else
-        m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION);
-}
-

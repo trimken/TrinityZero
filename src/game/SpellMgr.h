@@ -344,7 +344,6 @@ enum SpellFailedReason
     SPELL_FAILED_PLAY_TIME                      = 0x93,
     SPELL_FAILED_REPUTATION                     = 0x94,
     SPELL_FAILED_MIN_SKILL                      = 0x95,
-    SPELL_FAILED_NOT_IN_ARENA                   = 0x96,
     SPELL_FAILED_NOT_ON_SHAPESHIFT              = 0x97,
     SPELL_FAILED_NOT_ON_STEALTHED               = 0x98,
     SPELL_FAILED_NOT_ON_DAMAGE_IMMUNE           = 0x99,
@@ -360,7 +359,6 @@ enum SpellFailedReason
     SPELL_FAILED_PARTIAL_PLAYTIME               = 0xA3,
     SPELL_FAILED_NO_PLAYTIME                    = 0xA4,
     SPELL_FAILED_NOT_IN_BATTLEGROUND            = 0xA5,
-    SPELL_FAILED_ONLY_IN_ARENA                  = 0xA6,
     SPELL_FAILED_TARGET_LOCKED_TO_RAID_INSTANCE = 0xA7,
     SPELL_FAILED_UNKNOWN                        = 0xA8,
 };

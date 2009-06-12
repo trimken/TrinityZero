@@ -394,7 +394,7 @@ LogColors = ""
 #                 3 basic latin characters + server timezone specific
 #
 #    StrictCharterNames
-#        Limit guild/arena team charter names to language specific symbols set, not allow create charters with allowed symbols in name
+#        Limit guild charter names to language specific symbols set, not allow create charters with allowed symbols in name
 #        Default: 0 disable
 #                 1 basic latin characters  (strict)
 #                 2 realm zone specific (strict). See RealmZone setting.
@@ -459,14 +459,6 @@ LogColors = ""
 #
 #    StartHonorPoints
 #        Amount of honor that new players will start with
-#        Default: 0
-#
-#    MaxArenaPoints
-#        Max arena points that player can have.
-#        Default: 5000
-#
-#    StartArenaPoints
-#        Amount of arena points that new players will start with
 #        Default: 0
 #
 #    InstantLogout
@@ -607,8 +599,6 @@ StartPlayerLevel = 1
 StartPlayerMoney = 0
 MaxHonorPoints = 75000
 StartHonorPoints = 0
-MaxArenaPoints = 5000
-StartArenaPoints = 0
 InstantLogout = 1
 DisableWaterBreath = 4
 AllFlightPaths = 0
@@ -1110,34 +1100,6 @@ DurabilityLossChance.Block  = 0.05
 Death.SicknessLevel = 11
 Death.CorpseReclaimDelay.PvP = 1
 Death.CorpseReclaimDelay.PvE = 0
-
-###################################################################################################################
-#
-# Rated arena matches config
-#
-# MaxRatingDifference: the maximum rating difference between two groups in rated matches
-#             Default: 0 (disable, rating difference is discarded)
-#
-# RatingDiscardTimer: after the specified milliseconds has passed,
-#                     rating information will be discarded when selecting teams for matches
-#                     also initiates an update by this timer
-#             Default: 60000
-#
-# AutoDistributePoints: set if arena points should be distributed automatically, or by GM command
-#             Default: 0 (disable) (recommended): use gm command or sql query to distribute the points
-#                      1 (enable): arena points are distributed automatically
-#
-# AutoDistributeInterval: how often should the distribution take place
-#                         if automatic distribution is enabled
-#                         in days
-#             Default: 7 (weekly)
-#
-###################################################################################################################
-
-Arena.MaxRatingDifference = 0
-Arena.RatingDiscardTimer = 60000
-Arena.AutoDistributePoints = 0
-Arena.AutoDistributeInterval = 7
 
 ###################################################################################################################
 #

@@ -623,8 +623,6 @@ void WorldSession::HandleGetMail(WorldPacket & recv_data )
             }
             // can be negative
             data << (uint32) (item ? item->GetItemRandomPropertyId() : 0);
-            // unk
-            data << (uint32) (item ? item->GetItemSuffixFactor() : 0);
             // stack count
             data << (uint8)  (item ? item->GetCount() : 0);
             // charges

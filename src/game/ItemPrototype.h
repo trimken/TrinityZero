@@ -97,11 +97,9 @@ enum ITEM_FLAGS
     ITEM_FLAGS_WRAPPED                        = 0x00000008,
     ITEM_FLAGS_WRAPPER                        = 0x00000200, // used or not used wrapper
     ITEM_FLAGS_PARTY_LOOT                     = 0x00000800, // determines if item is party loot or not
-    ITEM_FLAGS_CHARTER                        = 0x00002000, // arena/guild charter
+    ITEM_FLAGS_CHARTER                        = 0x00002000, // guild charter
     ITEM_FLAGS_UNIQUE_EQUIPPED                = 0x00080000,
-    ITEM_FLAGS_USEABLE_IN_ARENA               = 0x00200000,
     ITEM_FLAGS_THROWABLE                      = 0x00400000, // not used in game for check trow possibility, only for item in game tooltip
-    ITEM_FLAGS_SPECIALUSE                     = 0x00800000, // last used flag in 2.3.0
     ITEM_FLAGS_BOA                            = 0x08000000, // bind on account
     ITEM_FLAGS_MILLABLE                       = 0x20000000
 };
@@ -130,15 +128,6 @@ enum BAG_FAMILY_MASK
     BAG_FAMILY_MASK_QUEST_ITEMS               = 0x00004000
 };
 
-enum SocketColor
-{
-    SOCKET_COLOR_META                           = 1,
-    SOCKET_COLOR_RED                            = 2,
-    SOCKET_COLOR_YELLOW                         = 4,
-    SOCKET_COLOR_BLUE                           = 8
-};
-
-#define SOCKET_COLOR_ALL (SOCKET_COLOR_META | SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE)
 
 enum InventoryType
 {
@@ -253,22 +242,6 @@ enum ItemSubclassWeapon
 };
 
 #define MAX_ITEM_SUBCLASS_WEAPON                  21
-
-/* [TRINITYROLLBACK] tbc enumerations
-enum ItemSubclassGem
-{
-    ITEM_SUBCLASS_GEM_RED                       = 0,
-    ITEM_SUBCLASS_GEM_BLUE                      = 1,
-    ITEM_SUBCLASS_GEM_YELLOW                    = 2,
-    ITEM_SUBCLASS_GEM_PURPLE                    = 3,
-    ITEM_SUBCLASS_GEM_GREEN                     = 4,
-    ITEM_SUBCLASS_GEM_ORANGE                    = 5,
-    ITEM_SUBCLASS_GEM_META                      = 6,
-    ITEM_SUBCLASS_GEM_SIMPLE                    = 7,
-    ITEM_SUBCLASS_GEM_PRISMATIC                 = 8
-}; */
-
-#define MAX_ITEM_SUBCLASS_GEM                     9
 
 enum ItemSubclassArmor
 {
@@ -400,29 +373,11 @@ enum ItemSubclassJunk
 
 #define MAX_ITEM_SUBCLASS_JUNK                    6
 
-/* [TRINITYROLLBACK] tbc enumerations [?]
-enum ItemSubclassGlyph
-{
-    ITEM_SUBCLASS_GLYPH_WARRIOR                 = 1,
-    ITEM_SUBCLASS_GLYPH_PALADIN                 = 2,
-    ITEM_SUBCLASS_GLYPH_HUNTER                  = 3,
-    ITEM_SUBCLASS_GLYPH_ROGUE                   = 4,
-    ITEM_SUBCLASS_GLYPH_PRIEST                  = 5,
-    ITEM_SUBCLASS_GLYPH_DEATH_KNIGHT            = 6,
-    ITEM_SUBCLASS_GLYPH_SHAMAN                  = 7,
-    ITEM_SUBCLASS_GLYPH_MAGE                    = 8,
-    ITEM_SUBCLASS_GLYPH_WARLOCK                 = 9,
-    ITEM_SUBCLASS_GLYPH_DRUID                   = 11
-};
-*/
-#define MAX_ITEM_SUBCLASS_GLYPH                   12
-
 const uint32 MaxItemSubclassValues[MAX_ITEM_CLASS] =
 {
     MAX_ITEM_SUBCLASS_CONSUMABLE,
     MAX_ITEM_SUBCLASS_CONTAINER,
     MAX_ITEM_SUBCLASS_WEAPON,
-    MAX_ITEM_SUBCLASS_GEM,
     MAX_ITEM_SUBCLASS_ARMOR,
     MAX_ITEM_SUBCLASS_REAGENT,
     MAX_ITEM_SUBCLASS_PROJECTILE,
@@ -487,7 +442,7 @@ struct ItemPrototype
 {
     uint32 ItemId;
     uint32 Class;                                           // id from ItemClass.dbc
-    uint32 SubClass;                                        // id from ItemSubClass.dbc
+	uint32 SubClass;
     uint32 Unk0;
     char*  Name1;
     uint32 DisplayInfoID;                                   // id from ItemDisplayInfo.dbc
@@ -534,17 +489,13 @@ struct ItemPrototype
     uint32 Material;                                        // id from Material.dbc
     uint32 Sheath;
     uint32 RandomProperty;                                  // id from ItemRandomProperties.dbc
-    uint32 RandomSuffix;                                    // id from ItemRandomSuffix.dbc
     uint32 Block;
     uint32 ItemSet;                                         // id from ItemSet.dbc
     uint32 MaxDurability;
     uint32 Area;                                            // id from AreaTable.dbc
     uint32 Map;                                             // id from Map.dbc
     uint32 BagFamily;                                       // id from ItemBagFamily.dbc
-    uint32 TotemCategory;                                   // id from TotemCategory.dbc
-    _Socket Socket[3];
     uint32 socketBonus;                                     // id from SpellItemEnchantment.dbc
-    uint32 GemProperties;                                   // id from GemProperties.dbc
     uint32 RequiredDisenchantSkill;
     float  ArmorDamageModifier;
     uint32 ScriptId;

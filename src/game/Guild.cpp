@@ -1700,9 +1700,6 @@ void Guild::AppendDisplayGuildBankSlot( WorldPacket& data, GuildBankTab const *t
     {
         // random item property id +8
         data << (uint32) pItem->GetItemRandomPropertyId();
-        if (pItem->GetItemRandomPropertyId())
-            // SuffixFactor +4
-            data << (uint32) pItem->GetItemSuffixFactor();
         // +12 // ITEM_FIELD_STACK_COUNT
         data << uint8(pItem->GetCount());
         data << uint32(0);                                  // +16 // Unknown value

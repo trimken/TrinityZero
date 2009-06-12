@@ -124,7 +124,6 @@ ObjectMgr::ObjectMgr()
     m_ItemTextId        = 1;
     m_mailid            = 1;
     m_guildId           = 1;
-    m_arenaTeamId       = 1;
     m_auctionid         = 1;
 
     mGuildBankTabPrice.resize(GUILD_BANK_MAX_TABS);
@@ -214,15 +213,6 @@ void ObjectMgr::LoadPlayerInfoInCache()
         pPPlayerInfo->unLevel = Player::GetUInt32ValueFromArray(tdata,UNIT_FIELD_LEVEL);
         pPPlayerInfo->unfield = Player::GetUInt32ValueFromArray(tdata,UNIT_FIELD_BYTES_0);
 
-   /* [ TrinityRollback ]     
-        pPPlayerInfo->unArenaInfoId0 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6);
-        pPPlayerInfo->unArenaInfoId1 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6);
-        pPPlayerInfo->unArenaInfoId2 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6);
-
-        pPPlayerInfo->unArenaInfoSlot0 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5);
-        pPPlayerInfo->unArenaInfoSlot1 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6 + 5);
-        pPPlayerInfo->unArenaInfoSlot2 = Player::GetUInt32ValueFromArray(tdata,PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5);  */
-
         pPPlayerInfo->unClass = (uint32)fields[3].GetUInt32();
         m_mPlayerInfoMap[fields[0].GetUInt32()] = pPPlayerInfo;
     }
@@ -297,47 +287,6 @@ void ObjectMgr::RemoveGuild(uint32 Id)
 {
     mGuildMap.erase(Id);
 }
-
-/* [TRINITY ROLLBACK]
-
-ArenaTeam* ObjectMgr::GetArenaTeamById(const uint32 arenateamid) const
-{
-    ArenaTeamMap::const_iterator itr = mArenaTeamMap.find(arenateamid);
-    if (itr != mArenaTeamMap.end())
-        return itr->second;
-
-    return NULL;
-}
-
-ArenaTeam* ObjectMgr::GetArenaTeamByName(const std::string& arenateamname) const
-{
-    for(ArenaTeamMap::const_iterator itr = mArenaTeamMap.begin(); itr != mArenaTeamMap.end(); ++itr)
-        if (itr->second->GetName() == arenateamname)
-            return itr->second;
-
-    return NULL;
-}
-
-ArenaTeam* ObjectMgr::GetArenaTeamByCaptain(uint64 const& guid) const
-{
-    for(ArenaTeamMap::const_iterator itr = mArenaTeamMap.begin(); itr != mArenaTeamMap.end(); ++itr)
-        if (itr->second->GetCaptain() == guid)
-            return itr->second;
-
-    return NULL;
-}
-
-void ObjectMgr::AddArenaTeam(ArenaTeam* arenaTeam)
-{
-    mArenaTeamMap[arenaTeam->GetId()] = arenaTeam;
-}
-
-void ObjectMgr::RemoveArenaTeam(uint32 Id)
-{
-    mArenaTeamMap.erase(Id);
-}
-
-*/ 
 
 CreatureInfo const* ObjectMgr::GetCreatureTemplate(uint32 id)
 {
@@ -1428,300 +1377,6 @@ void ObjectMgr::LoadItemPrototypes()
     loader.Load(sItemStorage);
     sLog.outString( ">> Loaded %u item prototypes", sItemStorage.RecordCount );
     sLog.outString();
-
-    // check data correctness
-    for(uint32 i = 1; i < sItemStorage.MaxEntry; ++i)
-    {
-        ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype >(i);
-        ItemEntry const *dbcitem = sItemStore.LookupEntry(i);
-        if(!proto)
-        {
-            /* to many errors, and possible not all items really used in game
-            if (dbcitem)
-                sLog.outErrorDb("Item (Entry: %u) doesn't exists in DB, but must exist.",i);
-            */
-            continue;
-        }
-
-        if(dbcitem)
-        {
-            if(proto->InventoryType != dbcitem->InventoryType)
-            {
-                sLog.outErrorDb("Item (Entry: %u) not correct %u inventory type, must be %u (still using DB value).",i,proto->InventoryType,dbcitem->InventoryType);
-                // It safe let use InventoryType from DB
-            }
-
-            if(proto->DisplayInfoID != dbcitem->DisplayId)
-            {
-                sLog.outErrorDb("Item (Entry: %u) not correct %u display id, must be %u (using it).",i,proto->DisplayInfoID,dbcitem->DisplayId);
-                const_cast<ItemPrototype*>(proto)->DisplayInfoID = dbcitem->DisplayId;
-            }
-            if(proto->Sheath != dbcitem->Sheath)
-            {
-                sLog.outErrorDb("Item (Entry: %u) not correct %u sheath, must be %u  (using it).",i,proto->Sheath,dbcitem->Sheath);
-                const_cast<ItemPrototype*>(proto)->Sheath = dbcitem->Sheath;
-            }
-        }
-        else
-        {
-            sLog.outErrorDb("Item (Entry: %u) not correct (not listed in list of existed items).",i);
-        }
-
-        if(proto->Class >= MAX_ITEM_CLASS)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong Class value (%u)",i,proto->Class);
-            const_cast<ItemPrototype*>(proto)->Class = ITEM_CLASS_JUNK;
-        }
-
-        if(proto->SubClass >= MaxItemSubclassValues[proto->Class])
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong Subclass value (%u) for class %u",i,proto->SubClass,proto->Class);
-            const_cast<ItemPrototype*>(proto)->SubClass = 0;// exist for all item classes
-        }
-
-        if(proto->Quality >= MAX_ITEM_QUALITY)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong Quality value (%u)",i,proto->Quality);
-            const_cast<ItemPrototype*>(proto)->Quality = ITEM_QUALITY_NORMAL;
-        }
-
-        if(proto->BuyCount <= 0)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong BuyCount value (%u), set to default(1).",i,proto->BuyCount);
-            const_cast<ItemPrototype*>(proto)->BuyCount = 1;
-        }
-
-        if(proto->InventoryType >= MAX_INVTYPE)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong InventoryType value (%u)",i,proto->InventoryType);
-            const_cast<ItemPrototype*>(proto)->InventoryType = INVTYPE_NON_EQUIP;
-        }
-
-        if(proto->RequiredSkill >= MAX_SKILL_TYPE)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong RequiredSkill value (%u)",i,proto->RequiredSkill);
-            const_cast<ItemPrototype*>(proto)->RequiredSkill = 0;
-        }
-
-        if(!(proto->AllowableClass & CLASSMASK_ALL_PLAYABLE))
-        {
-            sLog.outErrorDb("Item (Entry: %u) not have in `AllowableClass` any playable classes (%u) and can't be equipped.",i,proto->AllowableClass);
-        }
-
-        if(!(proto->AllowableRace & RACEMASK_ALL_PLAYABLE))
-        {
-            sLog.outErrorDb("Item (Entry: %u) not have in `AllowableRace` any playable races (%u) and can't be equipped.",i,proto->AllowableRace);
-        }
-
-        if(proto->RequiredSpell && !sSpellStore.LookupEntry(proto->RequiredSpell))
-        {
-            sLog.outErrorDb("Item (Entry: %u) have wrong (non-existed) spell in RequiredSpell (%u)",i,proto->RequiredSpell);
-            const_cast<ItemPrototype*>(proto)->RequiredSpell = 0;
-        }
-
-        if(proto->RequiredReputationRank >= MAX_REPUTATION_RANK)
-            sLog.outErrorDb("Item (Entry: %u) has wrong reputation rank in RequiredReputationRank (%u), item can't be used.",i,proto->RequiredReputationRank);
-
-        if(proto->RequiredReputationFaction)
-        {
-            if(!sFactionStore.LookupEntry(proto->RequiredReputationFaction))
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong (not existing) faction in RequiredReputationFaction (%u)",i,proto->RequiredReputationFaction);
-                const_cast<ItemPrototype*>(proto)->RequiredReputationFaction = 0;
-            }
-
-            if(proto->RequiredReputationRank == MIN_REPUTATION_RANK)
-                sLog.outErrorDb("Item (Entry: %u) has min. reputation rank in RequiredReputationRank (0) but RequiredReputationFaction > 0, faction setting is useless.",i);
-        }
-        else if(proto->RequiredReputationRank > MIN_REPUTATION_RANK)
-            sLog.outErrorDb("Item (Entry: %u) has RequiredReputationFaction ==0 but RequiredReputationRank > 0, rank setting is useless.",i);
-
-        if(proto->Stackable==0)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong value in stackable (%u), replace by default 1.",i,proto->Stackable);
-            const_cast<ItemPrototype*>(proto)->Stackable = 1;
-        }
-        else if(proto->Stackable > 255)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has too large value in stackable (%u), replace by hardcoded upper limit (255).",i,proto->Stackable);
-            const_cast<ItemPrototype*>(proto)->Stackable = 255;
-        }
-
-        for (int j = 0; j < 10; j++)
-        {
-            // for ItemStatValue != 0
-            if(proto->ItemStat[j].ItemStatValue && proto->ItemStat[j].ItemStatType >= MAX_ITEM_MOD)
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong stat_type%d (%u)",i,j+1,proto->ItemStat[j].ItemStatType);
-                const_cast<ItemPrototype*>(proto)->ItemStat[j].ItemStatType = 0;
-            }
-        }
-
-        for (int j = 0; j < 5; j++)
-        {
-            if(proto->Damage[j].DamageType >= MAX_SPELL_SCHOOL)
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong dmg_type%d (%u)",i,j+1,proto->Damage[j].DamageType);
-                const_cast<ItemPrototype*>(proto)->Damage[j].DamageType = 0;
-            }
-        }
-
-        // special format
-        if(proto->Spells[0].SpellId == SPELL_ID_GENERIC_LEARN)
-        {
-            // spell_1
-            if(proto->Spells[0].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u) for special learning format",i,0+1,proto->Spells[0].SpellTrigger);
-                const_cast<ItemPrototype*>(proto)->Spells[0].SpellId = 0;
-                const_cast<ItemPrototype*>(proto)->Spells[0].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-                const_cast<ItemPrototype*>(proto)->Spells[1].SpellId = 0;
-                const_cast<ItemPrototype*>(proto)->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-            }
-
-            // spell_2 have learning spell
-            if(proto->Spells[1].SpellTrigger != ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u) for special learning format.",i,1+1,proto->Spells[1].SpellTrigger);
-                const_cast<ItemPrototype*>(proto)->Spells[0].SpellId = 0;
-                const_cast<ItemPrototype*>(proto)->Spells[1].SpellId = 0;
-                const_cast<ItemPrototype*>(proto)->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-            }
-            else if(!proto->Spells[1].SpellId)
-            {
-                sLog.outErrorDb("Item (Entry: %u) not has expected spell in spellid_%d in special learning format.",i,1+1);
-                const_cast<ItemPrototype*>(proto)->Spells[0].SpellId = 0;
-                const_cast<ItemPrototype*>(proto)->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-            }
-            else
-            {
-                SpellEntry const* spellInfo = sSpellStore.LookupEntry(proto->Spells[1].SpellId);
-                if(!spellInfo)
-                {
-                    sLog.outErrorDb("Item (Entry: %u) has wrong (not existing) spell in spellid_%d (%u)",i,1+1,proto->Spells[1].SpellId);
-                    const_cast<ItemPrototype*>(proto)->Spells[0].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[1].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-                }
-                // allowed only in special format
-                else if(proto->Spells[1].SpellId==SPELL_ID_GENERIC_LEARN)
-                {
-                    sLog.outErrorDb("Item (Entry: %u) has broken spell in spellid_%d (%u)",i,1+1,proto->Spells[1].SpellId);
-                    const_cast<ItemPrototype*>(proto)->Spells[0].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[1].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-                }
-            }
-
-            // spell_3*,spell_4*,spell_5* is empty
-            for (int j = 2; j < 5; j++)
-            {
-                if(proto->Spells[j].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
-                {
-                    sLog.outErrorDb("Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u)",i,j+1,proto->Spells[j].SpellTrigger);
-                    const_cast<ItemPrototype*>(proto)->Spells[j].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-                }
-                else if(proto->Spells[j].SpellId != 0)
-                {
-                    sLog.outErrorDb("Item (Entry: %u) has wrong spell in spellid_%d (%u) for learning special format",i,j+1,proto->Spells[j].SpellId);
-                    const_cast<ItemPrototype*>(proto)->Spells[j].SpellId = 0;
-                }
-            }
-        }
-        // normal spell list
-        else
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if(proto->Spells[j].SpellTrigger >= MAX_ITEM_SPELLTRIGGER || proto->Spells[j].SpellTrigger == ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
-                {
-                    sLog.outErrorDb("Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u)",i,j+1,proto->Spells[j].SpellTrigger);
-                    const_cast<ItemPrototype*>(proto)->Spells[j].SpellId = 0;
-                    const_cast<ItemPrototype*>(proto)->Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
-                }
-
-                if(proto->Spells[j].SpellId)
-                {
-                    SpellEntry const* spellInfo = sSpellStore.LookupEntry(proto->Spells[j].SpellId);
-                    if(!spellInfo)
-                    {
-                        sLog.outErrorDb("Item (Entry: %u) has wrong (not existing) spell in spellid_%d (%u)",i,j+1,proto->Spells[j].SpellId);
-                        const_cast<ItemPrototype*>(proto)->Spells[j].SpellId = 0;
-                    }
-                    // allowed only in special format
-                    else if(proto->Spells[j].SpellId==SPELL_ID_GENERIC_LEARN)
-                    {
-                        sLog.outErrorDb("Item (Entry: %u) has broken spell in spellid_%d (%u)",i,j+1,proto->Spells[j].SpellId);
-                        const_cast<ItemPrototype*>(proto)->Spells[j].SpellId = 0;
-                    }
-                }
-            }
-        }
-
-        if(proto->Bonding >= MAX_BIND_TYPE)
-            sLog.outErrorDb("Item (Entry: %u) has wrong Bonding value (%u)",i,proto->Bonding);
-
-        if(proto->PageText && !sPageTextStore.LookupEntry<PageText>(proto->PageText))
-            sLog.outErrorDb("Item (Entry: %u) has non existing first page (Id:%u)", i,proto->PageText);
-
-        if(proto->LockID && !sLockStore.LookupEntry(proto->LockID))
-            sLog.outErrorDb("Item (Entry: %u) has wrong LockID (%u)",i,proto->LockID);
-
-        if(proto->Sheath >= MAX_SHEATHETYPE)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong Sheath (%u)",i,proto->Sheath);
-            const_cast<ItemPrototype*>(proto)->Sheath = SHEATHETYPE_NONE;
-        }
-
-        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty)))
-        {
-            sLog.outErrorDb("Item (Entry: %u) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty (%u)",i,proto->RandomProperty);
-            const_cast<ItemPrototype*>(proto)->RandomProperty = 0;
-        }
-
-        if(proto->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(proto->RandomSuffix)))
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong RandomSuffix (%u)",i,proto->RandomSuffix);
-            const_cast<ItemPrototype*>(proto)->RandomSuffix = 0;
-        }
-
-        if(proto->ItemSet && !sItemSetStore.LookupEntry(proto->ItemSet))
-        {
-            sLog.outErrorDb("Item (Entry: %u) have wrong ItemSet (%u)",i,proto->ItemSet);
-            const_cast<ItemPrototype*>(proto)->ItemSet = 0;
-        }
-
-        if(proto->Area && !GetAreaEntryByAreaID(proto->Area))
-            sLog.outErrorDb("Item (Entry: %u) has wrong Area (%u)",i,proto->Area);
-
-        if(proto->Map && !sMapStore.LookupEntry(proto->Map))
-            sLog.outErrorDb("Item (Entry: %u) has wrong Map (%u)",i,proto->Map);
-
-        if(proto->TotemCategory && !sTotemCategoryStore.LookupEntry(proto->TotemCategory))
-            sLog.outErrorDb("Item (Entry: %u) has wrong TotemCategory (%u)",i,proto->TotemCategory);
-
-        for (int j = 0; j < 3; j++)
-        {
-            if(proto->Socket[j].Color && (proto->Socket[j].Color & SOCKET_COLOR_ALL) != proto->Socket[j].Color)
-            {
-                sLog.outErrorDb("Item (Entry: %u) has wrong socketColor_%d (%u)",i,j+1,proto->Socket[j].Color);
-                const_cast<ItemPrototype*>(proto)->Socket[j].Color = 0;
-            }
-        }
-
-        if(proto->GemProperties && !sGemPropertiesStore.LookupEntry(proto->GemProperties))
-            sLog.outErrorDb("Item (Entry: %u) has wrong GemProperties (%u)",i,proto->GemProperties);
-
-        if(proto->FoodType >= MAX_PET_DIET)
-        {
-            sLog.outErrorDb("Item (Entry: %u) has wrong FoodType value (%u)",i,proto->FoodType);
-            const_cast<ItemPrototype*>(proto)->FoodType = 0;
-        }
-    }
-
-    // this DBC used currently only for check item templates in DB.
-    sItemStore.Clear();
 }
 
 void ObjectMgr::LoadPetLevelInfo()
@@ -2844,14 +2499,6 @@ void ObjectMgr::LoadQuests()
             sLog.outErrorDb("Quest %u has `RequiredMaxRepValue` = %d but `RequiredMaxRepFaction` is 0, value has no effect",
                 qinfo->GetQuestId(),qinfo->RequiredMaxRepValue);
             // warning
-        }
-
-        if(qinfo->CharTitleId && !sCharTitlesStore.LookupEntry(qinfo->CharTitleId))
-        {
-            sLog.outErrorDb("Quest %u has `CharTitleId` = %u but CharTitle Id %u does not exist, quest can't be rewarded with title.",
-                qinfo->GetQuestId(),qinfo->GetCharTitleId(),qinfo->GetCharTitleId());
-            qinfo->CharTitleId = 0;
-            // quest can't reward this title
         }
 
         if(qinfo->SrcItemId)
@@ -5073,29 +4720,12 @@ void ObjectMgr::SetHighestGuids()
         delete result;
     }
 
-    result = CharacterDatabase.Query("SELECT MAX(arenateamid) FROM arena_team");
-    if (result)
-    {
-        m_arenaTeamId = (*result)[0].GetUInt32()+1;
-        delete result;
-    }
-
     result = CharacterDatabase.Query( "SELECT MAX(guildid) FROM guild" );
     if (result)
     {
         m_guildId = (*result)[0].GetUInt32()+1;
         delete result;
     }
-}
-
-uint32 ObjectMgr::GenerateArenaTeamId()
-{
-    if(m_arenaTeamId>=0xFFFFFFFE)
-    {
-        sLog.outError("Arena team ids overflow!! Can't continue, shutting down server. ");
-        World::StopNow(ERROR_EXIT_CODE);
-    }
-    return m_arenaTeamId++;
 }
 
 uint32 ObjectMgr::GenerateGuildId()

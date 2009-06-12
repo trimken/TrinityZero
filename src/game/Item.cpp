@@ -375,13 +375,6 @@ bool Item::LoadFromDB(uint32 guid, uint64 owner_guid, QueryResult *result)
     if(!proto)
         return false;
 
-    // recalculate suffix factor
-    if(GetItemRandomPropertyId() < 0)
-    {
-        if(UpdateItemSuffixFactor())
-            need_save = true;
-    }
-
     // Remove bind flag for items vs NO_BIND set
     if (IsSoulBound() && proto->Bonding == NO_BIND)
     {
@@ -522,15 +515,8 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
         return 0;
 
     // item must have one from this field values not null if it can have random enchantments
-    if((!itemProto->RandomProperty) && (!itemProto->RandomSuffix))
+    if((!itemProto->RandomProperty))
         return 0;
-
-    // item can have not null only one from field values
-    if((itemProto->RandomProperty) && (itemProto->RandomSuffix))
-    {
-        sLog.outErrorDb("Item template %u have RandomProperty==%u and RandomSuffix==%u, but must have one from field =0",itemProto->ItemId,itemProto->RandomProperty,itemProto->RandomSuffix);
-        return 0;
-    }
 
     // RandomProperty case
     if(itemProto->RandomProperty)
@@ -545,19 +531,8 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
 
         return random_id->ID;
     }
-    // RandomSuffix case
-    else
-    {
-        uint32 randomPropId = GetItemEnchantMod(itemProto->RandomSuffix);
-        ItemRandomSuffixEntry const *random_id = sItemRandomSuffixStore.LookupEntry(randomPropId);
-        if(!random_id)
-        {
-            sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in sItemRandomSuffixStore.",randomPropId);
-            return 0;
-        }
 
-        return -int32(random_id->ID);
-    }
+  return 0;
 }
 
 void Item::SetItemRandomProperties(int32 randomPropId)
@@ -579,32 +554,6 @@ void Item::SetItemRandomProperties(int32 randomPropId)
                 SetEnchantment(EnchantmentSlot(i),item_rand->enchant_id[i - PROP_ENCHANTMENT_SLOT_2],0,0);
         }
     }
-    else
-    {
-        ItemRandomSuffixEntry const *item_rand = sItemRandomSuffixStore.LookupEntry(-randomPropId);
-        if(item_rand)
-        {
-            if( GetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID) != -int32(item_rand->ID) ||
-                !GetItemSuffixFactor())
-            {
-                SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID,-int32(item_rand->ID));
-                UpdateItemSuffixFactor();
-                SetState(ITEM_CHANGED);
-            }
-
-            for(uint32 i = PROP_ENCHANTMENT_SLOT_0; i < PROP_ENCHANTMENT_SLOT_0 + 3; ++i)
-                SetEnchantment(EnchantmentSlot(i),item_rand->enchant_id[i - PROP_ENCHANTMENT_SLOT_0],0,0);
-        }
-    }
-}
-
-bool Item::UpdateItemSuffixFactor()
-{
-    uint32 suffixFactor = GenerateEnchSuffixFactor(GetEntry());
-    if(GetItemSuffixFactor()==suffixFactor)
-        return false;
-    SetUInt32Value(ITEM_FIELD_PROPERTY_SEED,suffixFactor);
-    return true;
 }
 
 void Item::SetState(ItemUpdateState state, Player *forplayer)
@@ -797,67 +746,6 @@ void Item::ClearEnchantment(EnchantmentSlot slot)
     for(uint8 x = 0; x < 3; ++x)
         SetUInt32Value(ITEM_FIELD_ENCHANTMENT + slot*MAX_ENCHANTMENT_OFFSET + x, 0);
     SetState(ITEM_CHANGED);
-}
-
-bool Item::GemsFitSockets() const
-{
-    bool fits = true;
-    for(uint32 enchant_slot = SOCK_ENCHANTMENT_SLOT; enchant_slot < SOCK_ENCHANTMENT_SLOT+3; ++enchant_slot)
-    {
-        uint8 SocketColor = GetProto()->Socket[enchant_slot-SOCK_ENCHANTMENT_SLOT].Color;
-
-        uint32 enchant_id = GetEnchantmentId(EnchantmentSlot(enchant_slot));
-        if(!enchant_id)
-        {
-            if(SocketColor) fits &= false;
-            continue;
-        }
-
-        SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-        if(!enchantEntry)
-        {
-            if(SocketColor) fits &= false;
-            continue;
-        }
-
-        uint8 GemColor = 0;
-
-        /*
-		uint32 gemid = enchantEntry->GemID;
-        if(gemid)
-        {
-            ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid);
-            if(gemProto)
-            {
-                GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
-                if(gemProperty)
-                    GemColor = gemProperty->color;
-            }
-        }
-		*/
-
-        fits &= (GemColor & SocketColor) ? true : false;
-    }
-    return fits;
-}
-
-uint8 Item::GetGemCountWithID(uint32 GemID) const
-{
-    uint8 count = 0;
-    for(uint32 enchant_slot = SOCK_ENCHANTMENT_SLOT; enchant_slot < SOCK_ENCHANTMENT_SLOT+3; ++enchant_slot)
-    {
-        uint32 enchant_id = GetEnchantmentId(EnchantmentSlot(enchant_slot));
-        if(!enchant_id)
-            continue;
-
-        SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-        if(!enchantEntry)
-            continue;
-
-        //if(GemID == enchantEntry->GemID)
-        //    ++count;
-    }
-    return count;
 }
 
 bool Item::IsLimitedToAnotherMapOrZone( uint32 cur_mapId, uint32 cur_zoneId) const

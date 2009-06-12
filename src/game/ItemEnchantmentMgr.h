@@ -25,6 +25,5 @@
 
 void LoadRandomEnchantmentsTable();
 uint32 GetItemEnchantMod(uint32 entry);
-uint32 GenerateEnchSuffixFactor(uint32 item_id);
 #endif
 

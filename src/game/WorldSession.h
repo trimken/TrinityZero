@@ -177,14 +177,11 @@ class TRINITY_DLL_SPEC WorldSession
         void SendDoFlight( uint16 MountId, uint32 path, uint32 pathNode = 0 );
         bool SendLearnNewTaxiNode( Creature* unit );
 
-        // Guild/Arena Team
+        // Guild
         void SendGuildCommandResult(uint32 typecmd, const std::string& str, uint32 cmdresult);
-        void SendArenaTeamCommandResult(uint32 team_action, const std::string& team, const std::string& player, uint32 error_id);
-        void BuildArenaTeamEventPacket(WorldPacket *data, uint8 eventid, uint8 str_count, const std::string& str1, const std::string& str2, const std::string& str3);
-        void SendNotInArenaTeamPacket(uint8 type);
         void SendPetitionShowList( uint64 guid );
         void SendSaveGuildEmblem( uint32 msg );
-        void SendBattleGroundOrArenaJoinError(uint8 err);
+        void SendBattleGroundJoinError(uint8 err);
 
         // Looking For Group
         // TRUE values set by client sending CMSG_LFG_SET_AUTOJOIN and CMSG_LFM_CLEAR_AUTOFILL before player login
@@ -561,7 +558,6 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleBattleGroundPlayerPortOpcode( WorldPacket &recv_data );
         void HandleBattleGroundListOpcode( WorldPacket &recv_data );
         void HandleBattleGroundLeaveOpcode( WorldPacket &recv_data );
-        void HandleBattleGroundArenaJoin( WorldPacket &recv_data );
         void HandleBattleGroundReportAFK( WorldPacket &recv_data );
 
         void HandleWardenDataOpcode(WorldPacket& recv_data);
@@ -583,27 +579,12 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleWhoisOpcode(WorldPacket& recv_data);
         void HandleResetInstancesOpcode(WorldPacket& recv_data);
 
-        // Arena Team
-  /*[TRINITYROLLBACK]      void HandleInspectArenaStatsOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamQueryOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamRosterOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamAddMemberOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamInviteAcceptOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamInviteDeclineOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamLeaveOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamRemoveFromTeamOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamDisbandOpcode(WorldPacket& recv_data);
-        void HandleArenaTeamPromoteToCaptainOpcode(WorldPacket& recv_data); */
-
         void HandleAreaSpiritHealerQueryOpcode(WorldPacket& recv_data);
         void HandleAreaSpiritHealerQueueOpcode(WorldPacket& recv_data);
         void HandleDismountOpcode(WorldPacket& recv_data);
         void HandleSelfResOpcode(WorldPacket& recv_data);
         void HandleReportSpamOpcode(WorldPacket& recv_data);
         void HandleRequestPetInfoOpcode(WorldPacket& recv_data);
-
-        // Socket gem
-        void HandleSocketOpcode(WorldPacket& recv_data);
 
         void HandleCancelTempItemEnchantmentOpcode(WorldPacket& recv_data);
 
