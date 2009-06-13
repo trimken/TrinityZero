@@ -641,6 +641,7 @@ bool AuctionEntry::BuildAuctionInfo(WorldPacket & data) const
     }
 
     data << (uint32) pItem->GetItemRandomPropertyId();      //random item property id
+    data << (uint32) pItem->GetItemSuffixFactor();          //SuffixFactor
     data << (uint32) pItem->GetCount();                     //item->count
     data << (uint32) pItem->GetSpellCharges();              //item->charge FFFFFFF
     data << (uint32) 0;                                     //Unknown

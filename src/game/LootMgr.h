@@ -85,6 +85,7 @@ struct LootStoreItem
 struct LootItem
 {
     uint32  itemid;
+    uint32  randomSuffix;
     int32   randomPropertyId;
     uint16  conditionId       :16;                          // allow compiler pack structure
     uint8   count             : 8;

@@ -3967,6 +3967,28 @@ bool ChatHandler::HandleDamageCommand(const char * args)
     return true;
 }
 
+bool ChatHandler::HandleModifyArenaCommand(const char * args)
+{ /* [TRINITYROLLBACK]
+    if (!*args)
+        return false;
+
+    Player *target = getSelectedPlayer();
+    if(!target)
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    int32 amount = (uint32)atoi(args);
+
+    target->ModifyArenaPoints(amount);
+
+    PSendSysMessage(LANG_COMMAND_MODIFY_ARENA, target->GetName(), target->GetArenaPoints());
+*/
+    return true;  
+} 
+
 bool ChatHandler::HandleReviveCommand(const char* args)
 {
     Player* SelectedPlayer = NULL;
@@ -4274,7 +4296,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args)
             ChatHandler(chr).PSendSysMessage(LANG_YOURS_EXPLORE_SET_NOTHING,GetName());
     }
 
-    for (uint8 i=0; i<64; i++)
+    for (uint8 i=0; i<128; i++)
     {
         if (flag != 0)
         {
@@ -7087,6 +7109,12 @@ bool ChatHandler::HandleSendMessageCommand(const char* args)
 
     //Confirmation message
     PSendSysMessage(LANG_SENDMESSAGE,name.c_str(),msg_str);
+    return true;
+}
+
+bool ChatHandler::HandleFlushArenaPointsCommand(const char * /*args*/)
+{
+    sBattleGroundMgr.DistributeArenaPoints();
     return true;
 }
 

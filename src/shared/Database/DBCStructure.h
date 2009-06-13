@@ -80,8 +80,23 @@ struct BankBagSlotPricesEntry
     uint32      price;
 };
 
+struct BattlemasterListEntry
+{
+    uint32      id;                                         // 0
+    uint32      mapid[3];                                   // 1-3 mapid
+                                                            // 4-8 unused
+    uint32      type;                                       // 9 (3 - BG, 4 - arena)
+    uint32      minlvl;                                     // 10
+    uint32      maxlvl;                                     // 11
+    uint32      maxplayersperteam;                          // 12
+                                                            // 13-14 unused
+    char*       name[16];                                   // 15-30
+                                                            // 31 string flag, unused
+                                                            // 32 unused
+};
 
 #define MAX_OUTFIT_ITEMS 12
+// #define MAX_OUTFIT_ITEMS 24                              // 12->24 in 3.0.x
 
 struct CharStartOutfitEntry
 {
@@ -95,6 +110,16 @@ struct CharStartOutfitEntry
     //uint32 Unknown3;                                      // 40
 };
 
+struct CharTitlesEntry
+{
+    uint32      ID;                                         // 0, title ids, for example in Quest::GetCharTitleId()
+    //uint32      unk1;                                     // 1 flags?
+    //char*       name[16];                                 // 2-17, unused
+                                                            // 18 string flag, unused
+    //char*       name2[16];                                // 19-34, unused
+                                                            // 35 string flag, unused
+    uint32      bit_index;                                  // 36 used in PLAYER_CHOSEN_TITLE and 1<<index in PLAYER__FIELD_KNOWN_TITLES
+};
 
 struct ChatChannelsEntry
 {
@@ -239,7 +264,68 @@ struct FactionTemplateEntry
     bool IsContestedGuardFaction() const { return (factionFlags & FACTION_TEMPLATE_FLAG_CONTESTED_GUARD)!=0; }
 };
 
+struct GemPropertiesEntry
+{
+    uint32      ID;
+    uint32      spellitemenchantement;
+    uint32      color;
+};
+
+// All Gt* DBC store data for 100 levels, some by 100 per class/race
 #define GT_MAX_LEVEL    100
+
+struct GtCombatRatingsEntry
+{
+    float    ratio;
+};
+
+struct GtChanceToMeleeCritBaseEntry
+{
+    float    base;
+};
+
+struct GtChanceToMeleeCritEntry
+{
+    float    ratio;
+};
+
+struct GtChanceToSpellCritBaseEntry
+{
+    float    base;
+};
+
+struct GtChanceToSpellCritEntry
+{
+    float    ratio;
+};
+
+struct GtOCTRegenHPEntry
+{
+    float    ratio;
+};
+
+//struct GtOCTRegenMPEntry
+//{
+//    float    ratio;
+//};
+
+struct GtRegenHPPerSptEntry
+{
+    float    ratio;
+};
+
+struct GtRegenMPPerSptEntry
+{
+    float    ratio;
+};
+
+struct ItemEntry
+{
+   uint32 ID;
+   uint32 DisplayId;
+   uint32 InventoryType;
+   uint32 Sheath;
+};
 
 struct ItemDisplayInfoEntry
 {
@@ -255,6 +341,16 @@ struct ItemRandomPropertiesEntry
                                                             // 5-6 unused, 0 only values, reserved for additional enchantments?
     //char*     nameSuffix[16]                              // 7-22, unused
                                                             // 23 nameSufix flags, unused
+};
+
+struct ItemRandomSuffixEntry
+{
+    uint32    ID;                                           // 0
+    //char*     name[16]                                    // 1-16 unused
+                                                            // 17, name flags, unused
+                                                            // 18  unused
+    uint32    enchant_id[3];                                // 19-21
+    uint32    prefix[3];                                    // 22-24
 };
 
 struct ItemSetEntry
@@ -306,14 +402,26 @@ struct MapEntry
                                                             // 37 intro text flags
     uint32      multimap_id;                                // 38
 															// 39-42 unused
+	/*
+	not exists in 1.12
+    int32       entrance_map;                               // 117 map_id of entrance map
+    float       entrance_x;                                 // 118 entrance x coordinate (if exist single entry)
+    float       entrance_y;                                 // 119 entrance y coordinate (if exist single entry)
+    uint32 resetTimeRaid;                                   // 120
+    uint32 resetTimeHeroic;                                 // 121
+                                                            // 122-123
+    uint32      addon;                                      // 124 (0-original maps,1-tbc addon)
+	*/
     // Helpers
     uint32 Expansion() const { return 0;/*addon;*/ }
 
 
     bool IsDungeon() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID; }
-    bool Instanceable() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID || map_type == MAP_BATTLEGROUND; }
+    bool Instanceable() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID || map_type == MAP_BATTLEGROUND || map_type == MAP_ARENA; }
     bool IsRaid() const { return map_type == MAP_RAID; }
     bool IsBattleGround() const { return map_type == MAP_BATTLEGROUND; }
+    bool IsBattleArena() const { return map_type == MAP_ARENA; }
+    bool IsBattleGroundOrArena() const { return map_type == MAP_BATTLEGROUND || map_type == MAP_ARENA; }
     bool SupportsHeroicMode() const { return false; /*resetTimeHeroic && !resetTimeRaid;*/ }
     bool HasResetTime() const { return false; /* resetTimeHeroic || resetTimeRaid; */}
 
@@ -330,6 +438,15 @@ struct QuestSortEntry
     uint32      id;                                         // 0, sort id
     //char*       name[16];                                 // 1-16, unused
                                                             // 17 name flags, unused
+};
+
+struct RandomPropertiesPointsEntry
+{
+    //uint32  Id;                                           // 0 hidden key
+    uint32    itemLevel;                                    // 1
+    uint32    EpicPropertiesPoints[5];                      // 2-6
+    uint32    RarePropertiesPoints[5];                      // 7-11
+    uint32    UncommonPropertiesPoints[5];                  // 12-16
 };
 
 //struct SkillLineCategoryEntry{
@@ -690,6 +807,15 @@ struct SpellItemEnchantmentEntry
     //uint32      EnchantmentCondition;                       // not exists in 1.12 ?
 };
 
+struct SpellItemEnchantmentConditionEntry
+{
+    uint32  ID;
+    uint8   Color[5];
+    uint8   Comparator[5];
+    uint8   CompareColor[5];
+    uint32  Value[5];
+};
+
 struct StableSlotPricesEntry
 {
     uint32 Slot;
@@ -730,7 +856,7 @@ struct TaxiNodesEntry
     float     x;                                            // 2
     float     y;                                            // 3
     float     z;                                            // 4
-    char*     name[8];                                      // 5-12
+    //char*     name[8];                                    // 5-12
                                                             // 13 string flags, unused
     uint32    horde_mount_type;                             // 14
     uint32    alliance_mount_type;                          // 15
@@ -754,6 +880,15 @@ struct TaxiPathNodeEntry
     float     z;
     uint32    actionFlag;
     uint32    delay;
+};
+
+struct TotemCategoryEntry
+{
+    uint32    ID;                                           // 0
+    //char*   name[16];                                     // 1-16
+                                                            // 17 string flags, unused
+    uint32    categoryType;                                 // 18 (one for specialization)
+    uint32    categoryMask;                                 // 19 (compatibility mask for same type: different for totems, compatible from high to low for rods)
 };
 
 struct WorldMapAreaEntry
@@ -825,7 +960,7 @@ struct TaxiPathNode
 typedef std::vector<TaxiPathNode> TaxiPathNodeList;
 typedef std::vector<TaxiPathNodeList> TaxiPathNodesByPath;
 
-#define TaxiMaskSize 8
+#define TaxiMaskSize 16
 typedef uint32 TaxiMask[TaxiMaskSize];
 #endif
 

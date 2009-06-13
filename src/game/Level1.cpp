@@ -760,7 +760,7 @@ bool ChatHandler::HandleNamegoCommand(const char* args)
 
         Map* pMap = m_session->GetPlayer()->GetMap();
 
-        if(pMap->IsBattleGround())
+        if(pMap->IsBattleGroundOrArena())
         {
             // cannot summon to bg
             PSendSysMessage(LANG_CANNOT_SUMMON_TO_BG,chr->GetName());
@@ -852,7 +852,7 @@ bool ChatHandler::HandleGonameCommand(const char* args)
     if (chr)
     {
         Map* cMap = chr->GetMap();
-        if(cMap->IsBattleGround())
+        if(cMap->IsBattleGroundOrArena())
         {
             // only allow if gm mode is on
             if (!_player->isGameMaster())
@@ -2054,7 +2054,7 @@ bool ChatHandler::HandleTeleCommand(const char * args)
     }
 
     MapEntry const * me = sMapStore.LookupEntry(tele->mapId);
-    if(!me || me->IsBattleGround())
+    if(!me || me->IsBattleGroundOrArena())
     {
         SendSysMessage(LANG_CANNOT_TELE_TO_BG);
         SetSentErrorMessage(true);
@@ -2372,7 +2372,7 @@ bool ChatHandler::HandleNameTeleCommand(const char * args)
     }
 
     MapEntry const * me = sMapStore.LookupEntry(tele->mapId);
-    if(!me || me->IsBattleGround())
+    if(!me || me->IsBattleGroundOrArena())
     {
         SendSysMessage(LANG_CANNOT_TELE_TO_BG);
         SetSentErrorMessage(true);
@@ -2441,7 +2441,7 @@ bool ChatHandler::HandleGroupTeleCommand(const char * args)
     }
 
     MapEntry const * me = sMapStore.LookupEntry(tele->mapId);
-    if(!me || me->IsBattleGround())
+    if(!me || me->IsBattleGroundOrArena())
     {
         SendSysMessage(LANG_CANNOT_TELE_TO_BG);
         SetSentErrorMessage(true);

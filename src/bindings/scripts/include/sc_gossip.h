@@ -36,6 +36,8 @@
 #define GOSSIP_TEXT_ALTERACVALLEY       "Alterac Valley"
 #define GOSSIP_TEXT_ARATHIBASIN         "Arathi Basin"
 #define GOSSIP_TEXT_WARSONGULCH         "Warsong Gulch"
+#define GOSSIP_TEXT_ARENA               "Arena"
+#define GOSSIP_TEXT_EYEOFTHESTORM       "Eye of The Storm"
 
 #define GOSSIP_TEXT_DRUID               "Druid"
 #define GOSSIP_TEXT_HUNTER              "Hunter"

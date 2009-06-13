@@ -66,6 +66,7 @@ EndContentData */
 #define GOSSIP_TEXT_STABLEALDOR               "Aldor Stable"
 #define GOSSIP_TEXT_BATTLEMASTERALLIANCE      "Alliance Battlemasters"
 #define GOSSIP_TEXT_BATTLEMASTERHORDE         "Horde Battlemasters"
+#define GOSSIP_TEXT_BATTLEMASTERARENA         "Arena Battlemasters"
 #define GOSSIP_TEXT_MANALOOM                  "Mana Loom"
 #define GOSSIP_TEXT_ALCHEMYLAB                "Alchemy Lab"
 #define GOSSIP_TEXT_GEMMERCHANT               "Gem Merchant"
@@ -1437,6 +1438,8 @@ void SendDefaultMenu_guard_exodar(Player *player, Creature *_Creature, uint32 ac
         case GOSSIP_ACTION_INFO_DEF + 9:                    //Battlemaster
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ALTERACVALLEY       , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 1);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ARATHIBASIN         , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 2);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ARENA               , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 3);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_EYEOFTHESTORM       , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 4);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_WARSONGULCH         , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 5);
             player->SEND_GOSSIP_MENU(9531, _Creature->GetGUID());
             break;
@@ -2292,6 +2295,7 @@ void SendDefaultMenu_guard_shattrath(Player *player, Creature *_Creature, uint32
         case GOSSIP_ACTION_INFO_DEF + 7:                    //Battlemaster
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERALLIANCE , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 1);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERHORDE    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 2);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERARENA    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 3);
             player->SEND_GOSSIP_MENU(10388, _Creature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 8:                    //Profession master
@@ -2397,6 +2401,10 @@ void SendBattleMasterMenu_guard_shattrath(Player *player, Creature *_Creature, u
         case GOSSIP_ACTION_INFO_DEF + 2:
             player->SEND_POI(-1963, 5263, 6, 6, 0, "Horde Battlemasters");
             player->SEND_GOSSIP_MENU(10390,  _Creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 3:
+            player->SEND_POI(-1960, 5175, 6, 6, 0, "Arena Battlemasters");
+            player->SEND_GOSSIP_MENU(12510,  _Creature->GetGUID());
             break;
     }
 }
@@ -2592,6 +2600,7 @@ void SendDefaultMenu_guard_shattrath_aldor(Player *player, Creature *_Creature, 
         case GOSSIP_ACTION_INFO_DEF + 7:                    //Battlemaster
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERALLIANCE , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 1);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERHORDE    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 2);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERARENA    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 3);
             player->SEND_GOSSIP_MENU(10388, _Creature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 8:                    //Profession master
@@ -2786,6 +2795,7 @@ void SendDefaultMenu_guard_shattrath_scryer(Player *player, Creature *_Creature,
         case GOSSIP_ACTION_INFO_DEF + 7:                    //Battlemaster
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERALLIANCE , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 1);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERHORDE    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 2);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_BATTLEMASTERARENA    , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 3);
             player->SEND_GOSSIP_MENU(10438, _Creature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 8:                    //Profession master
@@ -2935,6 +2945,8 @@ void SendDefaultMenu_guard_silvermoon(Player *player, Creature *_Creature, uint3
         case GOSSIP_ACTION_INFO_DEF + 9:                    //Battlemaster
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ALTERACVALLEY   , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 1);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ARATHIBASIN     , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 2);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_ARENA           , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 3);
+            player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_EYEOFTHESTORM   , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 4);
             player->ADD_GOSSIP_ITEM( 0, GOSSIP_TEXT_WARSONGULCH     , GOSSIP_SENDER_SEC_BATTLEINFO, GOSSIP_ACTION_INFO_DEF + 5);
             player->SEND_GOSSIP_MENU(9329, _Creature->GetGUID());
             break;

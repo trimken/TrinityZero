@@ -110,13 +110,17 @@ enum InventoryChangeFailure
     EQUIP_ERR_LOOT_CANT_LOOT_THAT_NOW            = 66,
     EQUIP_ERR_ITEM_UNIQUE_EQUIPABLE              = 67,
     EQUIP_ERR_VENDOR_MISSING_TURNINS             = 68,
+    EQUIP_ERR_NOT_ENOUGH_HONOR_POINTS            = 69,
+    EQUIP_ERR_NOT_ENOUGH_ARENA_POINTS            = 70,
     EQUIP_ERR_ITEM_MAX_COUNT_SOCKETED            = 71,
     EQUIP_ERR_MAIL_BOUND_ITEM                    = 72,
     EQUIP_ERR_NO_SPLIT_WHILE_PROSPECTING         = 73,
     EQUIP_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED   = 75,
     EQUIP_ERR_ITEM_UNIQUE_EQUIPPABLE_SOCKETED    = 76,
     EQUIP_ERR_TOO_MUCH_GOLD                      = 77,
+    EQUIP_ERR_NOT_DURING_ARENA_MATCH             = 78,
     EQUIP_ERR_CANNOT_TRADE_THAT                  = 79,
+    EQUIP_ERR_PERSONAL_ARENA_RATING_TOO_LOW      = 80
     // probably exist more
 };
 
@@ -160,7 +164,7 @@ enum EnchantmentSlot
     PROP_ENCHANTMENT_SLOT_2     = 8,                        // used with RandomSuffix and RandomProperty
     PROP_ENCHANTMENT_SLOT_3     = 9,                        // used with RandomProperty
     PROP_ENCHANTMENT_SLOT_4     = 10,                       // used with RandomProperty
-    MAX_ENCHANTMENT_SLOT        = 7
+    MAX_ENCHANTMENT_SLOT        = 11
 };
 
 #define MAX_VISIBLE_ITEM_OFFSET   16                        // 16 fields per visible item (creator(2) + enchantments(12) + properties(1) + pad(1))
@@ -225,10 +229,12 @@ class TRINITY_DLL_SPEC Item : public Object
 
         bool IsFitToSpellRequirements(SpellEntry const* spellInfo) const;
         bool IsLimitedToAnotherMapOrZone( uint32 cur_mapId, uint32 cur_zoneId) const;
+        bool GemsFitSockets() const;
 
         uint32 GetCount() const { return GetUInt32Value (ITEM_FIELD_STACK_COUNT); }
         void SetCount(uint32 value) { SetUInt32Value (ITEM_FIELD_STACK_COUNT, value); }
         uint32 GetMaxStackCount() const { return GetProto()->Stackable; }
+        uint8 GetGemCountWithID(uint32 GemID) const;
 
         uint8 GetSlot() const {return m_slot;}
         Bag *GetContainer() { return m_container; }
@@ -245,8 +251,9 @@ class TRINITY_DLL_SPEC Item : public Object
 
         // RandomPropertyId (signed but stored as unsigned)
         int32 GetItemRandomPropertyId() const { return GetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID); }
-      //[TRINITYROLLBACK]  uint32 GetItemSuffixFactor() const { return GetUInt32Value(ITEM_FIELD_PROPERTY_SEED); }
+        uint32 GetItemSuffixFactor() const { return GetUInt32Value(ITEM_FIELD_PROPERTY_SEED); }
         void SetItemRandomProperties(int32 randomPropId);
+        bool UpdateItemSuffixFactor();
         static int32 GenerateItemRandomPropertyId(uint32 item_id);
         void SetEnchantment(EnchantmentSlot slot, uint32 id, uint32 duration, uint32 charges);
         void SetEnchantmentDuration(EnchantmentSlot slot, uint32 duration);

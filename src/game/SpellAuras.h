@@ -206,6 +206,7 @@ class TRINITY_DLL_SPEC Aura
         void HandleSchoolAbsorb(bool apply, bool Real);
         void HandlePreventFleeing(bool apply, bool Real);
         void HandleManaShield(bool apply, bool Real);
+        void HandleArenaPreparation(bool apply, bool Real);
 
         virtual ~Aura();
 

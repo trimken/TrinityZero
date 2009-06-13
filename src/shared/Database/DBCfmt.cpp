@@ -21,46 +21,72 @@
 
 // correct for 1.12
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssxixxxx";
-const char AreaTriggerEntryfmt[]="niffffffff";                                       // new
-const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";                                   // new                                    // new
+const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";
+const char AreaTriggerEntryfmt[]="niffffffff";
 const char BankBagSlotPricesEntryfmt[]="ni";
+const char CharStartOutfitEntryfmt[]="diiiiiiiiiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char ChatChannelsEntryfmt[]="iixssssssssxxxxxxxxxx";
 const char ChrClassesEntryfmt[]="nxxixssssssssixxx";
-const char ChrRacesEntryfmt[]="nxixiixxixxxxxixissssssssxxxx";
-const char CharStartOutfitEntryfmt[]="diiiiiiiiiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxx";    // new
-const char ChatChannelsEntryfmt[]="iixssssssssxxxxxxxxxx";                           // new
-const char CreatureDisplayInfofmt[]="nxxxxxxxxfxx";                                  // new
 const char CreatureFamilyfmt[]="nfifiiiissssssssxx";
-const char CreatureSpellDatafmt[]="nxxxxxxxx";                                       // new
-const char DurabilityCostsfmt[]="niiiiiiiiiiiiiiiiiiiiiiiiiiiii";                    // new
-const char DurabilityQualityfmt[]="nf";                                              // new
-const char EmoteEntryfmt[]="nxixxxxxxxxxxxxxxxx";
 const char FactionEntryfmt[]="niiiiiiiiiiiiiiiiiissssssssxxxxxxxxxx";
-const char FactionTemplateEntryfmt[]="niiiiiiiiiiiii";
-const char ItemDisplayTemplateEntryfmt[]="ixxxxxxxxxxixxxxxxxxxxx";
 const char ItemRandomPropertiesfmt[]="nxiiixxxxxxxxxxx";
 const char ItemSetEntryfmt[]="dssssssssxxxxxxxxxxxxxxxxxxiiiiiiiiiiiiiiiiii";
-const char LockEntryfmt[]="niiiiixxxiiiiixxxiixxxxxxxxxxxxxx";
-const char MailTemplateEntryfmt[]="nxxxxxxxxx";                                      // new
-const char MapEntryfmt[]="nxixssssssssxxxxxxxixxxxxxxxxxxxxxxxxxixxx";
-const char QuestSortEntryfmt[]="nxxxxxxxxx";                                         // new
+const char QuestSortEntryfmt[]="nxxxxxxxxx";
+const char MailTemplateEntryfmt[]="nxxxxxxxxx";
 const char SkillLinefmt[]="nixssssssssxxxxxxxxxxi";
-const char SkillLineAbilityfmt[]="niiiixxiiiiixxi";
-const char SoundEntriesfmt[]="nxxxxxxxxxxxxxxxxxxxxxxxxxxxx";	
-const char SpellCastTimefmt[]="nixx";
-const char SpellDurationfmt[]="niii";
-const char SpellEntryfmt[]="niixiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifxixxiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffiiiiiiiiiiiiiiiiiiiiifffiiiiiiiiiiiifffixiixssssssssxssssssssxxxxxxxxxxxxxxxxxxxiiiiiiiiiixfffxxx";
-const char SpellFocusObjectfmt[]="nxxxxxxxxx";
-const char SpellItemEnchantmentfmt[]="niiiiiixxxiiissssssssxii";
-const char SpellRadiusfmt[]="nfxf";
-const char SpellRangefmt[]="nffixxxxxxxxxxxxxxxxxx";					 // new
-const char SpellShapeshiftfmt[]="nxxxxxxxxxxixx";                        // new
-const char StableSlotPricesfmt[] = "ni";                                 // new
-const char TalentEntryfmt[]="niiiiiiiixxxxixxixxxi";
+const char TaxiNodesEntryfmt[]="nifffxxxxxxxxxii";
 const char TalentTabEntryfmt[]="nxxxxxxxxxxxiix";
-const char TaxiNodesEntryfmt[]="nifffssssssssxii";
+const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
+const char WorldMapAreaEntryfmt[]="xinxffff";
+const char TalentEntryfmt[]="niiiiiiiixxxxixxixxxi";
 const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffii";
-const char WorldMapAreaEntryfmt[]="xinxffff";
-const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
+const char SpellFocusObjectfmt[]="nxxxxxxxxx";
+const char SpellItemEnchantmentfmt[]="niiiiiixxxiiissssssssxii";
+const char SpellShapeshiftfmt[]="nxxxxxxxxxxixx";
+const char SpellRangefmt[]="nffixxxxxxxxxxxxxxxxxx";
+const char MapEntryfmt[]="nxixssssssssxxxxxxxixxxxxxxxxxxxxxxxxxixxx";
+const char SpellEntryfmt[]="niixiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifxixxiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffiiiiiiiiiiiiiiiiiiiiifffiiiiiiiiiiiifffixiixssssssssxssssssssxxxxxxxxxxxxxxxxxxxiiiiiiiiiixfffxxx";
+const char ChrRacesEntryfmt[]="nxixiixxixxxxxixissssssssxxxx";
 // endof correct for 1.12
+
+
+const char BattlemasterListEntryfmt[]="niiixxxxxiiiixxssssssssssssssssxx";
+// 3*12 new item fields in 3.0.x
+//const char CharStartOutfitEntryfmt[]="diiiiiiiiiiiiiiiiiiiiiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char CharTitlesEntryfmt[]="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
+// ChatChannelsEntryfmt, index not used (more compact store)
+//const char ChrClassesEntryfmt[]="nxixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";
+const char CreatureDisplayInfofmt[]="nxxxxxxxxfxx";
+const char CreatureSpellDatafmt[]="nxxxxxxxx";
+const char DurabilityCostsfmt[]="niiiiiiiiiiiiiiiiiiiiiiiiiiiii";
+const char DurabilityQualityfmt[]="nf";
+const char EmoteEntryfmt[]="nxixxxxxxxxxxxxxxxx";
+const char FactionTemplateEntryfmt[]="niiiiiiiiiiiii";
+const char GemPropertiesEntryfmt[]="nixxi";
+const char GtCombatRatingsfmt[]="f";
+
+const char GtChanceToMeleeCritBasefmt[]="f";
+const char GtChanceToMeleeCritfmt[]="f";
+const char GtChanceToSpellCritBasefmt[]="f";
+const char GtChanceToSpellCritfmt[]="f";
+const char GtOCTRegenHPfmt[]="f";
+//const char GtOCTRegenMPfmt[]="f";
+const char GtRegenHPPerSptfmt[]="f";
+const char GtRegenMPPerSptfmt[]="f";
+const char Itemfmt[]="niii";
+//const char ItemDisplayTemplateEntryfmt[]="nxxxxxxxxxxixxxxxxxxxxx";
+//const char ItemCondExtCostsEntryfmt[]="xiii";
+const char ItemExtendedCostEntryfmt[]="niiiiiiiiiiiii";
+const char ItemRandomSuffixfmt[]="nxxxxxxxxxxxxxxxxxxiiiiii";
+const char LockEntryfmt[]="niiiiixxxiiiiixxxiixxxxxxxxxxxxxx";
+const char RandomPropertiesPointsfmt[]="niiiiiiiiiiiiiii";
+const char SkillLineAbilityfmt[]="niiiixxiiiiixxi";
+const char SoundEntriesfmt[]="nxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char SpellCastTimefmt[]="nixx";
+const char SpellDurationfmt[]="niii";
+const char SpellItemEnchantmentConditionfmt[]="nbbbbbxxxxxbbbbbbbbbbiiiiiXXXXX";
+const char SpellRadiusfmt[]="nfxf";
+const char StableSlotPricesfmt[] = "ni";
+const char TotemCategoryEntryfmt[]="nxxxxxxxxxxxxxxxxxii";
 

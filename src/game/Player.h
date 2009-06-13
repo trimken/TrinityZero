@@ -814,6 +814,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS       = 15,
     PLAYER_LOGIN_QUERY_LOADDECLINEDNAMES        = 16,
     PLAYER_LOGIN_QUERY_LOADGUILD                = 17,
+    PLAYER_LOGIN_QUERY_LOADARENAINFO            = 18,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -1087,6 +1088,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         uint8 CanUnequipItem( uint16 src, bool swap ) const;
         uint8 CanBankItem( uint8 bag, uint8 slot, ItemPosCountVec& dest, Item *pItem, bool swap, bool not_loading = true ) const;
         uint8 CanUseItem( Item *pItem, bool not_loading = true ) const;
+        bool HasItemTotemCategory( uint32 TotemCategory ) const;
         bool CanUseItem( ItemPrototype const *pItem );
         uint8 CanUseAmmo( uint32 item ) const;
         Item* StoreNewItem( ItemPosCountVec const& pos, uint32 item, bool update,int32 randomPropertyId = 0 );
@@ -1461,6 +1463,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         void SendCooldownEvent(SpellEntry const *spellInfo);
         void ProhibitSpellScholl(SpellSchoolMask idSchoolMask, uint32 unTimeMs );
         void RemoveSpellCooldown(uint32 spell_id) { m_spellCooldowns.erase(spell_id); }
+        void RemoveArenaSpellCooldowns();
         void RemoveAllSpellCooldown();
         void _LoadSpellCooldowns(QueryResult *result);
         void _SaveSpellCooldowns();
@@ -1782,6 +1785,8 @@ class TRINITY_DLL_SPEC Player : public Unit
         void _ApplyItemBonuses(ItemPrototype const *proto,uint8 slot,bool apply);
         void _ApplyAmmoBonuses();
         bool EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot);
+        void ToggleMetaGemsActive(uint8 exceptslot, bool apply);
+        void CorrectMetaGemEnchants(uint8 slot, bool apply);
         void InitDataForForm(bool reapplyMods = false);
 
         void ApplyItemEquipSpell(Item *item, bool apply, bool form_change = false);
@@ -1810,6 +1815,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         bool InBattleGround() const { return m_bgBattleGroundID != 0; }
         uint32 GetBattleGroundId() const    { return m_bgBattleGroundID; }
         BattleGround* GetBattleGround() const;
+        bool InArena() const;
 
         static uint32 GetMinLevelForBattleGroundQueueId(uint32 queue_id);
         static uint32 GetMaxLevelForBattleGroundQueueId(uint32 queue_id);
@@ -2085,6 +2091,9 @@ class TRINITY_DLL_SPEC Player : public Unit
         WorldLocation& GetTeleportDest() { return m_teleport_dest; }
 
         DeclinedName const* GetDeclinedNames() const { return m_declinedname; }
+        bool HasTitle(uint32 bitIndex);
+        bool HasTitle(CharTitlesEntry const* title) { return HasTitle(title->bit_index); }
+        void SetTitle(CharTitlesEntry const* title);
 
     protected:
 
@@ -2145,6 +2154,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         void _LoadFriendList(QueryResult *result);
         bool _LoadHomeBind(QueryResult *result);
         void _LoadDeclinedNames(QueryResult *result);
+        void _LoadArenaTeamInfo(QueryResult *result);
 
         /*********************************************************/
         /***                   SAVE SYSTEM                     ***/
@@ -2205,6 +2215,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         QuestStatusMap mQuestStatus;
 
         uint32 m_GuildIdInvited;
+        uint32 m_ArenaTeamIdInvited;
 
         PlayerMails m_mail;
         PlayerSpellMap m_spells;

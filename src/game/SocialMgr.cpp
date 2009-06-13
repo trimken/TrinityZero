@@ -232,7 +232,7 @@ void SocialMgr::GetFriendInfo(Player *player, uint32 friendGUID, FriendInfo &fri
 
 void SocialMgr::MakeFriendStatusPacket(FriendsResult result, uint32 guid, WorldPacket *data)
 {
-    data->Initialize(SMSG_FRIEND_STATUS, 9);
+    data->Initialize(SMSG_FRIEND_STATUS, 5);
     *data << uint8(result);
     *data << uint64(guid);
 }
@@ -244,8 +244,7 @@ void SocialMgr::SendFriendStatus(Player *player, FriendsResult result, uint32 fr
     WorldPacket data;
     MakeFriendStatusPacket(result, friend_guid, &data);
     GetFriendInfo(player, friend_guid, fi);
-    /*[TRINITYROLLBACK] useless ?
-	switch(result)
+    switch(result)
     {
         case FRIEND_ADDED_OFFLINE:
         case FRIEND_ADDED_ONLINE:
@@ -262,7 +261,7 @@ void SocialMgr::SendFriendStatus(Player *player, FriendsResult result, uint32 fr
             data << uint32(fi.Level);
             data << uint32(fi.Class);
             break;
-    } */
+    }
 
     if(broadcast)
         BroadcastToFriendListers(player, &data);

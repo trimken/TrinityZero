@@ -143,7 +143,7 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
             uint32 NewInstanceId = 0;                       // instanceId of the resulting map
             Player* player = (Player*)obj;
 
-            if(IsBattleGround())
+            if(IsBattleGroundOrArena())
             {
                 // instantiate or find existing bg map for player
                 // the instance id is set in battlegroundid
@@ -243,7 +243,7 @@ BattleGroundMap* MapInstanced::CreateBattleGround(uint32 InstanceId)
     sLog.outDebug("MapInstanced::CreateBattleGround: map bg %d for %d created.", InstanceId, GetId());
 
     BattleGroundMap *map = new BattleGroundMap(GetId(), GetGridExpiry(), InstanceId);
-    assert(map->IsBattleGround());
+    assert(map->IsBattleGroundOrArena());
 
     m_InstancedMaps[InstanceId] = map;
     return map;

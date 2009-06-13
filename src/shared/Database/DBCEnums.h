@@ -43,12 +43,16 @@ enum AreaFlags
     AREA_FLAG_UNK3             = 0x00000010,                // unknown
     AREA_FLAG_SLAVE_CAPITAL2   = 0x00000020,                // slave capital city flag?
     AREA_FLAG_UNK4             = 0x00000040,                // many zones have this flag
+    AREA_FLAG_ARENA            = 0x00000080,                // arena, both instanced and world arenas
     AREA_FLAG_CAPITAL          = 0x00000100,                // main capital city flag
     AREA_FLAG_CITY             = 0x00000200,                // only for one zone named "City" (where it located?)
+    AREA_FLAG_OUTLAND          = 0x00000400,                // outland zones? (only Eye of the Storm not have this flag, but have 0x00004000 flag)
     AREA_FLAG_SANCTUARY        = 0x00000800,                // sanctuary area (PvP disabled)
     AREA_FLAG_NEED_FLY         = 0x00001000,                // only Netherwing Ledge, Socrethar's Seat, Tempest Keep, The Arcatraz, The Botanica, The Mechanar, Sorrow Wing Point, Dragonspine Ridge, Netherwing Mines, Dragonmaw Base Camp, Dragonmaw Skyway
     AREA_FLAG_UNUSED1          = 0x00002000,                // not used now (no area/zones with this flag set in 2.4.2)
+    AREA_FLAG_OUTLAND2         = 0x00004000,                // outland zones? (only Circle of Blood Arena not have this flag, but have 0x00000400 flag)
     AREA_FLAG_PVP              = 0x00008000,                // pvp objective area? (Death's Door also has this flag although it's no pvp object area)
+    AREA_FLAG_ARENA_INSTANCE   = 0x00010000,                // used by instanced arenas only
     AREA_FLAG_UNUSED2          = 0x00020000,                // not used now (no area/zones with this flag set in 2.4.2)
     AREA_FLAG_UNK5             = 0x00040000,                // just used for Amani Pass, Hatchet Hills
     AREA_FLAG_LOWLEVEL         = 0x00100000                 // used for some starting areas with area_level <=15
@@ -74,6 +78,7 @@ enum MapTypes
     MAP_INSTANCE        = 1,
     MAP_RAID            = 2,
     MAP_BATTLEGROUND    = 3,
+    MAP_ARENA           = 4
 };
 
 enum AbilytyLearnType

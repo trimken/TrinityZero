@@ -542,6 +542,12 @@ bool ChatHandler::HandleGetItemState(const char* args)
     return true;
 }
 
+bool ChatHandler::HandleDebugArenaCommand(const char * /*args*/)
+{
+    sBattleGroundMgr.ToggleArenaTesting();
+    return true;
+}
+
 bool ChatHandler::HandleDebugThreatList(const char * /*args*/)
 {
     Creature* target = getSelectedCreature();

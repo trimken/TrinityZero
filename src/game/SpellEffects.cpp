@@ -2872,6 +2872,17 @@ void Spell::EffectOpenLock(uint32 /*i*/)
                 return;
             }
         }
+        else if (goInfo->type == GAMEOBJECT_TYPE_FLAGSTAND)
+        {
+            //isAllowUseBattleGroundObject() already called in CanCast()
+            // in battleground check
+            if(BattleGround *bg = player->GetBattleGround())
+            {
+                if(bg->GetTypeID() == BATTLEGROUND_EY)
+                    bg->EventPlayerClickedOnFlag(player, gameObjTarget);
+                return;
+            }
+        }
         // handle outdoor pvp object opening, return true if go was registered for handling
         // these objects must have been spawned by outdoorpvp!
         else if(gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && sOutdoorPvPMgr.HandleOpenGo(player, gameObjTarget->GetGUID()))
