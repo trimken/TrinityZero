@@ -2751,48 +2751,16 @@ void Spell::SendCastResult(uint8 result)
     if(((Player*)m_caster)->GetSession()->PlayerLoading())  // don't send cast results at loading time
         return;
 
+	WorldPacket data(SMSG_CAST_FAILED, (4+2));
+    data << uint32(m_spellInfo->Id);
+
     if(result != 0)
     {
-        WorldPacket data(SMSG_CAST_FAILED, (4+1+1));
-        data << uint32(m_spellInfo->Id);
         data << uint8(result);                              // problem
-        data << uint8(m_cast_count);                        // single cast or multi 2.3 (0/1)
         switch (result)
         {
             case SPELL_FAILED_REQUIRES_SPELL_FOCUS:
                 data << uint32(m_spellInfo->RequiresSpellFocus);
-                break;
-            case SPELL_FAILED_REQUIRES_AREA:
-                // hardcode areas limitation case
-                switch(m_spellInfo->Id)
-                {
-                    case 41617:                             // Cenarion Mana Salve
-                    case 41619:                             // Cenarion Healing Salve
-                        data << uint32(3905);
-                        break;
-                    case 41618:                             // Bottled Nethergon Energy
-                    case 41620:                             // Bottled Nethergon Vapor
-                        data << uint32(3842);
-                        break;
-                    case 45373:                             // Bloodberry Elixir
-                        data << uint32(4075);
-                        break;
-                    default:                                // default case
-                        //data << uint32(m_spellInfo->AreaId);
-                        break;
-                }
-                break;
-            case SPELL_FAILED_TOTEMS:
-                //if(m_spellInfo->Totem[0])
-                    //data << uint32(m_spellInfo->Totem[0]);
-                //if(m_spellInfo->Totem[1])
-                    //data << uint32(m_spellInfo->Totem[1]);
-                break;
-            case SPELL_FAILED_TOTEM_CATEGORY:
-//                if(m_spellInfo->TotemCategory[0])
-//                    data << uint32(m_spellInfo->TotemCategory[0]);
-//                if(m_spellInfo->TotemCategory[1])
-//                    data << uint32(m_spellInfo->TotemCategory[1]);
                 break;
             case SPELL_FAILED_EQUIPPED_ITEM_CLASS:
                 data << uint32(m_spellInfo->EquippedItemClass);
@@ -2800,15 +2768,11 @@ void Spell::SendCastResult(uint8 result)
                 data << uint32(m_spellInfo->EquippedItemInventoryTypeMask);
                 break;
         }
-        ((Player*)m_caster)->GetSession()->SendPacket(&data);
     }
     else
-    {
-        WorldPacket data(SMSG_CLEAR_EXTRA_AURA_INFO, (8+4));
-        data.append(m_caster->GetPackGUID());
-        data << uint32(m_spellInfo->Id);
-        ((Player*)m_caster)->GetSession()->SendPacket(&data);
-    }
+        data << uint8(0); 
+
+  ((Player*)m_caster)->GetSession()->SendPacket(&data);
 }
 
 void Spell::SendSpellStart()

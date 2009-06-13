@@ -371,7 +371,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 
         data << pProto->Delay;
         data << pProto->AmmoType;
-        data << pProto->RangedModRange;
+        data << (float)pProto->RangedModRange;
 
         for(int s = 0; s < 5; s++)
         {
@@ -419,7 +419,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
         data << pProto->Material;
         data << pProto->Sheath;
         data << pProto->RandomProperty;
-        data << pProto->RandomSuffix;
+       // data << pProto->RandomSuffix;
         data << pProto->Block;
         data << pProto->ItemSet;
         data << pProto->MaxDurability;
@@ -433,8 +433,12 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
     else
     {
         sLog.outDebug(  "WORLD: CMSG_ITEM_QUERY_SINGLE - NO item INFO! (ENTRY: %u)", item );
-        WorldPacket data( SMSG_ITEM_QUERY_SINGLE_RESPONSE, 4);
+        WorldPacket data( SMSG_ITEM_QUERY_SINGLE_RESPONSE, 600);
         data << uint32(item | 0x80000000);
+		/*data << item;
+		for(int a = 0; a < 11; a++)
+           data << uint64(0);
+        data << uint32(0);     */                             // Added in 1.12.x client branch
         SendPacket( &data );
     }
 }

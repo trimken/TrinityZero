@@ -2432,6 +2432,10 @@ void Player::SendInitialSpells()
         spellCount +=1;
     }
 
+ //	[from 1.12 ]:
+ // data << uint16(0);
+ // WPAssert(data.size() == 5+(4*size_t(spellCount)));
+
     data.put<uint16>(countPos,spellCount);                  // write real count value
 
     uint16 spellCooldowns = m_spellCooldowns.size();
@@ -5351,8 +5355,9 @@ void Player::SendFactionState(FactionState const* faction) const
 
 void Player::SendInitialReputations()
 {
-    WorldPacket data(SMSG_INITIALIZE_FACTIONS, (4+128*5));
-    data << uint32 (0x00000080);
+	//[TRINITYROLLBACK] changed from 128 to 64 [ for 1.12 ? ]
+    WorldPacket data(SMSG_INITIALIZE_FACTIONS, (4+64*5));
+    data << uint32 (0x00000040);
 
     RepListID a = 0;
 
@@ -5373,7 +5378,7 @@ void Player::SendInitialReputations()
     }
 
     // fill in absent fields
-    for (; a != 128; a++)
+    for (; a != 64; a++)
     {
         data << uint8  (0x00);
         data << uint32 (0x00000000);
