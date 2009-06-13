@@ -257,6 +257,16 @@ struct ItemRandomPropertiesEntry
                                                             // 23 nameSufix flags, unused
 };
 
+struct ItemRandomSuffixEntry
+{
+    uint32    ID;                                           // 0
+    //char*     name[16]                                    // 1-16 unused
+                                                            // 17, name flags, unused
+                                                            // 18  unused
+    uint32    enchant_id[3];                                // 19-21
+    uint32    prefix[3];                                    // 22-24
+};
+
 struct ItemSetEntry
 {
     //uint32    id                                          // 0 item set ID
@@ -330,6 +340,15 @@ struct QuestSortEntry
     uint32      id;                                         // 0, sort id
     //char*       name[16];                                 // 1-16, unused
                                                             // 17 name flags, unused
+};
+
+struct RandomPropertiesPointsEntry
+{
+    //uint32  Id;                                           // 0 hidden key
+    uint32    itemLevel;                                    // 1
+    uint32    EpicPropertiesPoints[5];                      // 2-6
+    uint32    RarePropertiesPoints[5];                      // 7-11
+    uint32    UncommonPropertiesPoints[5];                  // 12-16
 };
 
 //struct SkillLineCategoryEntry{

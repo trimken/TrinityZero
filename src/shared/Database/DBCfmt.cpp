@@ -37,7 +37,6 @@ const char EmoteEntryfmt[]="nxixxxxxxxxxxxxxxxx";
 const char FactionEntryfmt[]="niiiiiiiiiiiiiiiiiissssssssxxxxxxxxxx";
 const char FactionTemplateEntryfmt[]="niiiiiiiiiiiii";
 const char ItemDisplayTemplateEntryfmt[]="ixxxxxxxxxxixxxxxxxxxxx";
-const char ItemRandomPropertiesfmt[]="nxiiixxxxxxxxxxx";
 const char ItemSetEntryfmt[]="dssssssssxxxxxxxxxxxxxxxxxxiiiiiiiiiiiiiiiiii";
 const char LockEntryfmt[]="niiiiixxxiiiiixxxiixxxxxxxxxxxxxx";
 const char MailTemplateEntryfmt[]="nxxxxxxxxx";                                      // new
@@ -63,4 +62,9 @@ const char TaxiPathNodeEntryfmt[]="diiifffii";
 const char WorldMapAreaEntryfmt[]="xinxffff";
 const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
 // endof correct for 1.12
+
+// [TRINITYROLLBACK] these must be replaced with sql tables
+const char ItemRandomPropertiesfmt[]="nxiiixxxxxxxxxxx";
+const char ItemRandomSuffixfmt[]="nxxxxxxxxxxxxxxxxxxiiiiii";
+const char RandomPropertiesPointsfmt[]="niiiiiiiiiiiiiii";
 

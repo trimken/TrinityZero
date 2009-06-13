@@ -10037,6 +10037,7 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
                     {
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_0);
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_1);
+					}
                 }
             }
 
@@ -10058,7 +10059,7 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
         if( IsInWorld() && update )
             pItem->SendUpdateToPlayer( this );
 
-    }
+	}
 }
 
 // Common operation need to remove item from inventory without delete in trade, auction, guild bank, mail....
