@@ -521,7 +521,7 @@ enum NPCFlags
     UNIT_NPC_FLAG_SPIRITGUIDE           = 0x00008000,       // guessed
     UNIT_NPC_FLAG_INNKEEPER             = 0x00010000,       // 100%
     UNIT_NPC_FLAG_BANKER                = 0x00020000,       // 100%
-    UNIT_NPC_FLAG_PETITIONER            = 0x00040000,       // 100% 0xC0000 = guild petitions, 0x40000 = arena team petitions
+    UNIT_NPC_FLAG_PETITIONER            = 0x00040000,       // 100% 0xC0000 = guild petitions
     UNIT_NPC_FLAG_TABARDDESIGNER        = 0x00080000,       // 100%
     UNIT_NPC_FLAG_BATTLEMASTER          = 0x00100000,       // 100%
     UNIT_NPC_FLAG_AUCTIONEER            = 0x00200000,       // 100%
@@ -1152,7 +1152,6 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void RemoveMovementImpairingAuras();
 
         void RemoveAllAuras();
-        void RemoveArenaAuras(bool onleave = false);
         void RemoveAllAurasOnDeath();
         void DelayAura(uint32 spellId, uint32 effindex, int32 delaytime);
 

@@ -139,6 +139,7 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
    	ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
 	m_taximask[0] = rEntry->startingTaxiMask;
 
+ /* [TRINITYROLLBACK] useless?
     switch(race)
     {
         case RACE_HUMAN:    SetTaximaskNode(2);  break;     // Human
@@ -150,18 +151,7 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
         case RACE_TAUREN:   SetTaximaskNode(22); break;     // Tauren
         case RACE_GNOME:    SetTaximaskNode(6);  break;     // Gnome
         case RACE_TROLL:    SetTaximaskNode(23); break;     // Troll
-        /* [TRINITYROLLBACK] case RACE_BLOODELF: SetTaximaskNode(82); break;     // Blood Elf
-        case RACE_DRAENEI:  SetTaximaskNode(94); break;     // Draenei */
-    }
-    // new continent starting masks (It will be accessible only at new map)
-    switch(Player::TeamForRace(race))
-    {
-        case ALLIANCE: SetTaximaskNode(100); break;
-        case HORDE:    SetTaximaskNode(99);  break;
-    }
-    // level dependent taxi hubs
-    if(level>=68)
-        SetTaximaskNode(213);                               //Shattered Sun Staging Area
+    } */
 }
 
 void PlayerTaxi::LoadTaxiMask(const char* data)
@@ -183,7 +173,7 @@ void PlayerTaxi::AppendTaximaskTo( ByteBuffer& data, bool all )
     if(all)
     {
         for (uint8 i=0; i<TaxiMaskSize; i++)
-            data << uint32(sTaxiNodesMask[i]);              // all existed nodes
+            data << sTaxiNodesMask[i];              // all existed nodes
     }
     else
     {
@@ -317,7 +307,6 @@ Player::Player (WorldSession *session): Unit()
     m_total_honor_points = 0;
 
     m_GuildIdInvited = 0;
-    m_ArenaTeamIdInvited = 0;
 
     m_atLoginFlags = AT_LOGIN_NONE;
 
@@ -1211,7 +1200,6 @@ void Player::Update( uint32 p_time )
             else
             {
                 // use area updates as well
-                // needed for free far all arenas for example
                 uint32 newarea = GetAreaId();
                 if( m_areaUpdateId != newarea )
                     UpdateArea(newarea);
@@ -1541,7 +1529,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
     // don't let enter battlegrounds without assigned battleground id (for example through areatrigger)...
     // don't let gm level > 1 either
-    if(!InBattleGround() && mEntry->IsBattleGroundOrArena())
+    if(!InBattleGround() && mEntry->IsBattleGround())
         return false;
 
     // 449 - Champions' Hall (Alliance) // 450 - Hall of Legends (Horde)
@@ -3042,32 +3030,6 @@ void Player::removeSpell(uint32 spell_id, bool disabled)
         removeSpell(itr2->second.spell, disabled);
 }
 
-void Player::RemoveArenaSpellCooldowns()
-{
-    // remove cooldowns on spells that has < 15 min CD
-    SpellCooldowns::iterator itr, next;
-    // iterate spell cooldowns
-    for(itr = m_spellCooldowns.begin();itr != m_spellCooldowns.end(); itr = next)
-    {
-        next = itr;
-        ++next;
-        SpellEntry const * entry = sSpellStore.LookupEntry(itr->first);
-        // check if spellentry is present and if the cooldown is less than 15 mins
-        if( entry &&
-            entry->RecoveryTime <= 15 * MINUTE * 1000 &&
-            entry->CategoryRecoveryTime <= 15 * MINUTE * 1000 )
-        {
-            // notify player
-            WorldPacket data(SMSG_CLEAR_COOLDOWN, (4+8));
-            data << uint32(itr->first);
-            data << GetGUID();
-            GetSession()->SendPacket(&data);
-            // remove cooldown
-            m_spellCooldowns.erase(itr);
-        }
-    }
-}
-
 void Player::RemoveAllSpellCooldown()
 {
     if(!m_spellCooldowns.empty())
@@ -3557,29 +3519,6 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
         if(guild)
             guild->DelMember(guid);
     }
-
-    // remove from arena teams
- /* [TRINITYROLLBACK]   uint32 at_id = GetArenaTeamIdFromDB(playerguid,ARENA_TEAM_2v2);
-    if(at_id != 0)
-    {
-        ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
-        if(at)
-            at->DelMember(playerguid);
-    }
-    at_id = GetArenaTeamIdFromDB(playerguid,ARENA_TEAM_3v3);
-    if(at_id != 0)
-    {
-        ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
-        if(at)
-            at->DelMember(playerguid);
-    }
-    at_id = GetArenaTeamIdFromDB(playerguid,ARENA_TEAM_5v5);
-    if(at_id != 0)
-    {
-        ArenaTeam * at = objmgr.GetArenaTeamById(at_id);
-        if(at)
-            at->DelMember(playerguid);
-    } */
 
     // the player was uninvited already on logout so just remove from group
     QueryResult *resultGroup = CharacterDatabase.PQuery("SELECT leaderGuid FROM group_member WHERE memberGuid='%u'", guid);
@@ -4192,7 +4131,7 @@ void Player::RepopAtGraveyard()
     // Special handle for battleground maps
     BattleGround *bg = sBattleGroundMgr.GetBattleGround(GetBattleGroundId());
 
-    if(bg && (bg->GetTypeID() == BATTLEGROUND_AB || bg->GetTypeID() == BATTLEGROUND_EY || bg->GetTypeID() == BATTLEGROUND_AV))
+    if(bg && (bg->GetTypeID() == BATTLEGROUND_AB || bg->GetTypeID() == BATTLEGROUND_AV))
         ClosestGrave = bg->GetClosestGraveYard(GetPositionX(), GetPositionY(), GetPositionZ(), GetTeam());
     else
         ClosestGrave = objmgr.GetClosestGraveYard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetTeam() );
@@ -4391,22 +4330,45 @@ uint32 Player::GetShieldBlockValue() const
 
 float Player::GetMeleeCritFromAgility()
 {
-    uint32 level = getLevel();
-    uint32 pclass = getClass();
+  // from mangos 3462 for 1.12
+  float val=0,classrate = 0;
+    // critical
+    switch(getClass())
+    {
+        case CLASS_PALADIN: classrate = 19.77; break;
+        case CLASS_SHAMAN:  classrate = 19.7;  break;
+        case CLASS_MAGE:    classrate = 19.44; break;
+        case CLASS_ROGUE:   classrate = 29.0;  break;
+        case CLASS_HUNTER:  classrate = 53.0;  break;       // in 2.0.x = 33
+        case CLASS_PRIEST:
+        case CLASS_WARLOCK:
+        case CLASS_DRUID:
+        case CLASS_WARRIOR:
+        default:            classrate = 20.0; break;
+    }
 
-    if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
-
-    GtChanceToMeleeCritBaseEntry const *critBase  = sGtChanceToMeleeCritBaseStore.LookupEntry(pclass-1);
-    GtChanceToMeleeCritEntry     const *critRatio = sGtChanceToMeleeCritStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-    if (critBase==NULL || critRatio==NULL)
-        return 0.0f;
-
-    float crit=critBase->base + GetStat(STAT_AGILITY)*critRatio->ratio;
-    return crit*100.0f;
+    val = GetStat(STAT_AGILITY)/classrate;
+  return val;
 }
 
 float Player::GetDodgeFromAgility()
 {
+	 // from mangos 3462 for 1.12
+	float val=0,classrate=0;
+
+	//dodge
+    if(getClass() == CLASS_HUNTER) classrate = 26.5;
+    else if(getClass() == CLASS_ROGUE)  classrate = 14.5;
+    else classrate = 20;
+    ///*+(Defense*0,04);
+    if (getRace() == RACE_NIGHTELF)
+        val = GetStat(STAT_AGILITY)/classrate + 1;
+    else
+        val = GetStat(STAT_AGILITY)/classrate;
+
+	return val;
+
+  /* [TRINITYROLLBACK]
     // Table for base dodge values
     float dodge_base[MAX_CLASSES] = {
          0.0075f,   // Warrior
@@ -4447,23 +4409,78 @@ float Player::GetDodgeFromAgility()
         return 0.0f;
 
     float dodge=dodge_base[pclass-1] + GetStat(STAT_AGILITY) * dodgeRatio->ratio * crit_to_dodge[pclass-1];
-    return dodge*100.0f;
+    return dodge*100.0f; */
 }
 
 float Player::GetSpellCritFromIntellect()
 {
-    uint32 level = getLevel();
-    uint32 pclass = getClass();
+   // Chance to crit is computed from INT and LEVEL as follows:
+    //   chance = base + INT / (rate0 + rate1 * LEVEL)
+    // The formula keeps the crit chance at %5 on every level unless the player
+    // increases his intelligence by other means (enchants, buffs, talents, ...)
 
-    if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
+	//[TRINITYROLLBACK] from mangos 3462 for 1.12 MUST BE CHECKED
+	float val=0;
 
-    GtChanceToSpellCritBaseEntry const *critBase  = sGtChanceToSpellCritBaseStore.LookupEntry(pclass-1);
-    GtChanceToSpellCritEntry     const *critRatio = sGtChanceToSpellCritStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-    if (critBase==NULL || critRatio==NULL)
-        return 0.0f;
+    static const struct
+    {
+        float base;
+        float rate0, rate1;
+    }
+    crit_data[MAX_CLASSES] =
+    {
+        {                                                   //  0: unused
+            0,0,10
+        },
+        {                                                   //  1: warrior
+            0,0,10
+        },
+        {                                                   //  2: paladin
+            3.70, 14.77, 0.65
+        },
+        {                                                   //  3: hunter
+            0,0,10
+        },
+        {                                                   //  4: rogue
+            0,0,10
+        },
+        {                                                   //  5: priest
+            2.97, 10.03, 0.82
+        },
+        {                                                   //  6: unused
+            0,0,10
+        },
+        {                                                   //  7: shaman
+            3.54, 11.51, 0.80
+        },
+        {                                                   //  8: mage
+            3.70, 14.77, 0.65
+        },
+        {                                                   //  9: warlock
+            3.18, 11.30, 0.82
+        },
+        {                                                   // 10: unused
+            0,0,10
+        },
+        {                                                   // 11: druid
+            3.33, 12.41, 0.79
+        }
+    };
+    float crit_chance;
 
-    float crit=critBase->base + GetStat(STAT_INTELLECT)*critRatio->ratio;
-    return crit*100.0f;
+    // only players use intelligence for critical chance computations
+    if (GetTypeId() == TYPEID_PLAYER)
+    {
+        int my_class = getClass();
+        float crit_ratio = crit_data[my_class].rate0 + crit_data[my_class].rate1*getLevel();
+        crit_chance = crit_data[my_class].base + GetStat(STAT_INTELLECT) / crit_ratio;
+    }
+    else
+        crit_chance = m_baseSpellCritChance;
+
+    crit_chance = crit_chance > 0.0 ? crit_chance : 0.0;
+
+    return crit_chance;
 }
 
 float Player::OCTRegenHPPerSpirit()
@@ -6085,17 +6102,6 @@ uint32 Player::GetRankFromDB(uint64 guid)
     else
         return 0;
 }
-/* [TRINITYROLLBACK]
-uint32 Player::GetArenaTeamIdFromDB(uint64 guid, uint8 type)
-{
-    QueryResult *result = CharacterDatabase.PQuery("SELECT arena_team_member.arenateamid FROM arena_team_member JOIN arena_team ON arena_team_member.arenateamid = arena_team.arenateamid WHERE guid='%u' AND type='%u' LIMIT 1", GUID_LOPART(guid), type);
-    if(!result)
-        return 0;
-
-    uint32 id = (*result)[0].GetUInt32();
-    delete result;
-    return id;
-} */
 
 uint32 Player::GetZoneIdFromDB(uint64 guid)
 {
@@ -6141,18 +6147,10 @@ void Player::UpdateArea(uint32 newArea)
 
     AreaTableEntry const* area = GetAreaEntryByAreaID(newArea);
 
-    if(area && (area->flags & AREA_FLAG_ARENA))
-    {
-        if(!isGameMaster())
-            SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
-    }
-    else
-    {
-        // remove ffa flag only if not ffapvp realm
-        // removal in sanctuaries and capitals is handled in zone update
-        if(HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) && !sWorld.IsFFAPvPRealm())
-            RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
-    }
+    // remove ffa flag only if not ffapvp realm
+    // removal in sanctuaries and capitals is handled in zone update
+    if(HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) && !sWorld.IsFFAPvPRealm())
+        RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
 
     UpdateAreaDependentAuras(newArea);
 }
@@ -6436,9 +6434,6 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
 
     ApplyItemEquipSpell(item,apply);
     ApplyEnchantment(item, apply);
-
-    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
-        CorrectMetaGemEnchants(slot, apply);
 
     sLog.outDebug("_ApplyItemMods complete.");
 }
@@ -8012,16 +8007,6 @@ uint32 Player::GetItemCount( uint32 item, bool inBankAlso, Item* skipItem ) cons
             count += pBag->GetItemCount(item,skipItem);
     }
 
-    if(skipItem && skipItem->GetProto()->GemProperties)
-    {
-        for(int i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
-        {
-            Item *pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i );
-            if( pItem && pItem != skipItem && pItem->GetProto()->Socket[0].Color )
-                count += pItem->GetGemCountWithID(item);
-        }
-    }
-
     if(inBankAlso)
     {
         for(int i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++)
@@ -8037,15 +8022,6 @@ uint32 Player::GetItemCount( uint32 item, bool inBankAlso, Item* skipItem ) cons
                 count += pBag->GetItemCount(item,skipItem);
         }
 
-        if(skipItem && skipItem->GetProto()->GemProperties)
-        {
-            for(int i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++)
-            {
-                Item* pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i );
-                if( pItem && pItem != skipItem && pItem->GetProto()->Socket[0].Color )
-                    count += pItem->GetGemCountWithID(item);
-            }
-        }
     }
 
     return count;
@@ -8374,20 +8350,6 @@ Item* Player::GetItemOrItemWithGemEquipped( uint32 item ) const
             return pItem;
     }
 
-    ItemPrototype const *pProto = objmgr.GetItemPrototype(item);
-    if (pProto && pProto->GemProperties)
-    {
-        for(int i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
-        {
-            pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i );
-            if( pItem && pItem->GetProto()->Socket[0].Color )
-            {
-                if (pItem->GetGemCountWithID(item) > 0 )
-                    return pItem;
-            }
-        }
-    }
-
     return NULL;
 }
 
@@ -8415,36 +8377,6 @@ uint8 Player::_CanTakeMoreSimilarItems(uint32 entry, uint32 count, Item* pItem, 
     }
 
     return EQUIP_ERR_OK;
-}
-
-bool Player::HasItemTotemCategory( uint32 TotemCategory ) const
-{
-    Item *pItem;
-    for(uint8 i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; ++i)
-    {
-        pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i );
-        if( pItem && IsTotemCategoryCompatiableWith(pItem->GetProto()->TotemCategory,TotemCategory ))
-            return true;
-    }
-    for(uint8 i = KEYRING_SLOT_START; i < KEYRING_SLOT_END; ++i)
-    {
-        pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i );
-        if( pItem && IsTotemCategoryCompatiableWith(pItem->GetProto()->TotemCategory,TotemCategory ))
-            return true;
-    }
-    for(uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
-    {
-        if(Bag *pBag = (Bag*)GetItemByPos( INVENTORY_SLOT_BAG_0, i ))
-        {
-            for(uint32 j = 0; j < pBag->GetBagSize(); ++j)
-            {
-                pItem = GetItemByPos( i, j );
-                if( pItem && IsTotemCategoryCompatiableWith(pItem->GetProto()->TotemCategory,TotemCategory ))
-                    return true;
-            }
-        }
-    }
-    return false;
 }
 
 uint8 Player::_CanStoreItem_InSpecificSlot( uint8 bag, uint8 slot, ItemPosCountVec &dest, ItemPrototype const *pProto, uint32& count, bool swap, Item* pSrcItem ) const
@@ -9260,15 +9192,10 @@ uint8 Player::CanEquipItem( uint8 slot, uint16 &dest, Item *pItem, bool swap, bo
 
             // do not allow equipping gear except weapons, offhands, projectiles, relics in
             // - combat
-            // - in-progress arenas
             if( !pProto->CanChangeEquipStateInCombat() )
             {
                 if( isInCombat() )
                     return EQUIP_ERR_NOT_IN_COMBAT;
-
-                if(BattleGround* bg = GetBattleGround())
-                    if( bg->isArena() && bg->GetStatus() == STATUS_IN_PROGRESS )
-                        return EQUIP_ERR_NOT_DURING_ARENA_MATCH;
             }
 
             if(isInCombat()&& pProto->Class == ITEM_CLASS_WEAPON && m_weaponChangeTimer != 0)
@@ -9306,15 +9233,6 @@ uint8 Player::CanEquipItem( uint8 slot, uint16 &dest, Item *pItem, bool swap, bo
                 if(!enchantEntry)
                     continue;
 
-                /*
-				ItemPrototype const* pGem = objmgr.GetItemPrototype(enchantEntry->GemID);
-                if(pGem && (pGem->Flags & ITEM_FLAGS_UNIQUE_EQUIPPED))
-                {
-                    Item* tItem = GetItemOrItemWithGemEquipped(enchantEntry->GemID);
-                    if(tItem && (!swap || tItem->GetSlot() != eslot ))
-                        return EQUIP_ERR_ITEM_UNIQUE_EQUIPABLE;
-                }
-				*/
             }
 
             // check unique-equipped special item classes
@@ -9400,15 +9318,10 @@ uint8 Player::CanUnequipItem( uint16 pos, bool swap ) const
 
     // do not allow unequipping gear except weapons, offhands, projectiles, relics in
     // - combat
-    // - in-progress arenas
     if( !pProto->CanChangeEquipStateInCombat() )
     {
         if( isInCombat() )
             return EQUIP_ERR_NOT_IN_COMBAT;
-
-        if(BattleGround* bg = GetBattleGround())
-            if( bg->isArena() && bg->GetStatus() == STATUS_IN_PROGRESS )
-                return EQUIP_ERR_NOT_DURING_ARENA_MATCH;
     }
 
     if(!swap && pItem->IsBag() && !((Bag*)pItem)->IsEmpty())
@@ -10040,7 +9953,7 @@ void Player::SetVisibleItemSlot(uint8 slot, Item *pItem)
 
         // Use SetInt16Value to prevent set high part to FFFF for negative value
         SetInt16Value( PLAYER_VISIBLE_ITEM_1_PROPERTIES + (slot * MAX_VISIBLE_ITEM_OFFSET), 0, pItem->GetItemRandomPropertyId());
-        SetUInt32Value(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (slot * MAX_VISIBLE_ITEM_OFFSET), pItem->GetItemSuffixFactor());
+        // [TRINITYROLLBACK] SetUInt32Value(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (slot * MAX_VISIBLE_ITEM_OFFSET), pItem->GetItemSuffixFactor());
     }
     else
     {
@@ -10124,7 +10037,6 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
                     {
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_0);
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_1);
-                    }
                 }
             }
 
@@ -11180,8 +11092,9 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 else if (item->GetSlot() == EQUIPMENT_SLOT_RANGED)
                     HandleStatModifier(UNIT_MOD_DAMAGE_RANGED, TOTAL_VALUE, float(enchant_amount), apply);
                 break;
-            case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
-                if(enchant_spell_id)
+            /* case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
+             [TRINITYROLLBACK] to rewrite [?]
+			   if(enchant_spell_id)
                 {
                     if(apply)
                     {
@@ -11248,7 +11161,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                             }
                         }
                     }
-                }
+                } 
 
                 sLog.outDebug("Adding %u to stat nb %u",enchant_amount,enchant_spell_id);
                 switch (enchant_spell_id)
@@ -11283,6 +11196,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 }
                 break;
             }
+			*/
             case ITEM_ENCHANTMENT_TYPE_TOTEM:               // Shaman Rockbiter Weapon
             {
                 if(getClass() == CLASS_SHAMAN)
@@ -11922,13 +11836,6 @@ void Player::RewardQuest( Quest const *pQuest, uint32 reward, Object* questGiver
 
     // Give player extra money if GetRewOrReqMoney > 0 and get ReqMoney if negative
     ModifyMoney( pQuest->GetRewOrReqMoney() );
-
-    // title reward
-    if(pQuest->GetCharTitleId())
-    {
-        if(CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(pQuest->GetCharTitleId()))
-            SetTitle(titleEntry);
-    }
 
     // Send reward mail
     if(pQuest->GetRewMailTemplateId())
@@ -13128,41 +13035,6 @@ void Player::_LoadDeclinedNames(QueryResult* result)
     delete result;
 }
 
-void Player::_LoadArenaTeamInfo(QueryResult *result)
-{ /* [TRINITYROLLBACK]
-    // arenateamid, played_week, played_season, personal_rating
-    memset((void*)&m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1], 0, sizeof(uint32)*18);
-    if (!result)
-        return;
-
-    do
-    {
-        Field *fields = result->Fetch();
-
-        uint32 arenateamid     = fields[0].GetUInt32();
-        uint32 played_week     = fields[1].GetUInt32();
-        uint32 played_season   = fields[2].GetUInt32();
-        uint32 personal_rating = fields[3].GetUInt32();
-
-        ArenaTeam* aTeam = objmgr.GetArenaTeamById(arenateamid);
-        if(!aTeam)
-        {
-            sLog.outError("FATAL: couldn't load arenateam %u", arenateamid);
-            continue;
-        }
-        uint8  arenaSlot = aTeam->GetSlot();
-
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6]     = arenateamid;      // TeamID
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 1] = ((aTeam->GetCaptain() == GetGUID()) ? (uint32)0 : (uint32)1); // Captain 0, member 1
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 2] = played_week;      // Played Week
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 3] = played_season;    // Played Season
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 4] = 0;                // Unk
-        m_uint32Values[PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arenaSlot * 6 + 5] = personal_rating;  // Personal Rating
-
-    }while (result->NextRow());
-    delete result; */
-}
-
 bool Player::LoadPositionFromDB(uint32& mapid, float& x,float& y,float& z,float& o, bool& in_flight, uint64 guid)
 {
     QueryResult *result = CharacterDatabase.PQuery("SELECT position_x,position_y,position_z,orientation,map,taxi_path FROM characters WHERE guid = '%u'",GUID_LOPART(guid));
@@ -13216,37 +13088,6 @@ float Player::GetFloatValueFromArray(Tokens const& data, uint16 index)
 
 uint32 Player::GetUInt32ValueFromDB(uint16 index, uint64 guid)
 {
-    // todo: cleanup in this, move to a separate function. [TRINITYROLLBACK]
-/*    if(    index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5 
-        || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6 + 5
-        || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5
-        || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (0 * 6)
-        || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (1 * 6)
-        || index == PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (2 * 6)
-        || index == UNIT_FIELD_LEVEL)
-    {
-        CachePlayerInfoMap::iterator _iter = objmgr.m_mPlayerInfoMap.find(GUID_LOPART(guid));
-        if(_iter != objmgr.m_mPlayerInfoMap.end())
-        {
-            switch(index)
-            {
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 0 * 6 + 5):
-                return _iter->second->unArenaInfoSlot0;
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 1 * 6 + 5):
-                return _iter->second->unArenaInfoSlot1;
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + 2 * 6 + 5):
-                return _iter->second->unArenaInfoSlot2;
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (0 * 6)):
-                return _iter->second->unArenaInfoId0;
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (1 * 6)):
-                return _iter->second->unArenaInfoId1;
-            case (PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (2 * 6)):
-                return _iter->second->unArenaInfoId2;
-            case (UNIT_FIELD_LEVEL):
-                return _iter->second->unLevel;
-            }
-        }
-    } */
     Tokens data;
     if(!LoadValuesArrayFromDB(data,guid))
         return 0;
@@ -13355,30 +13196,6 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     SetDifficulty(fields[32].GetUInt32());                  // may be changed in _LoadGroup
 
     _LoadGroup(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGROUP));
-
-  /*  _LoadArenaTeamInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADARENAINFO));  [TRINITYROLLBACK]
-
-    uint32 arena_currency = GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY) + fields[33].GetUInt32();
-    if (arena_currency > sWorld.getConfig(CONFIG_MAX_ARENA_POINTS))
-        arena_currency = sWorld.getConfig(CONFIG_MAX_ARENA_POINTS);
-
-    SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, arena_currency);
-
-    // check arena teams integrity
-    for(uint32 arena_slot = 0; arena_slot < MAX_ARENA_SLOT; ++arena_slot)
-    {
-        uint32 arena_team_id = GetArenaTeamId(arena_slot);
-        if(!arena_team_id)
-            continue;
-
-        if(ArenaTeam * at = objmgr.GetArenaTeamById(arena_team_id))
-            if(at->HaveMember(GetGUID()))
-                continue;
-
-        // arena team not exist or not member, cleanup fields
-        for(int j =0; j < 6; ++j)
-            SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + arena_slot * 6 + j, 0);
-    } */
 
 	m_highest_rank = fields[33].GetUInt32();
 	m_standing = fields[34].GetUInt32();
@@ -14265,13 +14082,6 @@ void Player::_LoadQuestStatus(QueryResult *result)
                 {
                     // learn rewarded spell if unknown
                     learnQuestRewardedSpells(pQuest);
-
-                    // set rewarded title if any
-                    if(pQuest->GetCharTitleId())
-                    {
-                        if(CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(pQuest->GetCharTitleId()))
-                            SetTitle(titleEntry);
-                    }
                 }
 
                 sLog.outDebug("Quest status is {%u} for quest {%u} for player (GUID: %u)", questStatusData.m_status, quest_id, GetGUIDLow());
@@ -14774,7 +14584,7 @@ void Player::SaveToDB()
     // players aren't saved on battleground maps
     uint32 mapid = IsBeingTeleported() ? GetTeleportDest().mapid : GetMapId();
     const MapEntry * me = sMapStore.LookupEntry(mapid);
-    if(!me || me->IsBattleGroundOrArena())
+    if(!me || me->IsBattleGround())
         return;
 
     int is_save_resting = HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) ? 1 : 0;
@@ -14822,9 +14632,9 @@ void Player::SaveToDB()
     bool save_to_dest = false;
     if(IsBeingTeleported())
     {
-        // don't save to battlegrounds or arenas
+        // don't save to battlegrounds
         const MapEntry *entry = sMapStore.LookupEntry(GetTeleportDest().mapid);
-        if(entry && entry->map_type != MAP_BATTLEGROUND && entry->map_type != MAP_ARENA)
+        if(entry && entry->map_type != MAP_BATTLEGROUND)
             save_to_dest = true;
     }
 
@@ -16698,7 +16508,11 @@ void Player::SendCooldownEvent(SpellEntry const *spellInfo)
                                                            //slot to be excluded while counting
 bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
 {
-    if(!enchantmentcondition)
+   return true;
+
+   /* [TRINITYROLLBACK] to rewrite [?]
+
+	if(!enchantmentcondition)
         return true;
 
     SpellItemEnchantmentConditionEntry const *Condition = sSpellItemEnchantmentConditionStore.LookupEntry(enchantmentcondition);
@@ -16740,13 +16554,6 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
 
                 //uint8 GemColor = gemProperty->color;
 
-                /*
-				for(uint8 b = 0, tmpcolormask = 1; b < 4; b++, tmpcolormask <<= 1)
-                {
-                    if(tmpcolormask & GemColor)
-                        ++curcount[b];
-                }
-				*/
             }
         }
     }
@@ -16779,91 +16586,14 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
 
     sLog.outDebug("Checking Condition %u, there are %u Meta Gems, %u Red Gems, %u Yellow Gems and %u Blue Gems, Activate:%s", enchantmentcondition, curcount[0], curcount[1], curcount[2], curcount[3], activate ? "yes" : "no");
 
-    return activate;
-}
-
-void Player::CorrectMetaGemEnchants(uint8 exceptslot, bool apply)
-{
-                                                            //cycle all equipped items
-    for(uint32 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; ++slot)
-    {
-        //enchants for the slot being socketed are handled by Player::ApplyItemMods
-        if(slot == exceptslot)
-            continue;
-
-        Item* pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
-
-        if(!pItem || !pItem->GetProto()->Socket[0].Color)
-            continue;
-
-        for(uint32 enchant_slot = SOCK_ENCHANTMENT_SLOT; enchant_slot < SOCK_ENCHANTMENT_SLOT+3; ++enchant_slot)
-        {
-            uint32 enchant_id = pItem->GetEnchantmentId(EnchantmentSlot(enchant_slot));
-            if(!enchant_id)
-                continue;
-
-            SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-            if(!enchantEntry)
-                continue;
-
-			/*
-            uint32 condition = enchantEntry->EnchantmentCondition;
-            if(condition)
-            {
-                                                            //was enchant active with/without item?
-                bool wasactive = EnchantmentFitsRequirements(condition, apply ? exceptslot : -1);
-                                                            //should it now be?
-                if(wasactive ^ EnchantmentFitsRequirements(condition, apply ? -1 : exceptslot))
-                {
-                    // ignore item gem conditions
-                                                            //if state changed, (dis)apply enchant
-                    ApplyEnchantment(pItem,EnchantmentSlot(enchant_slot),!wasactive,true,true);
-                }
-            }
-			*/
-        }
-    }
-}
-
-                                                            //if false -> then toggled off if was on| if true -> toggled on if was off AND meets requirements
-void Player::ToggleMetaGemsActive(uint8 exceptslot, bool apply)
-{
-    //cycle all equipped items
-    for(int slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; ++slot)
-    {
-        //enchants for the slot being socketed are handled by WorldSession::HandleSocketOpcode(WorldPacket& recv_data)
-        if(slot == exceptslot)
-            continue;
-
-        Item *pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
-
-        if(!pItem || !pItem->GetProto()->Socket[0].Color)   //if item has no sockets or no item is equipped go to next item
-            continue;
-
-        //cycle all (gem)enchants
-        for(uint32 enchant_slot = SOCK_ENCHANTMENT_SLOT; enchant_slot < SOCK_ENCHANTMENT_SLOT+3; ++enchant_slot)
-        {
-            uint32 enchant_id = pItem->GetEnchantmentId(EnchantmentSlot(enchant_slot));
-            if(!enchant_id)                                 //if no enchant go to next enchant(slot)
-                continue;
-
-            SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-            if(!enchantEntry)
-                continue;
-
-            //only metagems to be (de)activated, so only enchants with condition
-            //uint32 condition = enchantEntry->EnchantmentCondition;
-            //if(condition)
-            //    ApplyEnchantment(pItem,EnchantmentSlot(enchant_slot), apply);
-        }
-    }
+    return activate; */
 }
 
 void Player::LeaveBattleground(bool teleportToEntryPoint)
 {
     if(BattleGround *bg = GetBattleGround())
     {
-        bool need_debuf = bg->isBattleGround() && !isGameMaster() && (bg->GetStatus() == STATUS_IN_PROGRESS) && sWorld.getConfig(CONFIG_BATTLEGROUND_CAST_DESERTER);
+        bool need_debuf = !isGameMaster() && (bg->GetStatus() == STATUS_IN_PROGRESS) && sWorld.getConfig(CONFIG_BATTLEGROUND_CAST_DESERTER);
 
         bg->RemovePlayerAtLeave(GetGUID(), teleportToEntryPoint, true);
 
@@ -17638,15 +17368,6 @@ BattleGround* Player::GetBattleGround() const
         return NULL;
 
     return sBattleGroundMgr.GetBattleGround(GetBattleGroundId());
-}
-
-bool Player::InArena() const
-{
-    BattleGround *bg = GetBattleGround();
-    if(!bg || !bg->isArena())
-        return false;
-
-    return true;
 }
 
 bool Player::GetBGAccessByLevel(uint32 bgTypeId) const
@@ -18497,25 +18218,6 @@ bool Player::isAllowUseBattleGroundObject()
              isAlive()                                        // live player
            );
 }
-
-bool Player::HasTitle(uint32 bitIndex)
-{/* [TRINITYROLLBACK
-    if (bitIndex > 128)
-        return false;
-
-    uint32 fieldIndexOffset = bitIndex/32;
-    uint32 flag = 1 << (bitIndex%32);
-    return HasFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag); */
-	return false; //yehonal workaround
-}
-
-void Player::SetTitle(CharTitlesEntry const* title)
-{/* [TRINITYROLLBACK]
-    uint32 fieldIndexOffset = title->bit_index/32;
-    uint32 flag = 1 << (title->bit_index%32);
-    SetFlag(PLAYER__FIELD_KNOWN_TITLES+fieldIndexOffset, flag); */
-}
-
 
 /*-----------------------TRINITY--------------------------*/
 bool Player::isTotalImmunity()

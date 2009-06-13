@@ -57,7 +57,6 @@ extern SQLStorage sInstanceTemplate;
 
 class Group;
 class Guild;
-class ArenaTeam;
 class Path;
 class TransportPath;
 class Item;
@@ -223,13 +222,7 @@ typedef struct _tagCachePlayerInfo
     uint32 unfield;
     uint32 unLevel;
     uint8 unClass;
-//Arena
-    uint32 unArenaInfoId0;
-    uint32 unArenaInfoId1;
-    uint32 unArenaInfoId2;
-    uint32 unArenaInfoSlot0;
-    uint32 unArenaInfoSlot1;
-    uint32 unArenaInfoSlot2;
+
 }CachePlayerInfo, *PCachePlayerInfo;
 typedef UNORDERED_MAP<uint32, PCachePlayerInfo> CachePlayerInfoMap;
 
@@ -300,8 +293,6 @@ class ObjectMgr
 
         typedef UNORDERED_MAP<uint32, Guild *> GuildMap;
 
-        typedef UNORDERED_MAP<uint32, ArenaTeam*> ArenaTeamMap;
-
         typedef UNORDERED_MAP<uint32, Quest*> QuestMap;
 
         typedef UNORDERED_MAP<uint32, AreaTrigger> AreaTriggerMap;
@@ -338,15 +329,6 @@ class ObjectMgr
         std::string GetGuildNameById(const uint32 GuildId) const;
         void AddGuild(Guild* guild);
         void RemoveGuild(uint32 Id);
-
-      /*[TRINITYROLLBACK] 
-	    ArenaTeam* GetArenaTeamById(const uint32 arenateamid) const;
-        ArenaTeam* GetArenaTeamByName(const std::string& arenateamname) const;
-        ArenaTeam* GetArenaTeamByCaptain(uint64 const& guid) const;
-        void AddArenaTeam(ArenaTeam* arenaTeam);
-        void RemoveArenaTeam(uint32 Id);
-        ArenaTeamMap::iterator GetArenaTeamMapBegin() { return mArenaTeamMap.begin(); }
-        ArenaTeamMap::iterator GetArenaTeamMapEnd()   { return mArenaTeamMap.end(); } */
 
         static CreatureInfo const *GetCreatureTemplate( uint32 id );
         CreatureModelInfo const *GetCreatureModelInfo( uint32 modelid );
@@ -479,7 +461,6 @@ class ObjectMgr
         }
 
         void LoadGuilds();
-//[TRINITYROLLBACK]        void LoadArenaTeams();
         void LoadGroups();
         void LoadQuests();
         void LoadQuestRelations()
@@ -581,7 +562,6 @@ class ObjectMgr
         uint32 GenerateMailID();
         uint32 GenerateItemTextID();
         uint32 GeneratePetNumber();
-        uint32 GenerateArenaTeamId();
         uint32 GenerateGuildId();
 
         void LoadPlayerInfoInCache();
@@ -793,7 +773,6 @@ class ObjectMgr
         uint32 m_auctionid;
         uint32 m_mailid;
         uint32 m_ItemTextId;
-        uint32 m_arenaTeamId;
         uint32 m_guildId;
         uint32 m_hiPetNumber;
 
@@ -817,7 +796,6 @@ class ObjectMgr
 
         GroupSet            mGroupSet;
         GuildMap            mGuildMap;
-        ArenaTeamMap        mArenaTeamMap;
 
         ItemMap             mItems;
 

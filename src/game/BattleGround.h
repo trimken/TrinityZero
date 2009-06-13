@@ -68,7 +68,6 @@ enum BattleGroundSpells
     SPELL_SPIRIT_HEAL_CHANNEL       = 22011,                // Spirit Heal Channel
     SPELL_SPIRIT_HEAL               = 22012,                // Spirit Heal
     SPELL_RESURRECTION_VISUAL       = 24171,                // Resurrection Impact Visual
-    SPELL_ARENA_PREPARATION         = 32727,                // use this one, 32728 not correct
     SPELL_ALLIANCE_GOLD_FLAG        = 32724,
     SPELL_ALLIANCE_GREEN_FLAG       = 32725,
     SPELL_HORDE_GOLD_FLAG           = 35774,
@@ -89,7 +88,6 @@ enum BattleGroundTimeIntervals
     START_DELAY0                    = 120000,               // ms
     START_DELAY1                    = 60000,                // ms
     START_DELAY2                    = 30000,                // ms
-    START_DELAY3                    = 15000,                // ms used only in arena
     RESPAWN_ONE_DAY                 = 86400,                // secs
     RESPAWN_IMMEDIATELY             = 0,                    // secs
     BUFF_RESPAWN_TIME               = 180,                  // secs
@@ -136,11 +134,6 @@ enum BattleGroundTypeId
     BATTLEGROUND_AV     = 1,
     BATTLEGROUND_WS     = 2,
     BATTLEGROUND_AB     = 3,
-    BATTLEGROUND_NA     = 4,
-    BATTLEGROUND_BE     = 5,
-    BATTLEGROUND_AA     = 6,
-    BATTLEGROUND_EY     = 7,
-    BATTLEGROUND_RL     = 8
 };
 
 // handle the queue types and bg types separately to enable joining queue for different sized arenas at the same time
@@ -149,10 +142,6 @@ enum BattleGroundQueueTypeId
     BATTLEGROUND_QUEUE_AV     = 1,
     BATTLEGROUND_QUEUE_WS     = 2,
     BATTLEGROUND_QUEUE_AB     = 3,
-    BATTLEGROUND_QUEUE_EY     = 4,
-    BATTLEGROUND_QUEUE_2v2     = 5,
-    BATTLEGROUND_QUEUE_3v3     = 6,
-    BATTLEGROUND_QUEUE_5v5     = 7,
 };
 
 enum ScoreType
@@ -181,17 +170,9 @@ enum ScoreType
     // TODO : implement them
 };
 
-enum ArenaType
-{
-    ARENA_TYPE_2v2          = 2,
-    ARENA_TYPE_3v3          = 3,
-    ARENA_TYPE_5v5          = 5
-};
-
 enum BattleGroundType
 {
     TYPE_BATTLEGROUND     = 3,
-    TYPE_ARENA            = 4
 };
 
 enum BattleGroundWinner
@@ -214,7 +195,6 @@ enum BattleGroundJoinError
     BG_JOIN_ERR_GROUP_TOO_MANY = 2,
     BG_JOIN_ERR_MIXED_FACTION = 3,
     BG_JOIN_ERR_MIXED_LEVELS = 4,
-    BG_JOIN_ERR_MIXED_ARENATEAM = 5,
     BG_JOIN_ERR_GROUP_MEMBER_ALREADY_IN_QUEUE = 6,
     BG_JOIN_ERR_GROUP_DESERTER = 7,
     BG_JOIN_ERR_ALL_QUEUES_USED = 8,
@@ -289,7 +269,6 @@ class BattleGround
         uint32 GetMinPlayersPerTeam() const { return m_MinPlayersPerTeam; }
 
         int GetStartDelayTime() const       { return m_StartDelayTime; }
-        uint8 GetArenaType() const          { return m_ArenaType; }
         uint8 GetWinner() const             { return m_Winner; }
         uint32 GetBattlemasterEntry() const;
 
@@ -305,9 +284,6 @@ class BattleGround
         void SetMaxPlayers(uint32 MaxPlayers) { m_MaxPlayers = MaxPlayers; }
         void SetMinPlayers(uint32 MinPlayers) { m_MinPlayers = MinPlayers; }
         void SetLevelRange(uint32 min, uint32 max) { m_LevelMin = min; m_LevelMax = max; }
-        void SetRated(bool state)           { m_IsRated = state; }
-        void SetArenaType(uint8 type)       { m_ArenaType = type; }
-        void SetArenaorBGType(bool _isArena) { m_IsArena = _isArena; }
         void SetWinner(uint8 winner)        { m_Winner = winner; }
 
         void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
@@ -331,10 +307,6 @@ class BattleGround
         bool HasFreeSlotsForTeam(uint32 Team) const;
         bool HasFreeSlots() const;
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
-
-        bool isArena() const        { return m_IsArena; }
-        bool isBattleGround() const { return !m_IsArena; }
-        bool isRated() const        { return m_IsRated; }
 
         typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
@@ -404,7 +376,7 @@ class BattleGround
 
         uint8 GetTeamIndexByTeamId(uint32 Team) const { return Team == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE; }
         uint32 GetPlayersCountByTeam(uint32 Team) const { return m_PlayersCount[GetTeamIndexByTeamId(Team)]; }
-        uint32 GetAlivePlayersCountByTeam(uint32 Team) const;   // used in arenas to correctly handle death in spirit of redemption / last stand etc. (killer = killed) cases
+        uint32 GetAlivePlayersCountByTeam(uint32 Team) const;   //[TRINITYROLLBACK] used in arenas to correctly handle death in spirit of redemption / last stand etc. (killer = killed) cases
         void UpdatePlayersCountByTeam(uint32 Team, bool remove)
         {
             if(remove)
@@ -413,19 +385,13 @@ class BattleGround
                 ++m_PlayersCount[GetTeamIndexByTeamId(Team)];
         }
 
-        // used for rated arena battles
-        void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId; }
-        uint32 GetArenaTeamIdForTeam(uint32 Team) const { return m_ArenaTeamIds[GetTeamIndexByTeamId(Team)]; }
-        void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange; }
-        int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const { return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)]; }
-
         /* Triggers handle */
-        // must be implemented in BG subclass
-        virtual void HandleAreaTrigger(Player* /*Source*/, uint32 /*Trigger*/) {}
         // must be implemented in BG subclass if need AND call base class generic code
         virtual void HandleKillPlayer(Player *player, Player *killer);
         virtual void HandleKillUnit(Creature* /*unit*/, Player* /*killer*/);
 
+		// must be implemented in BG subclass
+        virtual void HandleAreaTrigger(Player* /*Source*/, uint32 /*Trigger*/) {}
         /* Battleground events */
         /* these functions will return true event is possible, but false if player is bugger */
         virtual void EventPlayerDroppedFlag(Player* /*player*/) {}
@@ -463,7 +429,6 @@ class BattleGround
 
         virtual bool HandlePlayerUnderMap(Player * plr) {return false;}
 
-        // since arenas can be AvA or Hvh, we have to get the "temporary" team of a player
         uint32 GetPlayerTeam(uint64 guid);
 
         void SetDeleteThis() {m_SetDeleteThis = true;}
@@ -501,16 +466,13 @@ class BattleGround
         uint32 m_EndTime;
         uint32 m_LastResurrectTime;
         uint32 m_Queue_type;
-        uint8  m_ArenaType;                                 // 2=2v2, 3=3v3, 5=5v5
         bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
         bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave
         // this variable is not used .... it can be found in many other ways... but to store it in BG object instance is useless
-        //uint8  m_BattleGroundType;                        // 3=BG, 4=arena
+        //uint8  m_BattleGroundType;                        // 3=BG
         //instead of uint8 (in previous line) is bool used
-        bool   m_IsArena;
         uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
         int32  m_StartDelayTime;
-        bool   m_IsRated;                                   // is this battle rated?
         bool   m_PrematureCountDown;
         uint32 m_PrematureCountDownTimer;
         char const *m_Name;
@@ -531,11 +493,6 @@ class BattleGround
 
         /* Players count by team */
         uint32 m_PlayersCount[2];
-
-        /* Arena team ids by team */
-        uint32 m_ArenaTeamIds[2];
-
-        int32 m_ArenaTeamRatingChanges[2];
 
         /* Limits */
         uint32 m_LevelMin;

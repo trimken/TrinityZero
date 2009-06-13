@@ -283,7 +283,6 @@ enum TrinityStrings
     LANG_YOU_ENABLE_CHAT                = 304,
 
     LANG_COMMAND_MODIFY_REP             = 305,
-    LANG_COMMAND_MODIFY_ARENA           = 306,
     LANG_COMMAND_FACTION_NOTFOUND       = 307,
     LANG_COMMAND_FACTION_UNKNOWN        = 308,
     LANG_COMMAND_FACTION_INVPARAM       = 309,
@@ -577,10 +576,6 @@ enum TrinityStrings
     LANG_BG_WS_ALLIANCE_FLAG_RESPAWNED  = 614,
     LANG_BG_WS_HORDE_FLAG_RESPAWNED     = 615,
 
-    LANG_BG_EY_ONE_MINUTE               = 636,
-    LANG_BG_EY_HALF_MINUTE              = 637,
-    LANG_BG_EY_BEGIN                    = 638,
-
     LANG_BG_AB_ALLY                     = 650,
     LANG_BG_AB_HORDE                    = 651,
     LANG_BG_AB_NODE_STABLES             = 652,
@@ -599,34 +594,6 @@ enum TrinityStrings
     LANG_BG_AB_H_NEAR_VICTORY           = 665,
     LANG_BG_MARK_BY_MAIL                = 666,
 
-    LANG_BG_EY_HAS_TAKEN_A_M_TOWER      = 667,
-    LANG_BG_EY_HAS_TAKEN_H_M_TOWER      = 668,
-    LANG_BG_EY_HAS_TAKEN_A_D_RUINS      = 669,
-    LANG_BG_EY_HAS_TAKEN_H_D_RUINS      = 670,
-    LANG_BG_EY_HAS_TAKEN_A_B_TOWER      = 671,
-    LANG_BG_EY_HAS_TAKEN_H_B_TOWER      = 672,
-    LANG_BG_EY_HAS_TAKEN_A_F_RUINS      = 673,
-    LANG_BG_EY_HAS_TAKEN_H_F_RUINS      = 674,
-    LANG_BG_EY_HAS_LOST_A_M_TOWER       = 675,
-    LANG_BG_EY_HAS_LOST_H_M_TOWER       = 676,
-    LANG_BG_EY_HAS_LOST_A_D_RUINS       = 677,
-    LANG_BG_EY_HAS_LOST_H_D_RUINS       = 678,
-    LANG_BG_EY_HAS_LOST_A_B_TOWER       = 679,
-    LANG_BG_EY_HAS_LOST_H_B_TOWER       = 680,
-    LANG_BG_EY_HAS_LOST_A_F_RUINS       = 681,
-    LANG_BG_EY_HAS_LOST_H_F_RUINS       = 682,
-    LANG_BG_EY_HAS_TAKEN_FLAG           = 683,
-    LANG_BG_EY_CAPTURED_FLAG_A          = 684,
-    LANG_BG_EY_CAPTURED_FLAG_H          = 685,
-    LANG_BG_EY_DROPPED_FLAG             = 686,
-    LANG_BG_EY_RESETED_FLAG             = 687,
-
-    LANG_ARENA_ONE_TOOLOW               = 700,
-    LANG_ARENA_ONE_MINUTE               = 701,
-    LANG_ARENA_THIRTY_SECONDS           = 702,
-    LANG_ARENA_FIFTEEN_SECONDS          = 703,
-    LANG_ARENA_BEGUN                    = 704,
-
     LANG_WAIT_BEFORE_SPEAKING           = 705,
     LANG_NOT_EQUIPPED_ITEM              = 706,
     LANG_PLAYER_DND                     = 707,
@@ -637,11 +604,7 @@ enum TrinityStrings
     LANG_BG_QUEUE_ANNOUNCE_SELF         = 711,
     LANG_BG_QUEUE_ANNOUNCE_WORLD        = 712,
 
-
-    LANG_YOUR_ARENA_LEVEL_REQ_ERROR     = 713,
-//    LANG_HIS_ARENA_LEVEL_REQ_ERROR      = 714, an opcode exists for this
     LANG_YOUR_BG_LEVEL_REQ_ERROR        = 715,
-//    LANG_YOUR_ARENA_TEAM_FULL           = 716, an opcode exists for this
 
     LANG_BG_AV_ALLY                     = 717,
     LANG_BG_AV_HORDE                    = 718,
@@ -683,17 +646,10 @@ enum TrinityStrings
 
     // Room for BG/ARENA                  751-769 not used
 
-    LANG_ARENA_TESTING                  = 785,
-
     LANG_AUTO_ANN                       = 786,
     LANG_ANNOUNCE_COLOR                 = 787,
 
     LANG_BG_GROUP_TOO_LARGE             = 1122, // "Your group is too large for this battleground. Please regroup to join."
-    LANG_ARENA_GROUP_TOO_LARGE          = 1123, // "Your group is too large for this arena. Please regroup to join."
-    LANG_ARENA_YOUR_TEAM_ONLY           = 1124, // "Your group has members not in your arena team. Please regroup to join."
-    LANG_ARENA_NOT_ENOUGH_PLAYERS       = 1125, // "Your group does not have enough players to join this match."
-    LANG_ARENA_GOLD_WINS                = 1126, // "The Gold Team wins!"
-    LANG_ARENA_GREEN_WINS               = 1127, // "The Green Team wins!"
     LANG_BATTLEGROUND_PREMATURE_FINISH_WARNING = 1128,   // The battleground will end soon, because there aren't enough players. Get more ppl or win already!
     LANG_BG_GROUP_OFFLINE_MEMBER        = 1129, // "Your group has an offline member. Please remove him before joining."
     LANG_BG_GROUP_MIXED_FACTION         = 1130, // "Your group has players from the opposing faction. You can't join the battleground as a group."
@@ -702,8 +658,8 @@ enum TrinityStrings
     LANG_BG_GROUP_MEMBER_DESERTER       = 1133, // "Someone in your party is Deserter. You can't join as group."
     LANG_BG_GROUP_MEMBER_NO_FREE_QUEUE_SLOTS = 1134, // "Someone in your party is already in three battleground queues. You cannot join as group."
 
-    LANG_CANNOT_TELE_TO_BG              = 1135, // "You cannot teleport to a battleground or arena map."
-    LANG_CANNOT_SUMMON_TO_BG            = 1136, // "You cannot summon players to a battleground or arena map."
+    LANG_CANNOT_TELE_TO_BG              = 1135, // "You cannot teleport to a battleground map."
+    LANG_CANNOT_SUMMON_TO_BG            = 1136, // "You cannot summon players to a battleground map."
     LANG_CANNOT_GO_TO_BG_GM             = 1137, // "You must be in GM mode to teleport to a player in a battleground."
     LANG_CANNOT_GO_TO_BG_FROM_BG        = 1138, // "You cannot teleport to a battleground from another battleground. Please leave the current battleground first."
 
