@@ -16,83 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `arena_team`
---
-
-DROP TABLE IF EXISTS `arena_team`;
-CREATE TABLE `arena_team` (
-  `arenateamid` int(10) unsigned NOT NULL default '0',
-  `name` char(255) NOT NULL,
-  `captainguid` int(10) unsigned NOT NULL default '0',
-  `type` tinyint(3) unsigned NOT NULL default '0',
-  `BackgroundColor` int(10) unsigned NOT NULL default '0',
-  `EmblemStyle` int(10) unsigned NOT NULL default '0',
-  `EmblemColor` int(10) unsigned NOT NULL default '0',
-  `BorderStyle` int(10) unsigned NOT NULL default '0',
-  `BorderColor` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`arenateamid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `arena_team`
---
-
-LOCK TABLES `arena_team` WRITE;
-/*!40000 ALTER TABLE `arena_team` DISABLE KEYS */;
-/*!40000 ALTER TABLE `arena_team` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `arena_team_member`
---
-
-DROP TABLE IF EXISTS `arena_team_member`;
-CREATE TABLE `arena_team_member` (
-  `arenateamid` int(10) unsigned NOT NULL default '0',
-  `guid` int(10) unsigned NOT NULL default '0',
-  `played_week` int(10) unsigned NOT NULL default '0',
-  `wons_week` int(10) unsigned NOT NULL default '0',
-  `played_season` int(10) unsigned NOT NULL default '0',
-  `wons_season` int(10) unsigned NOT NULL default '0',
-  `personal_rating` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`arenateamid`,`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `arena_team_member`
---
-
-LOCK TABLES `arena_team_member` WRITE;
-/*!40000 ALTER TABLE `arena_team_member` DISABLE KEYS */;
-/*!40000 ALTER TABLE `arena_team_member` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `arena_team_stats`
---
-
-DROP TABLE IF EXISTS `arena_team_stats`;
-CREATE TABLE `arena_team_stats` (
-  `arenateamid` int(10) unsigned NOT NULL default '0',
-  `rating` int(10) unsigned NOT NULL default '0',
-  `games` int(10) unsigned NOT NULL default '0',
-  `wins` int(10) unsigned NOT NULL default '0',
-  `played` int(10) unsigned NOT NULL default '0',
-  `wins2` int(10) unsigned NOT NULL default '0',
-  `rank` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`arenateamid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `arena_team_stats`
---
-
-LOCK TABLES `arena_team_stats` WRITE;
-/*!40000 ALTER TABLE `arena_team_stats` DISABLE KEYS */;
-/*!40000 ALTER TABLE `arena_team_stats` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `auctionhouse`
 --
 
@@ -391,6 +314,29 @@ CREATE TABLE `character_inventory` (
 LOCK TABLES `character_inventory` WRITE;
 /*!40000 ALTER TABLE `character_inventory` DISABLE KEYS */;
 /*!40000 ALTER TABLE `character_inventory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `character_kill`
+--
+
+DROP TABLE IF EXISTS `character_kill`;
+CREATE TABLE `character_kill` (
+  `guid` int(11) unsigned NOT NULL default '0' COMMENT 'Global Unique Identifier',
+  `creature_template` int(11) unsigned NOT NULL default '0' COMMENT 'Creature Identifier',
+  `honor` float NOT NULL default '0',
+  `date` int(11) unsigned NOT NULL default '0',
+  `type` tinyint(3) unsigned NOT NULL default '0',
+  KEY `idx_guid` (`guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Player System';
+
+--
+-- Dumping data for table `character_kill`
+--
+
+LOCK TABLES `character_kill` WRITE;
+/*!40000 ALTER TABLE `character_kill` DISABLE KEYS */;
+/*!40000 ALTER TABLE `character_kill` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1375,4 +1321,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-06-11 14:08:45
+-- Dump completed on 2009-06-13 14:28:47
