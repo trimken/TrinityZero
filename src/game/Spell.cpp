@@ -4550,7 +4550,7 @@ uint8 Spell::CheckItems()
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return 0;
 
-    uint32 itemid, itemcount;
+    uint32 itemid;
     Player* p_caster = (Player*)m_caster;
 
     if(!m_CastItem)
@@ -4669,7 +4669,9 @@ uint8 Spell::CheckItems()
         focusObject = ok;                                   // game object found in range
     }
 
-/*    if (!(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP &&
+/*  uint32 itemcount;
+
+    if (!(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP &&
         m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION)))
     {
         for(uint32 i=0;i<8;i++)

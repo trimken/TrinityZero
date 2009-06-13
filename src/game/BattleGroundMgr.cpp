@@ -1031,7 +1031,8 @@ uint32 BattleGroundMgr::CreateBattleGround(uint32 bgTypeId, uint32 MinPlayersPer
     bg->SetLevelRange(LevelMin, LevelMax);
 
     //add BattleGround instance to FreeSlotQueue (.back() will return the template!)
-    bg->AddToBGFreeSlotQueue();
+    if (bgTypeId < MAX_BATTLEGROUND_TYPES ) // anti-crash
+     bg->AddToBGFreeSlotQueue();
 
     // do NOT add to update list, since this is a template battleground!
 
@@ -1234,7 +1235,7 @@ uint32 BattleGroundMgr::BGTemplateId(uint32 bgQueueTypeId) const
 
 void BattleGroundMgr::SetHolidayWeekends(uint32 mask)
 {
-    for(uint32 bgtype = 1; bgtype <= 8; ++bgtype)
+    for(uint32 bgtype = 1; bgtype < MAX_BATTLEGROUND_TYPES; ++bgtype)
     {
         if(BattleGround * bg = GetBattleGroundTemplate(bgtype))
         {
