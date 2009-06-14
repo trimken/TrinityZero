@@ -227,6 +227,8 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
         std::string CastBarCaption;
 
         Name = info->name;
+
+		// unused
         CastBarCaption = info->castBarCaption;
 
         int loc_idx = GetSessionDbLocaleIndex();
@@ -246,12 +248,17 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
         data << entryID;
         data << (uint32)info->type;
         data << (uint32)info->displayId;
-        data << Name;
-        data << uint8(0) << uint8(0) << uint8(0);           // name2, name3, name4
-        data << uint8(0);                                   // 2.0.3, string
-        data << CastBarCaption;                             // 2.0.3, string. Text will appear in Cast Bar when using GO (ex: "Collecting")
-        data << uint8(0);                                   // 2.0.3, probably string
-        data.append(info->raw.data,24);
+        data << info->name;
+        data << uint16(0) << uint8(0) << uint8(0);           // name2, name3, name4
+
+		// [TRINITYROLLBACK] to rewrite ?
+        // data << CastBarCaption;                             // 2.0.3, string. Text will appear in Cast Bar when using GO (ex: "Collecting")
+        // data << uint8(0);                                   // 2.0.3, probably string
+        // data.append(info->raw.data,24);
+
+		for (uint16 d=0;d<24;d++)
+		  data << info->raw.data[d];
+
         SendPacket( &data );
         sLog.outDebug(  "WORLD: Sent CMSG_GAMEOBJECT_QUERY " );
     }
