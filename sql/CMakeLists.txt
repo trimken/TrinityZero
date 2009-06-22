@@ -1,4 +1,4 @@
-add_subdirectory(updates)
+add_subdirectory(trinityzero_updates)
 add_subdirectory(tools)
 
 
@@ -6,4 +6,4 @@ add_subdirectory(tools)
 
 FILE(GLOB _SQL *.sql)
 
-install(FILES ${_SQL} DESTINATION share/trinity/sql)
+install(FILES ${_SQL} DESTINATION share/trinity/sql/updates)
