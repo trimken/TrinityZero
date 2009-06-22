@@ -2286,7 +2286,7 @@ void Spell::cast(bool skipCheck)
 
     // CAST SPELL
     SendSpellCooldown();
-    //SendCastResult(castResult);
+    SendCastResult(castResult); //112
     SendSpellGo();                                          // we must send smsg_spell_go packet before m_castItem delete in TakeCastItem()...
 
     if(m_customAttr & SPELL_ATTR_CU_DIRECT_DAMAGE)
@@ -2796,7 +2796,7 @@ void Spell::SendSpellStart()
 
     data.append(m_caster->GetPackGUID());
     data << uint32(m_spellInfo->Id);
-    data << uint8(m_cast_count);                            // single cast or multi 2.3 (0/1)
+    //112 data << uint8(m_cast_count);                            // single cast or multi 2.3 (0/1)
     data << uint16(castFlags);
     data << uint32(m_timer);
 
