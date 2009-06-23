@@ -1083,9 +1083,9 @@ void WorldSession::HandleMoveRootAck(WorldPacket&/* recv_data*/)
     */
 }
 
-void WorldSession::HandleMoveTeleportAck(WorldPacket&/* recv_data*/)
+void WorldSession::HandleMoveTeleportAck(WorldPacket& recv_data)
 {
-    /*
+    
         CHECK_PACKET_SIZE(recv_data,8+4);
 
         sLog.outDebug("MSG_MOVE_TELEPORT_ACK");
@@ -1096,7 +1096,7 @@ void WorldSession::HandleMoveTeleportAck(WorldPacket&/* recv_data*/)
         recv_data >> flags >> time;
         DEBUG_LOG("Guid " I64FMTD,guid);
         DEBUG_LOG("Flags %u, time %u",flags, time/1000);
-    */
+    
 }
 
 void WorldSession::HandleSetActionBar(WorldPacket& recv_data)
