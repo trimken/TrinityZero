@@ -522,17 +522,17 @@ void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleFriendListOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 4);
+    /*CHECK_PACKET_SIZE(recv_data, 4);
     sLog.outDebug( "WORLD: Received CMSG_CONTACT_LIST" );
     uint32 unk;
     recv_data >> unk;
-    sLog.outDebug("unk value is %u", unk);
+    sLog.outDebug("unk value is %u", unk);*/
     _player->GetSocial()->SendSocialList();
 }
 
 void WorldSession::HandleAddFriendOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 1+1);
+    CHECK_PACKET_SIZE(recv_data, 1);
 
     sLog.outDebug( "WORLD: Received CMSG_ADD_FRIEND" );
 
@@ -542,7 +542,7 @@ void WorldSession::HandleAddFriendOpcode( WorldPacket & recv_data )
     recv_data >> friendName;
 
     // recheck
-    CHECK_PACKET_SIZE(recv_data, (friendName.size()+1)+1);
+    CHECK_PACKET_SIZE(recv_data, (friendName.size())+1);
 
     recv_data >> friendNote;
 
