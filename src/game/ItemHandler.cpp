@@ -726,9 +726,9 @@ void WorldSession::SendListInventory( uint64 vendorguid )
     uint8 numitems = vItems->GetItemCount();
     uint8 count = 0;
 
-    WorldPacket data( SMSG_LIST_INVENTORY, (8+1+numitems*8*4) );
-    data << uint64(vendorguid);
-    data << uint8(numitems);
+    WorldPacket data( SMSG_LIST_INVENTORY, (8+1+numitems*7*4) );
+    data << vendorguid;
+    data << numitems;
 
     float discountMod = _player->GetReputationPriceDiscount(pCreature);
 
@@ -753,12 +753,12 @@ void WorldSession::SendListInventory( uint64 vendorguid )
                 data << uint32(price);
                 data << uint32(pProto->MaxDurability);
                 data << uint32(pProto->BuyCount);
-                data << uint32(crItem->ExtendedCost);
+               // data << uint32(crItem->ExtendedCost);
             }
         }
     }
 
-    if ( count == 0 || data.size() != 8 + 1 + size_t(count) * 8 * 4 )
+    if ( count == 0 || data.size() != 8 + 1 + size_t(count) * 7 * 4 )
         return;
 
     data.put<uint8>(8, count);
