@@ -1,0 +1,13 @@
+[RULES]
+
+* use the prefix [TZERO] when you have to comment out an useless code from TBC
+* use the space button instead tab in the code.
+
+[TO DO]
+
+* Queryhandler.cpp   ln 189  -> backport
+* we have to clean the TrinityScript Solution from TBC bosses and creatures AI
+
+[NOTES]
+
+* GridNotifiers line 80 ( i_player.GetSession()->SendPacket(&packet); )  ->  it  crashes the client

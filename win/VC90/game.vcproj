@@ -1380,6 +1380,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\NOTEPAD"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
