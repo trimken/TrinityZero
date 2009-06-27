@@ -1430,8 +1430,8 @@ void Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
     for (int i = 0; i < 20; i++)
         items[i] = NULL;
 
-    result = CharacterDatabase.PQuery("SELECT `slot`,`item_template` FROM `character_inventory` WHERE `guid` = '%u' AND `bag` = '%u'",GetGUIDLow(),INVENTORY_SLOT_BAG_0);
-    if (result)
+result = CharacterDatabase.PQuery("SELECT `slot`,`item_template` FROM `character_inventory` WHERE `guid` = '%u' AND `bag` = 0",GetGUIDLow());
+if (result)
     {
         do
         {
