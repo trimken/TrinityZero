@@ -139,7 +139,7 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
    	ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
 	m_taximask[0] = rEntry->startingTaxiMask;
 
- /* [TRINITYROLLBACK] useless?
+ /* [TZERO] useless?
     switch(race)
     {
         case RACE_HUMAN:    SetTaximaskNode(2);  break;     // Human
@@ -555,7 +555,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE );
     SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);               // fix cast time showed in spell tooltip on client
 	
-	SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_SPECIALINFO); // [TRINITYROLLBACK]
+	SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_SPECIALINFO); // [TZERO]
                                                             //-1 is default value
     SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, uint32(-1));
 
@@ -563,7 +563,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value(PLAYER_BYTES_2, (facialHair | (0x00 << 8) | (0x00 << 16) | (0x02 << 24)));
     SetByteValue(PLAYER_BYTES_3, 0, gender);
 
-	SetUInt32Value(PLAYER_FIELD_BYTES, 0xEEE00000 ); // [TRINITYROLLBACK]
+	SetUInt32Value(PLAYER_FIELD_BYTES, 0xEEE00000 ); // [TZERO]
 
     SetUInt32Value( PLAYER_GUILDID, 0 );
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
@@ -1430,8 +1430,8 @@ void Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
     for (int i = 0; i < 20; i++)
         items[i] = NULL;
 
-result = CharacterDatabase.PQuery("SELECT `slot`,`item_template` FROM `character_inventory` WHERE `guid` = '%u' AND `bag` = 0",GetGUIDLow());
-if (result)
+    result = CharacterDatabase.PQuery("SELECT `slot`,`item_template` FROM `character_inventory` WHERE `guid` = '%u' AND `bag` = 0",GetGUIDLow());
+    if (result)
     {
         do
         {
@@ -2273,7 +2273,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     PlayerLevelInfo info;
     objmgr.GetPlayerLevelInfo(getRace(),getClass(),getLevel(),&info);
 
-//[TRINITYROLLBACK]    SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) );
+//[TZERO]    SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) );
     SetUInt32Value(PLAYER_NEXT_LEVEL_XP, Trinity::XP::xp_to_level(getLevel()));
 
     UpdateSkillsForLevel ();
@@ -2304,7 +2304,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     for(uint16 index = PLAYER_FIELD_COMBAT_RATING_1; index < PLAYER_FIELD_COMBAT_RATING_1 + 20; ++index)
         SetUInt32Value(index, 0);
 
-//[TRINITYROLLBACK]    SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
+//[TZERO]    SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
     for (int i = 0; i < 7; i++)
     {
         SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+i, 0);
@@ -2337,7 +2337,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetFloatValue(PLAYER_RANGED_CRIT_PERCENTAGE,0.0f);
 
     // Init spell schools (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
-  /*[TRINITYROLLBACK]  for (uint8 i = 0; i < 7; ++i)
+  /*[TZERO]  for (uint8 i = 0; i < 7; ++i)
         SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1+i, 0.0f); */
 
     SetFloatValue(PLAYER_PARRY_PERCENTAGE, 0.0f);
@@ -2359,8 +2359,8 @@ void Player::InitStatsForLevel(bool reapplyMods)
         SetResistanceBuffMods(SpellSchools(i), false, 0.0f);
     }
 
- //[TRINITYROLLBACK]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,0);
- //[TRINITYROLLBACK]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE,0);
+ //[TZERO]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE,0);
+ //[TZERO]   SetUInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE,0);
     for(int i = 0; i < MAX_SPELL_SCHOOL; ++i)
     {
         SetFloatValue(UNIT_FIELD_POWER_COST_MODIFIER+i,0.0f);
@@ -3356,7 +3356,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(PLAYER_GUILD_TIMESTAMP);
 
     // PLAYER_QUEST_LOG_x also visible bit on official (but only on party/raid)...
-    for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_20_2; i+=4) // [TRINITYROLLBACK] changed from 25 to 20
+    for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_20_2; i+=4) // [TZERO] changed from 25 to 20
         updateVisualBits.SetBit(i);
 
     //Players visible items are not inventory stuff
@@ -3381,7 +3381,7 @@ void Player::InitVisibleBits()
         updateVisualBits.SetBit(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (i*MAX_VISIBLE_ITEM_OFFSET));
     }
 
-//[TRINITYROLLBACK]    updateVisualBits.SetBit(PLAYER_CHOSEN_TITLE);
+//[TZERO]    updateVisualBits.SetBit(PLAYER_CHOSEN_TITLE);
 }
 
 void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target ) const
@@ -4147,9 +4147,9 @@ void Player::RepopAtGraveyard()
     // and don't show spirit healer location
     if(ClosestGrave)
     {
-		if(isDead())
+        if(isDead())
 		{
-        TeleportTo(ClosestGrave->map_id, ClosestGrave->x, ClosestGrave->y, ClosestGrave->z, GetOrientation());
+         TeleportTo(ClosestGrave->map_id, ClosestGrave->x, ClosestGrave->y, ClosestGrave->z, GetOrientation());
         }
     }
 }
@@ -4366,7 +4366,7 @@ float Player::GetDodgeFromAgility()
 
 	return val;
 
-  /* [TRINITYROLLBACK]
+  /* [TZERO]
     // Table for base dodge values
     float dodge_base[MAX_CLASSES] = {
          0.0075f,   // Warrior
@@ -4417,7 +4417,7 @@ float Player::GetSpellCritFromIntellect()
     // The formula keeps the crit chance at %5 on every level unless the player
     // increases his intelligence by other means (enchants, buffs, talents, ...)
 
-	//[TRINITYROLLBACK] from mangos 3462 for 1.12 MUST BE CHECKED
+	//[TZERO] from mangos 3462 for 1.12 MUST BE CHECKED
 	float val=0;
 
     static const struct
@@ -5349,7 +5349,7 @@ void Player::SendFactionState(FactionState const* faction) const
 
 void Player::SendInitialReputations()
 {
-	//[TRINITYROLLBACK] changed from 128 to 64 [ for 1.12 ? ]
+	//[TZERO] changed from 128 to 64 [ for 1.12 ? ]
     WorldPacket data(SMSG_INITIALIZE_FACTIONS, (4+64*5));
     data << uint32 (0x00000040);
 
@@ -6386,7 +6386,7 @@ void Player::DuelComplete(DuelCompleteType type)
     else if(duel->opponent->GetComboTarget()==GetPetGUID())
         duel->opponent->ClearComboPoints();
 
-   /* [TRINITYROLLBACK] to replace ?
+   /* [TZERO] to replace ?
     // Honor points after duel (the winner) - ImpConfig
     if(uint32 amount = sWorld.getConfig(CONFIG_HONOR_AFTER_DUEL))
         duel->opponent->RewardHonor(NULL,1,amount);
@@ -9952,7 +9952,7 @@ void Player::SetVisibleItemSlot(uint8 slot, Item *pItem)
 
         // Use SetInt16Value to prevent set high part to FFFF for negative value
         SetInt16Value( PLAYER_VISIBLE_ITEM_1_PROPERTIES + (slot * MAX_VISIBLE_ITEM_OFFSET), 0, pItem->GetItemRandomPropertyId());
-        // [TRINITYROLLBACK] SetUInt32Value(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (slot * MAX_VISIBLE_ITEM_OFFSET), pItem->GetItemSuffixFactor());
+        // [TZERO] SetUInt32Value(PLAYER_VISIBLE_ITEM_1_PROPERTIES + 1 + (slot * MAX_VISIBLE_ITEM_OFFSET), pItem->GetItemSuffixFactor());
     }
     else
     {
@@ -11093,7 +11093,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                     HandleStatModifier(UNIT_MOD_DAMAGE_RANGED, TOTAL_VALUE, float(enchant_amount), apply);
                 break;
             /* case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
-             [TRINITYROLLBACK] to rewrite [?]
+             [TZERO] to rewrite [?]
 			   if(enchant_spell_id)
                 {
                     if(apply)
@@ -12277,7 +12277,7 @@ bool Player::SatisfyQuestPrevChain( Quest const* qInfo, bool msg )
 
 bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
 {
- /* [TRINITYROLLBACK]   if(!qInfo->IsDaily())
+ /* [TZERO]   if(!qInfo->IsDaily())
         return true;
 
     bool have_slot = false;
@@ -13481,7 +13481,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     // check PLAYER_CHOSEN_TITLE compatibility with PLAYER__FIELD_KNOWN_TITLES
     // note: PLAYER__FIELD_KNOWN_TITLES updated at quest status loaded
-/*[TRINITYROLLBACK]    if(uint32 curTitle = GetUInt32Value(PLAYER_CHOSEN_TITLE))
+/*[TZERO]    if(uint32 curTitle = GetUInt32Value(PLAYER_CHOSEN_TITLE))
     {
         if(!HasTitle(curTitle))
             SetUInt32Value(PLAYER_CHOSEN_TITLE,0);
@@ -14098,7 +14098,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
 }
 
 void Player::_LoadDailyQuestStatus(QueryResult *result)
-{/* [TRINITYROLLBACK
+{/* [[TZERO]
     for(uint32 quest_daily_idx = 0; quest_daily_idx < PLAYER_MAX_DAILY_QUESTS; ++quest_daily_idx)
         SetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1+quest_daily_idx,0);
 
@@ -15010,7 +15010,7 @@ void Player::_SaveQuestStatus()
 
 void Player::_SaveDailyQuestStatus()
 {
-/*[TRINITYROLLBACK    if(!m_DailyQuestChanged)
+/*[[TZERO]    if(!m_DailyQuestChanged)
         return;
 
     m_DailyQuestChanged = false;
@@ -15942,7 +15942,7 @@ void Player::RemovePetitionsAndSigns(uint64 guid, uint32 type)
 
             // send update if charter owner in game
             Player* owner = objmgr.GetPlayer(ownerguid);
-           /*[TRINITYROLLBACK] if(owner)
+           /*[TZERO] if(owner)
                 owner->GetSession()->SendPetitionQueryOpcode(petitionguid); */
 
         } while ( result->NextRow() );
@@ -16510,7 +16510,7 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
 {
    return true;
 
-   /* [TRINITYROLLBACK] to rewrite [?]
+   /* [TZERO] to rewrite [?]
 
 	if(!enchantmentcondition)
         return true;

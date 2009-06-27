@@ -2014,7 +2014,7 @@ bool ChatHandler::HandleModifyBitCommand(const char* args)
 
 bool ChatHandler::HandleModifyHonorCommand (const char* args)
 {
- /* [TRINITYROLLBACK] to replace ?
+ /* [TZERO] to replace ?
   if (!*args)
         return false;
 

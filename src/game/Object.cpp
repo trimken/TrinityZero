@@ -283,7 +283,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2 
             *data << ((Player *)this)->GetTransport()->GetPositionX();
             *data << ((Player *)this)->GetTransport()->GetPositionY();
             *data << ((Player *)this)->GetTransport()->GetPositionZ();
-            //[TRINITYROLLBACK: strange error while compiling, should be checked] *data << ((Player *)this)->GetTransport()->GetOrientation();
+            //[[TZERO]: strange error while compiling, should be checked] *data << ((Player *)this)->GetTransport()->GetOrientation();
 
             *data << (uint64)(((Player *)this)->GetTransport()->GetGUID());
             *data << ((Player *)this)->GetTransOffsetX();
@@ -541,7 +541,7 @@ void Object::SetUInt64Value( uint16 index, const uint64 &value )
 
 void Object::SetFloatValue( uint16 index, float value )
 {
-    ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); //[TRINITYROLLBACK : not sure of it ] ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); 
+    ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); //[[TZERO] : not sure of it ] ASSERT( index < m_valuesCount || PrintIndexError( index , true ) ); 
 
     if(m_floatValues[ index ] != value)
     {
@@ -1224,7 +1224,6 @@ void WorldObject::BuildHeartBeatMsg(WorldPacket *data) const
     data->Initialize(MSG_MOVE_HEARTBEAT, 32);
     data->append(GetPackGUID());
     *data << uint32(((Unit*)this)->GetUnitMovementFlags()); // movement flags
-   // *data << uint8(0);                                      // 2.3.0
     *data << getMSTime();                                   // time
     *data << m_positionX;
     *data << m_positionY;

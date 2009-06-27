@@ -522,7 +522,8 @@ void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleFriendListOpcode( WorldPacket & recv_data )
 {
-    /*CHECK_PACKET_SIZE(recv_data, 4);
+    /*[TZERO]
+	CHECK_PACKET_SIZE(recv_data, 4);
     sLog.outDebug( "WORLD: Received CMSG_CONTACT_LIST" );
     uint32 unk;
     recv_data >> unk;
@@ -1470,7 +1471,7 @@ void WorldSession::HandleFarSightOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleChooseTitleOpcode( WorldPacket & recv_data )
 {
-	/* [ TRINITYROLLBACK: i don't know what is this, but the opcode is not in updatefields ]
+	/* [ [TZERO]: i don't know what is this, but the opcode is not in updatefields ]
     CHECK_PACKET_SIZE(recv_data, 4);
 
     sLog.outDebug("CMSG_SET_TITLE");

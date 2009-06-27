@@ -687,12 +687,12 @@ bool GossipHello_npc_mount_vendor(Player *player, Creature *_Creature)
             else canBuy = true;
             break;
         case 16264:                                         //Winaestra
-            if (player->GetReputationRank(911) != REP_EXALTED) //[TRINITYROLLBACK]&& race != RACE_BLOODELF)
+            if (player->GetReputationRank(911) != REP_EXALTED) //[TZERO]&& race != RACE_BLOODELF)
                 player->SEND_GOSSIP_MENU(10305, _Creature->GetGUID());
             else canBuy = true;
             break;
         case 17584:                                         //Torallius the Pack Handler
-            if (player->GetReputationRank(930) != REP_EXALTED) //[TRINITYROLLBACK] && race != RACE_DRAENEI)
+            if (player->GetReputationRank(930) != REP_EXALTED) //[TZERO] && race != RACE_DRAENEI)
                 player->SEND_GOSSIP_MENU(10239, _Creature->GetGUID());
             else canBuy = true;
             break;

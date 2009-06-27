@@ -111,7 +111,7 @@ enum SpellModOp
     SPELLMOD_EFFECT_PAST_FIRST      = 20,
     SPELLMOD_CASTING_TIME_OLD       = 21,
     SPELLMOD_DOT                    = 22,
-	 //[TRINITYROLLBACK] next enumerations changed in tbc
+	 //[TZERO] next enumerations changed in tbc
     SPELLMOD_EFFECT3                = 23,
     SPELLMOD_SPELL_BONUS_DAMAGE     = 24,
     // spellmod 25, 26 unused
@@ -161,7 +161,7 @@ enum ShapeshiftForm
     FORM_GHOUL              = 0x07,
     FORM_DIREBEAR           = 0x08,
     FORM_CREATUREBEAR       = 0x0E,
-    FORM_CREATURECAT        = 0x0F,  //[TRINITYROLLBACK] added in TBC
+    FORM_CREATURECAT        = 0x0F,  //[TZERO] added in TBC
     FORM_GHOSTWOLF          = 0x10,
     FORM_BATTLESTANCE       = 0x11,
     FORM_DEFENSIVESTANCE    = 0x12,
@@ -239,7 +239,7 @@ enum HitInfo
     HITINFO_CRUSHING           = 0x8000,
     HITINFO_NOACTION           = 0x10000,
     HITINFO_SWINGNOHITSOUND    = 0x80000,
-	//[TRINITYROLLBACK] tbc enumerations [?]
+	//[TZERO] tbc enumerations [?]
     HITINFO_UNK1                = 0x00000001,               // req correct packet structure
     HITINFO_UNK2                = 0x00000100,               // wotlk?
     HITINFO_UNK3                = 0x00002000,               // wotlk?
@@ -364,7 +364,7 @@ enum DeathState
     JUST_DIED   = 1,
     CORPSE      = 2,
     DEAD        = 3,
-	//[TRINITYROLLBACK] Tbc enumerations [?]
+	//[TZERO] Tbc enumerations [?]
     JUST_ALIVED = 4,
     DEAD_FALLING= 5
 };
@@ -389,7 +389,7 @@ enum UnitState
     UNIT_STAT_CONFUSED        = 0x00000800,
     UNIT_STAT_ALL_STATE       = 0xffffffff,                      //(UNIT_STAT_STOPPED | UNIT_STAT_MOVING | UNIT_STAT_IN_COMBAT | UNIT_STAT_IN_FLIGHT)
 
-    //[TRINITYROLLBACK] Tbc enumerations [?]
+    //[TZERO] Tbc enumerations [?]
     UNIT_STAT_DISTRACTED      = 0x00001000,
     UNIT_STAT_ISOLATED        = 0x00002000,                     // area auras do not affect other players
     UNIT_STAT_ATTACK_PLAYER   = 0x00004000,
@@ -412,7 +412,7 @@ enum UnitMoveType
     MOVE_SWIM           = 3,
     MOVE_SWIM_BACK      = 4,
     MOVE_TURN_RATE      = 5,
-    MOVE_FLIGHT         = 6, //[TRINITYROLLBACK] added in TBC
+    MOVE_FLIGHT         = 6, //[TZERO] added in TBC
     MOVE_FLIGHT_BACK    = 7, //added in TBC
 };
 
@@ -467,7 +467,7 @@ enum UnitFlags
     UNIT_FLAG_SKINNABLE      = 0x04000000,
     UNIT_FLAG_SHEATHE        = 0x40000000,
 
-	// [TRINITYROLLBACK] TBC enumerations [?]
+	// [TZERO] TBC enumerations [?]
     UNIT_FLAG_UNKNOWN7         = 0x00000001,
     UNIT_FLAG_NON_ATTACKABLE   = 0x00000002,                // not attackable
     UNIT_FLAG_UNKNOWN9         = 0x00000040,
@@ -501,7 +501,7 @@ enum UnitFlags2
 
 /// Non Player Character flags
 enum NPCFlags
-{
+{   // [TZERO]
     UNIT_NPC_FLAG_NONE                  = 0x00000000,
     UNIT_NPC_FLAG_GOSSIP                = 0x00000001,       // 100%
     UNIT_NPC_FLAG_QUESTGIVER            = 0x00000002,       // guessed, probably ok
@@ -561,7 +561,7 @@ enum MovementFlags
     MOVEMENTFLAG_ONTRANSPORT    = 0x2000000,
     MOVEMENTFLAG_SPLINE         = 0x4000000,
 
-    //[TRINITYROLLBACK] other enumeration to delete or check  
+    //[TZERO] other enumeration to delete or check  
 	MOVEMENTFLAG_NONE           = 0x00000000,
     MOVEMENTFLAG_LEVITATING     = 0x00000400,
     MOVEMENTFLAG_FLY_UNK1       = 0x00000800,

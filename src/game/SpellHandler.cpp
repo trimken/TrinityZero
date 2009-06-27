@@ -277,9 +277,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     CHECK_PACKET_SIZE(recvPacket,4);
 
     uint32 spellId;
-   //[TRINITYROLLBACK] uint8  cast_count;
+   //[TZERO] uint8  cast_count;
     recvPacket >> spellId;
-  //[TRINITYROLLBACK]  recvPacket >> cast_count;
+  //[TZERO]  recvPacket >> cast_count;
 
     sLog.outDebug("WORLD: got cast spell packet, spellId - %u, data length = %i",
         spellId, recvPacket.size());
@@ -319,7 +319,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     }
 
     Spell *spell = new Spell(_player, spellInfo, false);
-    spell->m_cast_count = 1;                       // set count of casts [TRINITYROLLBACK ] must be checked
+    spell->m_cast_count = 1;                       // set count of casts [[TZERO] ] must be checked
     spell->prepare(&targets);
 }
 

@@ -180,7 +180,6 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
         data << Name;
         data << uint8(0) << uint8(0) << uint8(0);           // name2, name3, name4, always empty
         data << SubName;
-        data << ci->IconName;                               // "Directions" for guard, string for Icons 2.3.0
         data << (uint32)ci->type_flags;                     // flags          wdbFeild7=wad flags1
         data << (uint32)ci->type;
         data << (uint32)ci->family;                         // family         wdbFeild9
@@ -251,7 +250,7 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
         data << info->name;
         data << uint16(0) << uint8(0) << uint8(0);           // name2, name3, name4
 
-		// [TRINITYROLLBACK] to rewrite ?
+		// [TZERO] to rewrite ?
         // data << CastBarCaption;                             // 2.0.3, string. Text will appear in Cast Bar when using GO (ex: "Collecting")
         // data << uint8(0);                                   // 2.0.3, probably string
         // data.append(info->raw.data,24);

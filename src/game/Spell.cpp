@@ -2796,7 +2796,6 @@ void Spell::SendSpellStart()
 
     data.append(m_caster->GetPackGUID());
     data << uint32(m_spellInfo->Id);
-    //112 data << uint8(m_cast_count);                            // single cast or multi 2.3 (0/1)
     data << uint16(castFlags);
     data << uint32(m_timer);
 

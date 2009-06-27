@@ -586,7 +586,7 @@ uint32 WorldSession::getDialogStatus(Player *pPlayer, Object* questgiver, uint32
                         result2 = DIALOG_STATUS_REWARD_REP;
                     else if (pPlayer->getLevel() <= pQuest->GetQuestLevel() + sWorld.getConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF) )
                     {
-                       /*[TRINITYROLLBACK] if (pQuest->HasFlag(QUEST_FLAGS_DAILY))
+                       /*[TZERO] if (pQuest->HasFlag(QUEST_FLAGS_DAILY))
                             result2 = DIALOG_STATUS_AVAILABLE_REP; 
                         else */
                             result2 = DIALOG_STATUS_AVAILABLE;

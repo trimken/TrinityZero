@@ -130,7 +130,7 @@ void PlayerSocial::SendSocialList()
     uint32 size = m_playerSocialMap.size();
 
     WorldPacket data(SMSG_CONTACT_LIST, (1+size*15));     // just can guess size
-    //data << uint32(7);                                    // unk flag (0x1, 0x2, 0x4), 0x7 if it include ignore list
+    //[TZERO] data << uint32(7);                                    // unk flag (0x1, 0x2, 0x4), 0x7 if it include ignore list
     data << uint8(size);                                   // friends count
 
     for(PlayerSocialMap::iterator itr = m_playerSocialMap.begin(); itr != m_playerSocialMap.end(); ++itr)
@@ -138,8 +138,9 @@ void PlayerSocial::SendSocialList()
         sSocialMgr.GetFriendInfo(plr, itr->first, itr->second);
 
         data << uint64(itr->first);                         // player guid
-        //data << uint32(itr->second.Flags);                // player flag (0x1-friend?, 0x2-ignored?, 0x4-muted?)
-        //data << itr->second.Note;                         // string note
+        /*[TZERO]
+        data << uint32(itr->second.Flags);                // player flag (0x1-friend?, 0x2-ignored?, 0x4-muted?)
+        data << itr->second.Note;                         // string note */
         if(SOCIAL_FLAG_FRIEND)								// if IsFriend()
         {
             data << uint8(itr->second.Status);              // online/offline/etc?
@@ -209,8 +210,8 @@ void SocialMgr::GetFriendInfo(Player *player, uint32 friendGUID, FriendInfo &fri
     bool gmInWhoList = sWorld.getConfig(CONFIG_GM_IN_WHO_LIST) || security > SEC_PLAYER;
 
     PlayerSocialMap::iterator itr = player->GetSocial()->m_playerSocialMap.find(friendGUID);
-    if(itr != player->GetSocial()->m_playerSocialMap.end())
-        //friendInfo.Note = itr->second.Note;
+    /*[TZERO if(itr != player->GetSocial()->m_playerSocialMap.end())
+        friendInfo.Note = itr->second.Note; */
 
     // PLAYER see his team only and PLAYER can't see MODERATOR, GAME MASTER, ADMINISTRATOR characters
     // MODERATOR, GAME MASTER, ADMINISTRATOR can see all
@@ -248,7 +249,7 @@ void SocialMgr::SendFriendStatus(Player *player, FriendsResult result, uint32 fr
     {
         case FRIEND_ADDED_OFFLINE:
         case FRIEND_ADDED_ONLINE:
-            //data << fi.Note;
+            //[TZERO] data << fi.Note;
             break;
     }
 

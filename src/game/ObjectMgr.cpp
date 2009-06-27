@@ -1942,7 +1942,7 @@ void ObjectMgr::LoadPlayerInfo()
                 continue;
 
             // skip expansion races if not playing with expansion
-           /*[TRINITYROLLBACK]
+           /*[TZERO]
 		      if (sWorld.getConfig(CONFIG_EXPANSION) < 1 && (race == RACE_BLOODELF || race == RACE_DRAENEI))
                 continue; */
 

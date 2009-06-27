@@ -46,12 +46,12 @@ enum SpellCastTargetFlags
     TARGET_FLAG_SELF            = 0x00000000,
     TARGET_FLAG_UNIT            = 0x00000002,               // pguid
 	TARGET_FLAG_OBJECT          = 0x00000800,               // pguid
-    TARGET_FLAG_ITEM            = 0x1010,                   // [TRINITYROLLBACK] TARGET_FLAG_ITEM            = 0x00000010,               // pguid
+    TARGET_FLAG_ITEM            = 0x1010,                   // [TZERO] TARGET_FLAG_ITEM            = 0x00000010,               // pguid
     TARGET_FLAG_SOURCE_LOCATION = 0x00000020,               // 3 float
     TARGET_FLAG_DEST_LOCATION   = 0x00000040,               // 3 float
 	TARGET_FLAG_STRING          = 0x00002000,               // string
 
-    //[TRINITYROLLBACK] tbc enumerations [?]
+    //[TZERO] tbc enumerations [?]
 	TARGET_FLAG_OBJECT_UNK      = 0x00000080,               // ?
     TARGET_FLAG_PVP_CORPSE      = 0x00000200,               // pguid
     TARGET_FLAG_TRADE_ITEM      = 0x00001000,               // pguid
@@ -81,7 +81,7 @@ enum SpellNotifyPushType
 	PUSH_SRC_CENTER,
     PUSH_DST_CENTER,
 
-	//[TRINITYROLLBACK] Tbc enumerations [?]
+	//[TZERO] Tbc enumerations [?]
     PUSH_IN_FRONT,
     PUSH_IN_BACK,
     PUSH_IN_LINE,

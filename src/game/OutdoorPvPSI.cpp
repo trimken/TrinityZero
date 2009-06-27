@@ -146,7 +146,7 @@ bool OutdoorPvPSI::HandleAreaTrigger(Player *plr, uint32 trigger)
             // reward player
             plr->CastSpell(plr,SI_TRACES_OF_SILITHYST,true);
             // add 19 honor
-           //[TRINITYROLLBACK] to replace ? plr->RewardHonor(NULL,1,19);
+           //[TZERO] to replace ? plr->RewardHonor(NULL,1,19);
             // add 20 cenarion circle repu
             plr->ModifyFactionReputation(609,20);
             // complete quest
@@ -171,7 +171,7 @@ bool OutdoorPvPSI::HandleAreaTrigger(Player *plr, uint32 trigger)
             // reward player
             plr->CastSpell(plr,SI_TRACES_OF_SILITHYST,true);
             // add 19 honor
-            //[TRINITYROLLBACK] to replace ? plr->RewardHonor(NULL,1,19);
+            //[TZERO] to replace ? plr->RewardHonor(NULL,1,19);
             // add 20 cenarion circle repu
             plr->ModifyFactionReputation(609,20);
             // complete quest

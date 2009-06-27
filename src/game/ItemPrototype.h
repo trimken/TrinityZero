@@ -32,7 +32,7 @@ enum ItemModType
     ITEM_MOD_INTELLECT                = 5,
     ITEM_MOD_SPIRIT                   = 6,
     ITEM_MOD_STAMINA                  = 7,
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
 	ITEM_MOD_DEFENSE_SKILL_RATING     = 12,
     ITEM_MOD_DODGE_RATING             = 13,
     ITEM_MOD_PARRY_RATING             = 14,
@@ -69,7 +69,7 @@ enum ItemSpelltriggerType
     ITEM_SPELLTRIGGER_ON_EQUIP        = 1,
     ITEM_SPELLTRIGGER_CHANCE_ON_HIT   = 2,
     ITEM_SPELLTRIGGER_SOULSTONE       = 4,
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
     ITEM_SPELLTRIGGER_ON_NO_DELAY_USE = 5,                  // no equip cooldown
     ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6                   // used in item_template.spell_2 with spell_id with SPELL_GENERIC_LEARN in spell_1
 };
@@ -121,7 +121,7 @@ enum BAG_FAMILY_MASK
     //BAG_FAMILY_UNK3                           = 11,
     BAG_FAMILY_MASK_MINING_SUPP                      = 12,
 
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
     BAG_FAMILY_MASK_SOULBOUND_EQUIPMENT       = 0x00000800,
     BAG_FAMILY_MASK_VANITY_PETS               = 0x00001000,
     BAG_FAMILY_MASK_CURRENCY_TOKENS           = 0x00002000,
@@ -252,7 +252,7 @@ enum ItemSubclassArmor
     ITEM_SUBCLASS_ARMOR_PLATE                   = 4,
     ITEM_SUBCLASS_ARMOR_BUCKLER                 = 5,
     ITEM_SUBCLASS_ARMOR_SHIELD                  = 6,
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
     ITEM_SUBCLASS_ARMOR_LIBRAM                  = 7,
     ITEM_SUBCLASS_ARMOR_IDOL                    = 8,
     ITEM_SUBCLASS_ARMOR_TOTEM                   = 9

@@ -235,7 +235,7 @@ bool Weather::UpdateWeather()
         m_grade = 0.0001f;
 
 
-    //[TRINITYROLLBACK] WeatherState state = GetWeatherState(); for tbc dbc
+    //[TZERO] WeatherState state = GetWeatherState(); for tbc dbc
 
     WorldPacket data( SMSG_WEATHER, (4+4+4) );
     data << (uint32)m_type << (float)m_grade << (uint32)sound;
@@ -331,7 +331,7 @@ uint32 Weather::GetSound()
     }
     return sound;
 
-  /*[TRINITYROLLBACK] tbc [?]
+  /*[TZERO] tbc [?]
 	        case WEATHER_TYPE_BLACKRAIN:
             return WEATHER_STATE_BLACKRAIN;
         case WEATHER_TYPE_THUNDERS:

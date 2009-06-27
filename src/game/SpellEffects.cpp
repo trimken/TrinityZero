@@ -3678,7 +3678,7 @@ void Spell::EffectAddHonor(uint32 /*i*/)
     // TODO: find formula for honor reward based on player's level!
 
     // now fixed only for level 70 players:
-   /*[TRINITYROLLBACK] to replace ? 
+   /*[TZERO] to replace ? 
     if (((Player*)unitTarget)->getLevel() == 70)
         ((Player*)unitTarget)->RewardHonor(NULL, 1, damage); */
 }
@@ -4408,7 +4408,7 @@ void Spell::EffectSummonObjectWild(uint32 i)
         }
     }
 
-  /*[TRINITYROLLBACK]  if(pGameObj->GetMapId() == 566 && pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)  //EY
+  /*[TZERO]  if(pGameObj->GetMapId() == 566 && pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)  //EY
     {
         if(m_caster->GetTypeId() == TYPEID_PLAYER)
         {

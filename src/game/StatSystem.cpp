@@ -78,7 +78,7 @@ bool Player::UpdateStats(Stats stat)
         default:
             break;
     }
-  //  UpdateSpellDamageAndHealingBonus(); [TRINITYROLLBACK]
+  //  UpdateSpellDamageAndHealingBonus(); [TZERO]
     UpdateManaRegen();
     return true;
 }
@@ -114,7 +114,7 @@ bool Player::UpdateAllStats()
     UpdateAllSpellCritChances();
     UpdateDefenseBonusesMod();
     UpdateShieldBlockValue();
- // [TRINITYROLLBACK]   UpdateSpellDamageAndHealingBonus();
+ // [TZERO]   UpdateSpellDamageAndHealingBonus();
     UpdateManaRegen();
     for (int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; i++)
         UpdateResistances(i);
@@ -334,14 +334,14 @@ void Player::UpdateAttackPowerAndDamage(bool ranged )
         UpdateDamagePhysical(BASE_ATTACK);
         if(CanDualWield() && haveOffhandWeapon())           //allow update offhand damage only if player knows DualWield Spec and has equipped offhand weapon
             UpdateDamagePhysical(OFF_ATTACK);
-   /*[TRINITYROLLBACK]     if(getClass() == CLASS_SHAMAN)                      // mental quickness
+   /*[TZERO]     if(getClass() == CLASS_SHAMAN)                      // mental quickness
            UpdateSpellDamageAndHealingBonus();  */
     }
 }
 
 void Player::UpdateShieldBlockValue()
 {
-    // [TRINITYROLLBACK] SetUInt32Value(PLAYER_BLOCK_PERCENTAGE, GetShieldBlockValue());
+    // [TZERO] SetUInt32Value(PLAYER_BLOCK_PERCENTAGE, GetShieldBlockValue());
 }
 
 void Player::CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, float& min_damage, float& max_damage)
@@ -457,7 +457,7 @@ void Player::UpdateCritPercentage(WeaponAttackType attType)
     switch(attType)
     {
         case OFF_ATTACK:
-            modGroup = OFFHAND_CRIT_PERCENTAGE;  // [TRINITYROLLBACK] PLAYER_CRIT_PERCENTAGE
+            modGroup = OFFHAND_CRIT_PERCENTAGE;  // [TZERO] PLAYER_CRIT_PERCENTAGE
             index = PLAYER_CRIT_PERCENTAGE;
             break;
         case RANGED_ATTACK:
@@ -527,7 +527,7 @@ void Player::UpdateSpellCritChance(uint32 school)
     // For normal school set zero crit chance
     if(school == SPELL_SCHOOL_NORMAL)
     {
-       //[TRINITYROLLBACK] SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1, 0.0f); 
+       //[TZERO] SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1, 0.0f); 
         return;
     }
     // For others recalculate it from:
@@ -540,7 +540,7 @@ void Player::UpdateSpellCritChance(uint32 school)
     crit += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL, 1<<school);
 
     // Store crit value
-// [TRINITYROLLBACK]    SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + school, crit);
+// [TZERO]    SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + school, crit);
 }
 
 void Player::UpdateAllSpellCritChances()

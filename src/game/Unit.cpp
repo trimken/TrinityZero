@@ -7948,7 +7948,7 @@ void Unit::CombatStop(bool cast)
     AttackStop();
     RemoveAllAttackers();
     if( GetTypeId()==TYPEID_PLAYER )
-        ((Player*)this)->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel  [TRINITYROLLBACK: maybe uncorrect [?] ]
+        ((Player*)this)->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel  [[TZERO]: maybe uncorrect [?] ]
     ClearInCombat();
 }
 
@@ -8311,7 +8311,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         switch((*i)->GetSpellProto()->SpellIconID)
         {
             //Cheat Death
-          /*[TRINITYROLLBACK]  case 2109:
+          /*[TZERO]  case 2109:
                 if( ((*i)->GetModifier()->m_miscvalue & GetSpellSchoolMask(spellProto)) )
                 {
                     if(pVictim->GetTypeId() != TYPEID_PLAYER)
@@ -8699,7 +8699,7 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                 crit_chance = 0.0f;
             // For other schools
          //   else if (GetTypeId() == TYPEID_PLAYER)
-           //     crit_chance = GetFloatValue( PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask)); [TRINITYROLLBACK]
+           //     crit_chance = GetFloatValue( PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask)); [TZERO]
             else
             {
                 crit_chance = m_baseSpellCritChance;
@@ -9226,7 +9226,7 @@ void Unit::MeleeDamageBonus(Unit *pVictim, uint32 *pdamage,WeaponAttackType attT
         switch((*i)->GetSpellProto()->SpellIconID)
         {
             //Cheat Death
-           /*[TRINITYROLLBACK] case 2109:
+           /*[TZERO] case 2109:
                 if((*i)->GetModifier()->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
                 {
                     if(pVictim->GetTypeId() != TYPEID_PLAYER)

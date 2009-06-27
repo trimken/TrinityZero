@@ -1059,7 +1059,7 @@ void ChatHandler::FillMessageData( WorldPacket *data, WorldSession* session, uin
 
     *data << uint64(target_guid);                           // there 0 for BG messages
 
-	//[TRINITYROLLBACK] must be checked  *data << uint32(0);     // can be chat msg group or something 
+	//[TZERO] must be checked  *data << uint32(0);     // can be chat msg group or something 
 
 	if (type == CHAT_MSG_SAY || type == CHAT_MSG_YELL || type == CHAT_MSG_PARTY)
      *data << uint64(target_guid);

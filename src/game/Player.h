@@ -133,7 +133,7 @@ enum ActionButtonType
 {
     ACTION_BUTTON_SPELL = 0,
     ACTION_BUTTON_MACRO = 64,
-    ACTION_BUTTON_CMACRO= 65, //[TRINITYROLLBACK] Tbc  [?]
+    ACTION_BUTTON_CMACRO= 65, //[TZERO] Tbc  [?]
     ACTION_BUTTON_ITEM  = 128
 };
 
@@ -368,7 +368,7 @@ enum PlayerStateType
 
     PLAYER_STATE_FORM_ALL          = 0x00FF0000,
 
-    PLAYER_STATE_FLAG_ALWAYS_STAND = 0x01,                  // byte 4 [TRINITYROLLBACK] maybe we should use : PLAYER_STATE_FLAG_ALWAYS_STAND = 0x01000000,
+    PLAYER_STATE_FLAG_ALWAYS_STAND = 0x01,                  // byte 4 [TZERO] maybe we should use : PLAYER_STATE_FLAG_ALWAYS_STAND = 0x01000000,
     PLAYER_STATE_FLAG_CREEP        = 0x02000000,
     PLAYER_STATE_FLAG_UNTRACKABLE  = 0x04000000,
     PLAYER_STATE_FLAG_ALL          = 0xFF000000,
@@ -397,7 +397,7 @@ enum PlayerFlags
     PLAYER_FLAGS_UNK            = 0x00001000,               //played long time
     PLAYER_FLAGS_UNK2           = 0x00002000,               //played too long time
 
-	//[TRINITYROLLBACK] Tbc enumeration [?]
+	//[TZERO] Tbc enumeration [?]
     PLAYER_FLAGS_FFA_PVP        = 0x00000080,
     PLAYER_FLAGS_CONTESTED_PVP  = 0x00000100,               // Player has been involved in a PvP combat and will be attacked by contested guards
     PLAYER_FLAGS_SANCTUARY      = 0x00010000,               // player entered sanctuary
@@ -507,7 +507,7 @@ enum PlayerExtraFlags
     PLAYER_EXTRA_ACCEPT_WHISPERS    = 0x0004,
     PLAYER_EXTRA_TAXICHEAT          = 0x0008,
     PLAYER_EXTRA_GM_INVISIBLE       = 0x0010,
-    //[TRINITYROLLBACK] PLAYER_EXTRA_GM_CHAT            = 0x0020,               // Show GM badge in chat messages
+    //[TZERO] PLAYER_EXTRA_GM_CHAT            = 0x0020,               // Show GM badge in chat messages
 
     // other states
     PLAYER_EXTRA_PVP_DEATH          = 0x0100                // store PvP death status until corpse creating.
@@ -1536,7 +1536,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         int GetGuildIdInvited() { return m_GuildIdInvited; }
         static void RemovePetitionsAndSigns(uint64 guid, uint32 type);
 
-        void SetDifficulty(uint32 dungeon_difficulty) { m_dungeonDifficulty = dungeon_difficulty; }  //[ TrinityRollback: instance difficulty is not a 1.12 feature [?] ] 
+        void SetDifficulty(uint32 dungeon_difficulty) { m_dungeonDifficulty = dungeon_difficulty; }  //[ [TZERO]: instance difficulty is not a 1.12 feature [?] ] 
         uint8 GetDifficulty() { return m_dungeonDifficulty; }
 
         bool UpdateSkill(uint32 skill_id, uint32 step);
@@ -1563,7 +1563,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         void UpdateAttackPowerAndDamage(bool ranged = false);
         void UpdateShieldBlockValue();
         void UpdateDamagePhysical(WeaponAttackType attType);
-        void UpdateSpellDamageAndHealingBonus(); // [TRINITYROLLBACK] should be removed
+        void UpdateSpellDamageAndHealingBonus(); // [TZERO] should be removed
 
         void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, float& min_damage, float& max_damage);
 

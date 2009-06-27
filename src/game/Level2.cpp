@@ -3230,7 +3230,7 @@ bool ChatHandler::HandleAddHonorCommand(const char* args)
 
 bool ChatHandler::HandleHonorAddKillCommand(const char* /*args*/)
 {
-   /*[TRINITYROLLBACK] to rewrite ?
+   /*[TZERO] to rewrite ?
     Unit *target = getSelectedUnit();
     if(!target)
     {

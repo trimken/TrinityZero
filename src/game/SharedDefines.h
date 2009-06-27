@@ -496,7 +496,7 @@ enum Language
     LANG_GNOMISH        = 13,
     LANG_TROLL          = 14,
     LANG_GUTTERSPEAK    = 33,
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
     LANG_DRAENEI        = 35,
     LANG_ZOMBIE         = 36,
     LANG_GNOMISH_BINARY = 37,
@@ -643,7 +643,7 @@ enum SpellEffects
     SPELL_EFFECT_NORMALIZED_WEAPON_DMG     = 121,
     SPELL_EFFECT_122                       = 122,
 
-	// [TRINITYROLLBACK] Tbc enumerations [?]
+	// [TZERO] Tbc enumerations [?]
     SPELL_EFFECT_SEND_TAXI                 = 123,
     SPELL_EFFECT_PLAYER_PULL               = 124,
     SPELL_EFFECT_MODIFY_THREAT_PERCENT     = 125,
@@ -952,7 +952,7 @@ enum GameobjectTypes
     GAMEOBJECT_TYPE_FLAGDROP               = 26,
     GAMEOBJECT_TYPE_MINI_GAME              = 27,
 
-	//[TRINITYROLLBACK] tbc enumerations [?]
+	//[TZERO] tbc enumerations [?]
     GAMEOBJECT_TYPE_LOTTERY_KIOSK          = 28,
     GAMEOBJECT_TYPE_CAPTURE_POINT          = 29,
     GAMEOBJECT_TYPE_AURA_GENERATOR         = 30,
@@ -979,7 +979,7 @@ enum GameObjectFlags
 
 enum TextEmotes
 {
-	// [TRINITYROLLBACK] some of this enum could be only for tbc
+	// [TZERO] some of this enum could be only for tbc
     TEXTEMOTE_AGREE                = 1,
     TEXTEMOTE_AMAZE                = 2,
     TEXTEMOTE_ANGRY                = 3,
@@ -1156,7 +1156,7 @@ enum TextEmotes
 
 enum Emote
 {
-	// [TRINITYROLLBACK] some of this enum could be only for tbc
+	// [TZERO] some of this enum could be only for tbc
     EMOTE_ONESHOT_NONE                 = 0,
     EMOTE_ONESHOT_TALK                 = 1,
     EMOTE_ONESHOT_BOW                  = 2,
@@ -1422,7 +1422,7 @@ enum Anim
     ANIM_SPELL_KNEEL_END           = 0x8E,
     ANIM_SPRINT                    = 0x8F,
     ANIM_IN_FIGHT                  = 0x90,
-	//[TRINITYROLLBACK] changed in tbc
+	//[TZERO] changed in tbc
     ANIM_GAMEOBJ_SPAWN             = 145,
     ANIM_GAMEOBJ_CLOSE             = 146,
     ANIM_GAMEOBJ_CLOSED            = 147,
@@ -1588,7 +1588,7 @@ enum CreatureFamily
     CREATURE_FAMILY_HYENA          = 25,
     CREATURE_FAMILY_OWL            = 26,
     CREATURE_FAMILY_WIND_SERPENT   = 27,
-	// [TRINITYROLLBACK] tbc enumerations [?]
+	// [TZERO] tbc enumerations [?]
     CREATURE_FAMILY_REMOTE_CONTROL = 28,
     CREATURE_FAMILY_FELGUARD       = 29,
     CREATURE_FAMILY_DRAGONHAWK     = 30,
@@ -1633,7 +1633,7 @@ enum QuestTypes
 // values based at QuestSort.dbc
 enum QuestSort
 {
-	// [TRINITYROLLBACK] some of this enum could be only for tbc
+	// [TZERO] some of this enum could be only for tbc
     QUEST_SORT_EPIC                = 1,
     QUEST_SORT_WAILING_CAVERNS_OLD = 21,
     QUEST_SORT_SEASONAL            = 22,
@@ -1955,7 +1955,7 @@ enum ChatMsg
     CHAT_MSG_MONSTER_PARTY          = 0x0D,
     CHAT_MSG_MONSTER_WHISPER        = 0x0F, */
 
-	//[TRINITYROLLBACK] tbc enumerations [?]
+	//[TZERO] tbc enumerations [?]
     CHAT_MSG_MONEY                  = 0x1C,
     CHAT_MSG_OPENING                = 0x1D,
     CHAT_MSG_TRADESKILLS            = 0x1E,

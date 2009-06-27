@@ -189,7 +189,7 @@ enum SpellFailedReason
     CAST_FAIL_NOT_ENOUGH_RANK               = 138 + 1 + 4,
     CAST_FAIL_UNKNOWN_REASON                = 139 + 1 + 4,
     CAST_FAIL_NUMREASONS                    = 145
-};  [TRINITYROLLBACK] changed in tbc */
+};  [TZERO] changed in tbc */
 
 
 enum SpellFailedReason

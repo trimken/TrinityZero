@@ -50,7 +50,7 @@ enum QuestFailedReasons
     INVALIDREASON_QUEST_ALREADY_ON              = 13,       //You are already on that quest
     INVALIDREASON_QUEST_FAILED_MISSING_ITEMS    = 21,       //You don't have the required items with you. Check storage.
     INVALIDREASON_QUEST_FAILED_NOT_ENOUGH_MONEY = 23,       //You don't have enough money for that quest.
-    //[TRINITYROLLBACK] tbc enumerations [?]
+    //[TZERO] tbc enumerations [?]
 	INVALIDREASON_QUEST_ALREADY_ON2             = 18,       //You are already on that quest
 	INVALIDREASON_QUEST_ALREADY_DONE            = 7,        //You have completed that quest.
 };
@@ -107,7 +107,7 @@ enum __QuestGiverStatus
     DIALOG_STATUS_AVAILABLE_REP            = 5,
     DIALOG_STATUS_AVAILABLE                = 6,
     DIALOG_STATUS_REWARD2                  = 7,             // not yellow dot on minimap
-    // [TRINITYROLLBACK] tbc?  DIALOG_STATUS_REWARD                   = 8              // yellow dot on minimap
+    // [TZERO] tbc?  DIALOG_STATUS_REWARD                   = 8              // yellow dot on minimap
 };
 
 enum __QuestFlags
