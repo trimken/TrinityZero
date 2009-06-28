@@ -3736,7 +3736,7 @@ bool ChatHandler::HandleRepairitemsCommand(const char* /*args*/)
     }
 
     // Repair items
-    target->DurabilityRepairAll(false, 0, false);
+    target->DurabilityRepairAll(false, 0);
 
     PSendSysMessage(LANG_YOU_REPAIR_ITEMS, target->GetName());
     if(needReportToTarget(target))

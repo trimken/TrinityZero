@@ -4004,23 +4004,23 @@ void Player::DurabilityPointLossForEquipSlot(EquipmentSlots slot)
         DurabilityPointsLoss(pItem,1);
 }
 
-uint32 Player::DurabilityRepairAll(bool cost, float discountMod, bool guildBank)
+uint32 Player::DurabilityRepairAll(bool cost, float discountMod)
 {
     uint32 TotalCost = 0;
     // equipped, backpack, bags itself
     for(int i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
-        TotalCost += DurabilityRepair(( (INVENTORY_SLOT_BAG_0 << 8) | i ),cost,discountMod, guildBank);
+        TotalCost += DurabilityRepair(( (INVENTORY_SLOT_BAG_0 << 8) | i ),cost,discountMod);
 
     // bank, buyback and keys not repaired
 
     // items in inventory bags
     for(int j = INVENTORY_SLOT_BAG_START; j < INVENTORY_SLOT_BAG_END; j++)
         for(int i = 0; i < MAX_BAG_SIZE; i++)
-            TotalCost += DurabilityRepair(( (j << 8) | i ),cost,discountMod, guildBank);
+            TotalCost += DurabilityRepair(( (j << 8) | i ),cost,discountMod);
     return TotalCost;
 }
 
-uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool guildBank)
+uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod)
 {
     Item* item = GetItemByPos(pos);
 
@@ -4064,7 +4064,7 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
             if (costs==0)                                   //fix for ITEM_QUALITY_ARTIFACT
                 costs = 1;
 
-            if (guildBank)
+            /*if (guildBank)
             {
                 if (GetGuildId()==0)
                 {
@@ -4103,7 +4103,7 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
                 return TotalCost;
             }
             else
-                ModifyMoney( -int32(costs) );
+                ModifyMoney( -int32(costs) );*/
         }
     }
 

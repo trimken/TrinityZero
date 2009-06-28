@@ -784,14 +784,14 @@ void WorldSession::HandleStableSwapPet( WorldPacket & recv_data )
 
 void WorldSession::HandleRepairItemOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 8+8+1);
+    CHECK_PACKET_SIZE(recv_data, 8+8);
 
     sLog.outDebug("WORLD: CMSG_REPAIR_ITEM");
 
     uint64 npcGUID, itemGUID;
-    uint8 guildBank;                                        // new in 2.3.2, bool that means from guild bank money
+    //uint8 guildBank;                                        // [TZero] 1.12 didn't have GB's :P
 
-    recv_data >> npcGUID >> itemGUID >> guildBank;
+    recv_data >> npcGUID >> itemGUID;
 
     Creature *unit = ObjectAccessor::GetNPCIfCanInteractWith(*_player, npcGUID, UNIT_NPC_FLAG_REPAIR);
     if (!unit)
@@ -815,15 +815,15 @@ void WorldSession::HandleRepairItemOpcode( WorldPacket & recv_data )
         Item* item = _player->GetItemByGuid(itemGUID);
 
         if(item)
-            TotalCost= _player->DurabilityRepair(item->GetPos(),true,discountMod,guildBank>0?true:false);
+            TotalCost= _player->DurabilityRepair(item->GetPos(),true,discountMod);
     }
     else
     {
         sLog.outDebug("ITEM: Repair all items, npcGUID = %u", GUID_LOPART(npcGUID));
 
-        TotalCost = _player->DurabilityRepairAll(true,discountMod,guildBank>0?true:false);
+        TotalCost = _player->DurabilityRepairAll(true,discountMod);
     }
-    if (guildBank)
+    /*if (guildBank)
     {
         uint32 GuildId = _player->GetGuildId();
         if (!GuildId)
@@ -833,6 +833,6 @@ void WorldSession::HandleRepairItemOpcode( WorldPacket & recv_data )
             return;
         pGuild->LogBankEvent(GUILD_BANK_LOG_REPAIR_MONEY, 0, _player->GetGUIDLow(), TotalCost);
         pGuild->SendMoneyInfo(this, _player->GetGUIDLow());
-    }
+    }*/
 }
 
