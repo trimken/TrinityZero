@@ -959,7 +959,6 @@ enum GameobjectTypes
     GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY     = 31,
     GAMEOBJECT_TYPE_BARBER_CHAIR           = 32,
     GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING  = 33,
-    GAMEOBJECT_TYPE_GUILD_BANK             = 34,
 };
 
 #define MAX_GAMEOBJECT_TYPE                  35             // sending to client this or greater value can crash client.
@@ -1995,10 +1994,7 @@ enum PetDiet
 
 #define CHAIN_SPELL_JUMP_RADIUS 10
 
-// Max values for Guild & Guild Bank
-#define GUILD_BANK_MAX_TABS         6
-#define GUILD_BANK_MAX_SLOTS        98
-#define GUILD_BANK_MAX_LOGS         24
+// Max values for Guild
 #define GUILD_EVENTLOG_MAX_ENTRIES  100
 #define GUILD_MAX_RANKS             10
 

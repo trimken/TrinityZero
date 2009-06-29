@@ -526,7 +526,6 @@ enum NPCFlags
     UNIT_NPC_FLAG_BATTLEMASTER          = 0x00000800,       // 100%
     UNIT_NPC_FLAG_AUCTIONEER            = 0x00001000,       // 100%
     UNIT_NPC_FLAG_STABLEMASTER          = 0x00002000,       // 100%
-    //UNIT_NPC_FLAG_GUILD_BANKER          = 0x00800000,       // cause client to send 997 opcode || BC
     //UNIT_NPC_FLAG_SPELLCLICK            = 0x01000000,       // cause client to send 1015 opcode (spell click) || BC
     UNIT_NPC_FLAG_GUARD                 = 0x00000040,       // custom flag for guards
     UNIT_NPC_FLAG_OUTDOORPVP            = 0x20000000,       // custom flag for outdoor pvp creatures || Custom flag

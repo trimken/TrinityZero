@@ -836,7 +836,6 @@ CREATE TABLE `guild` (
   `info` text NOT NULL,
   `motd` varchar(255) NOT NULL default '',
   `createdate` datetime default NULL,
-  `BankMoney` bigint(20) NOT NULL default '0',
   PRIMARY KEY  (`guildid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Guild System';
 
@@ -847,106 +846,6 @@ CREATE TABLE `guild` (
 LOCK TABLES `guild` WRITE;
 /*!40000 ALTER TABLE `guild` DISABLE KEYS */;
 /*!40000 ALTER TABLE `guild` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `guild_bank_eventlog`
---
-
-DROP TABLE IF EXISTS `guild_bank_eventlog`;
-CREATE TABLE `guild_bank_eventlog` (
-  `guildid` int(11) unsigned NOT NULL default '0',
-  `LogGuid` int(11) unsigned NOT NULL default '0',
-  `LogEntry` tinyint(1) unsigned NOT NULL default '0',
-  `TabId` tinyint(1) unsigned NOT NULL default '0',
-  `PlayerGuid` int(11) unsigned NOT NULL default '0',
-  `ItemOrMoney` int(11) unsigned NOT NULL default '0',
-  `ItemStackCount` tinyint(3) unsigned NOT NULL default '0',
-  `DestTabId` tinyint(1) unsigned NOT NULL default '0',
-  `TimeStamp` bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`guildid`,`LogGuid`),
-  KEY `guildid_key` (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `guild_bank_eventlog`
---
-
-LOCK TABLES `guild_bank_eventlog` WRITE;
-/*!40000 ALTER TABLE `guild_bank_eventlog` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guild_bank_eventlog` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `guild_bank_item`
---
-
-DROP TABLE IF EXISTS `guild_bank_item`;
-CREATE TABLE `guild_bank_item` (
-  `guildid` int(11) unsigned NOT NULL default '0',
-  `TabId` tinyint(1) unsigned NOT NULL default '0',
-  `SlotId` tinyint(3) unsigned NOT NULL default '0',
-  `item_guid` int(11) unsigned NOT NULL default '0',
-  `item_entry` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`guildid`,`TabId`,`SlotId`),
-  KEY `guildid_key` (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `guild_bank_item`
---
-
-LOCK TABLES `guild_bank_item` WRITE;
-/*!40000 ALTER TABLE `guild_bank_item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guild_bank_item` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `guild_bank_right`
---
-
-DROP TABLE IF EXISTS `guild_bank_right`;
-CREATE TABLE `guild_bank_right` (
-  `guildid` int(11) unsigned NOT NULL default '0',
-  `TabId` tinyint(1) unsigned NOT NULL default '0',
-  `rid` int(11) unsigned NOT NULL default '0',
-  `gbright` tinyint(3) unsigned NOT NULL default '0',
-  `SlotPerDay` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`guildid`,`TabId`,`rid`),
-  KEY `guildid_key` (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `guild_bank_right`
---
-
-LOCK TABLES `guild_bank_right` WRITE;
-/*!40000 ALTER TABLE `guild_bank_right` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guild_bank_right` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `guild_bank_tab`
---
-
-DROP TABLE IF EXISTS `guild_bank_tab`;
-CREATE TABLE `guild_bank_tab` (
-  `guildid` int(11) unsigned NOT NULL default '0',
-  `TabId` tinyint(1) unsigned NOT NULL default '0',
-  `TabName` varchar(100) NOT NULL default '',
-  `TabIcon` varchar(100) NOT NULL default '',
-  `TabText` varchar(500) NOT NULL default '',
-  PRIMARY KEY  (`guildid`,`TabId`),
-  KEY `guildid_key` (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `guild_bank_tab`
---
-
-LOCK TABLES `guild_bank_tab` WRITE;
-/*!40000 ALTER TABLE `guild_bank_tab` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guild_bank_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -984,20 +883,6 @@ CREATE TABLE `guild_member` (
   `rank` tinyint(2) unsigned NOT NULL default '0',
   `pnote` varchar(255) NOT NULL default '',
   `offnote` varchar(255) NOT NULL default '',
-  `BankResetTimeMoney` int(11) unsigned NOT NULL default '0',
-  `BankRemMoney` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab0` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab0` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab1` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab1` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab2` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab2` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab3` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab3` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab4` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab4` int(11) unsigned NOT NULL default '0',
-  `BankResetTimeTab5` int(11) unsigned NOT NULL default '0',
-  `BankRemSlotsTab5` int(11) unsigned NOT NULL default '0',
   KEY `guildid_key` (`guildid`),
   KEY `guildid_rank_key` (`guildid`,`rank`),
   KEY `guid_key` (`guid`)
@@ -1022,7 +907,6 @@ CREATE TABLE `guild_rank` (
   `rid` int(11) unsigned NOT NULL,
   `rname` varchar(255) NOT NULL default '',
   `rights` int(3) unsigned NOT NULL default '0',
-  `BankMoneyPerDay` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`guildid`,`rid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Guild System';
 
@@ -1321,4 +1205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-06-13 14:28:47
+-- Dump completed on 2009-06-29 18:52:11

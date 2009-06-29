@@ -4063,47 +4063,6 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod)
 
             if (costs==0)                                   //fix for ITEM_QUALITY_ARTIFACT
                 costs = 1;
-
-            /*if (guildBank)
-            {
-                if (GetGuildId()==0)
-                {
-                    DEBUG_LOG("You are not member of a guild");
-                    return TotalCost;
-                }
-
-                Guild *pGuild = objmgr.GetGuildById(GetGuildId());
-                if (!pGuild)
-                    return TotalCost;
-
-                if (!pGuild->HasRankRight(GetRank(), GR_RIGHT_WITHDRAW_REPAIR))
-                {
-                    DEBUG_LOG("You do not have rights to withdraw for repairs");
-                    return TotalCost;
-                }
-
-                if (pGuild->GetMemberMoneyWithdrawRem(GetGUIDLow()) < costs)
-                {
-                    DEBUG_LOG("You do not have enough money withdraw amount remaining");
-                    return TotalCost;
-                }
-
-                if (pGuild->GetGuildBankMoney() < costs)
-                {
-                    DEBUG_LOG("There is not enough money in bank");
-                    return TotalCost;
-                }
-
-                pGuild->MemberMoneyWithdraw(costs, GetGUIDLow());
-                TotalCost = costs;
-            }
-            else if (GetMoney() < costs)
-            {
-                DEBUG_LOG("You do not have enough money");
-                return TotalCost;
-            }
-            else
-                ModifyMoney( -int32(costs) );*/
         }
     }
 

@@ -789,7 +789,6 @@ void WorldSession::HandleRepairItemOpcode( WorldPacket & recv_data )
     sLog.outDebug("WORLD: CMSG_REPAIR_ITEM");
 
     uint64 npcGUID, itemGUID;
-    //uint8 guildBank;                                        // [TZero] 1.12 didn't have GB's :P
 
     recv_data >> npcGUID >> itemGUID;
 
@@ -823,16 +822,5 @@ void WorldSession::HandleRepairItemOpcode( WorldPacket & recv_data )
 
         TotalCost = _player->DurabilityRepairAll(true,discountMod);
     }
-    /*if (guildBank)
-    {
-        uint32 GuildId = _player->GetGuildId();
-        if (!GuildId)
-            return;
-        Guild *pGuild = objmgr.GetGuildById(GuildId);
-        if (!pGuild)
-            return;
-        pGuild->LogBankEvent(GUILD_BANK_LOG_REPAIR_MONEY, 0, _player->GetGUIDLow(), TotalCost);
-        pGuild->SendMoneyInfo(this, _player->GetGUIDLow());
-    }*/
 }
 

@@ -1222,14 +1222,13 @@ void WorldObject::BuildHeartBeatMsg(WorldPacket *data) const
         return;
 
     data->Initialize(MSG_MOVE_HEARTBEAT, 32);
-    data->append(GetPackGUID());
+    *data << GetGUID();
     *data << uint32(((Unit*)this)->GetUnitMovementFlags()); // movement flags
     *data << getMSTime();                                   // time
     *data << m_positionX;
     *data << m_positionY;
     *data << m_positionZ;
     *data << m_orientation;
-    *data << uint32(0);
 }
 
 void WorldObject::BuildTeleportAckMsg(WorldPacket *data, float x, float y, float z, float ang) const
