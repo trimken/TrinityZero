@@ -73,16 +73,16 @@ void WorldSession::HandleRepopRequestOpcode( WorldPacket & /*recv_data*/ )
 
 void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data,8+4+4);
+    CHECK_PACKET_SIZE(recv_data,8+4);
 
     sLog.outDebug("WORLD: CMSG_GOSSIP_SELECT_OPTION");
 
     uint32 option;
-    uint32 unk;
+    //uint32 unk; [TZero]
     uint64 guid;
     std::string code = "";
 
-    recv_data >> guid >> unk >> option;
+    recv_data >> guid >> option;
 
     if(_player->PlayerTalkClass->GossipOptionCoded( option ))
     {

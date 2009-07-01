@@ -1438,50 +1438,13 @@ void ScriptsInit()
     //Ashenvale Forest
     AddSC_ashenvale();
 
-    //Aunchindoun
-    //--Auchenai Crypts
-    AddSC_boss_exarch_maladaar();
-    AddSC_boss_shirrak_the_dead_watcher();
-
-    //--Mana Tombs
-    AddSC_boss_nexusprince_shaffar();
-    AddSC_boss_pandemonius();
-
-    //--Sekketh Halls
-    AddSC_boss_darkweaver_syth();
-    AddSC_boss_talon_king_ikiss();
-    AddSC_instance_sethekk_halls();
-
-    //--Shadow Labyrinth
-    AddSC_boss_ambassador_hellmaw();
-    AddSC_boss_blackheart_the_inciter();
-    AddSC_boss_grandmaster_vorpil();
-    AddSC_boss_murmur();
-    AddSC_instance_shadow_labyrinth();
-
     //Azshara
     AddSC_boss_azuregos();
     AddSC_azshara();
 
-    //Azuremyst Isle
-    AddSC_azuremyst_isle();
-
     //Badlands
     //Barrens
     AddSC_the_barrens();
-
-    //Black Temple
-    AddSC_black_temple();
-    AddSC_boss_illidan();
-    AddSC_boss_shade_of_akama();
-    AddSC_boss_supremus();
-    AddSC_boss_gurtogg_bloodboil();
-    AddSC_boss_mother_shahraz();
-    AddSC_boss_reliquary_of_souls();
-    AddSC_boss_teron_gorefiend();
-    AddSC_boss_najentus();
-    AddSC_boss_illidari_council();
-    AddSC_instance_black_temple();
 
     //Blackfathom Depths
     //Blackrock Depths
@@ -1523,64 +1486,12 @@ void ScriptsInit()
     AddSC_boss_nefarian();
     AddSC_boss_victor_nefarius();
 
-    //Blade's Edge Mountains
-    AddSC_blades_edge_mountains();
-
     //Blasted lands
     AddSC_boss_kruul();
     AddSC_blasted_lands();
 
-    //Bloodmyst Isle
-    AddSC_bloodmyst_isle();
-
     //Burning steppes
     AddSC_burning_steppes();
-
-    //Caverns of Time
-    //--Battle for Mt. Hyjal
-    AddSC_hyjal();
-    AddSC_boss_archimonde();
-    AddSC_instance_mount_hyjal();
-    AddSC_hyjal_trash();
-    AddSC_boss_rage_winterchill();
-    AddSC_boss_anetheron();
-    AddSC_boss_kazrogal();
-    AddSC_boss_azgalor();
-
-    //--Old Hillsbrad
-    AddSC_boss_captain_skarloc();
-    AddSC_boss_epoch_hunter();
-    AddSC_boss_lieutenant_drake();
-    AddSC_instance_old_hillsbrad();
-    AddSC_old_hillsbrad();
-
-    //--The Dark Portal
-    AddSC_boss_aeonus();
-    AddSC_boss_chrono_lord_deja();
-    AddSC_boss_temporus();
-    AddSC_dark_portal();
-    AddSC_instance_dark_portal();
-
-    //Coilfang Resevoir
-    //--Serpent Shrine Cavern
-    AddSC_boss_fathomlord_karathress();
-    AddSC_boss_hydross_the_unstable();
-    AddSC_boss_lady_vashj();
-    AddSC_boss_leotheras_the_blind();
-    AddSC_boss_morogrim_tidewalker();
-    AddSC_instance_serpentshrine_cavern();
-    AddSC_boss_the_lurker_below();
-
-    //--Slave Pens
-    //--Steam Vault
-    AddSC_boss_hydromancer_thespia();
-    AddSC_boss_mekgineer_steamrigger();
-    AddSC_boss_warlord_kalithresh();
-    AddSC_instance_steam_vault();
-
-    //--Underbog
-    AddSC_boss_hungarfen();
-    AddSC_boss_the_black_stalker();
 
     //Darkshore
     //Darnassus
@@ -1598,9 +1509,6 @@ void ScriptsInit()
     //Dustwallow marsh
     AddSC_dustwallow_marsh();
 
-    //Eversong Woods
-    AddSC_eversong_woods();
-
     //Exodar
     //Eastern Plaguelands
     AddSC_eastern_plaguelands();
@@ -1614,73 +1522,15 @@ void ScriptsInit()
     //Feralas
     AddSC_feralas();
 
-    //Ghostlands
-    AddSC_ghostlands();
-
-    //Gnomeregan
-    //Gruul's Lair
-    AddSC_boss_gruul();
-    AddSC_boss_high_king_maulgar();
-    AddSC_instance_gruuls_lair();
-
-    //Hellfire Citadel
-    //--Blood Furnace
-    AddSC_boss_broggok();
-    AddSC_boss_kelidan_the_breaker();
-    AddSC_boss_the_maker();
-    AddSC_instance_blood_furnace();
-
-    //--Magtheridon's Lair
-    AddSC_boss_magtheridon();
-    AddSC_instance_magtheridons_lair();
-
-    //--Shattered Halls
-    AddSC_boss_grand_warlock_nethekurse();
-    AddSC_boss_warbringer_omrogg();
-    AddSC_boss_warchief_kargath_bladefist();
-    AddSC_instance_shattered_halls();
-
-    //--Ramparts
-    AddSC_boss_watchkeeper_gargolmar();
-    AddSC_boss_omor_the_unscarred();
-    AddSC_boss_vazruden_the_herald();
-
-    //Hellfire Peninsula
-    AddSC_boss_doomlordkazzak();
-    AddSC_hellfire_peninsula();
-
     //Hillsbrad Foothills
     //Hinterlands
     //Ironforge
     AddSC_ironforge();
 
-    //Isle of Quel'Danas
-    AddSC_isle_of_queldanas();
-
-    //Karazhan
-    AddSC_boss_attumen();
-    AddSC_boss_curator();
-    AddSC_boss_maiden_of_virtue();
-    AddSC_boss_shade_of_aran();
-    AddSC_boss_malchezaar();
-    AddSC_boss_terestian_illhoof();
-    AddSC_boss_moroes();
-    AddSC_bosses_opera();
-    AddSC_instance_karazhan();
-    AddSC_karazhan();
-    AddSC_boss_nightbane();
-
     //Loch Modan
     AddSC_loch_modan();
 
     //Lower Blackrock Spire
-
-    // Magister's Terrace
-    AddSC_boss_felblood_kaelthas();
-    AddSC_boss_selin_fireheart();
-    AddSC_boss_vexallus();
-    AddSC_boss_priestess_delrissa();
-    AddSC_instance_magisters_terrace();
 
     //Maraudon
     AddSC_boss_celebras_the_cursed();
@@ -1708,9 +1558,6 @@ void ScriptsInit()
     //Mulgore
     AddSC_mulgore();
 
-    //Nagrand
-    AddSC_nagrand();
-
     //Naxxramas
     AddSC_boss_anubrekhan();
     AddSC_boss_maexxna();
@@ -1724,9 +1571,6 @@ void ScriptsInit()
     AddSC_boss_gluth();
     AddSC_boss_sapphiron();
     AddSC_boss_four_horsemen();
-
-    //Netherstorm
-    AddSC_netherstorm();
 
     //Onyxia's Lair
     AddSC_boss_onyxia();
@@ -1778,18 +1622,8 @@ void ScriptsInit()
     AddSC_shadowfang_keep();
     AddSC_instance_shadowfang_keep();
 
-    //Shadowmoon Valley
-    AddSC_boss_doomwalker();
-    AddSC_shadowmoon_valley();
-
-    //Shattrath
-    AddSC_shattrath_city();
-
     //Silithus
     AddSC_silithus();
-
-    //Silvermoon
-    AddSC_silvermoon_city();
 
     //Silverpine forest
     AddSC_silverpine_forest();
@@ -1820,44 +1654,11 @@ void ScriptsInit()
     AddSC_stratholme();
 
     //Sunken Temple
-    //Sunwell Plateau
-    AddSC_instance_sunwell_plateau();
-    AddSC_boss_kalecgos();
-    AddSC_boss_brutallus();
-    AddSC_boss_felmyst();
-    AddSC_boss_eredar_twins();
-    AddSC_boss_muru();
-    AddSC_boss_kiljaeden();
-    AddSC_sunwell_plateau();
 
     //Tanaris
     AddSC_tanaris();
 
     //Teldrassil
-    //Tempest Keep
-    //--Arcatraz
-    AddSC_arcatraz();
-    AddSC_boss_harbinger_skyriss();
-    AddSC_instance_arcatraz();
-
-    //--Botanica
-    AddSC_boss_high_botanist_freywinn();
-    AddSC_boss_laj();
-    AddSC_boss_warp_splinter();
-
-    //--The Eye
-    AddSC_boss_alar();
-    AddSC_boss_kaelthas();
-    AddSC_boss_void_reaver();
-    AddSC_boss_high_astromancer_solarian();
-    AddSC_instance_the_eye();
-    AddSC_the_eye();
-
-    //--The Mechanar
-    AddSC_boss_gatewatcher_iron_hand();
-    AddSC_boss_nethermancer_sepethrea();
-    AddSC_boss_pathaleon_the_calculator();
-    AddSC_instance_mechanar();
 
     //Temple of ahn'qiraj
     AddSC_boss_cthun();
@@ -1869,9 +1670,6 @@ void ScriptsInit()
     AddSC_boss_twinemperors();
     AddSC_mob_anubisath_sentinel();
     AddSC_instance_temple_of_ahnqiraj();
-
-    //Terokkar Forest
-    AddSC_terokkar_forest();
 
     //Thousand Needles
     AddSC_thousand_needles();
@@ -1907,9 +1705,6 @@ void ScriptsInit()
     //Winterspring
     AddSC_winterspring();
 
-    //Zangarmarsh
-    AddSC_zangarmarsh();
-
     //Zul'Farrak
     AddSC_zulfarrak();
 
@@ -1928,16 +1723,6 @@ void ScriptsInit()
     AddSC_boss_renataki();
     AddSC_boss_wushoolay();
     AddSC_instance_zulgurub();
-
-    //Zul'Aman
-    AddSC_boss_akilzon();
-    AddSC_boss_halazzi();
-    AddSC_boss_hex_lord_malacrass();
-    AddSC_boss_janalai();
-    AddSC_boss_nalorakk();
-    AddSC_boss_zuljin();
-    AddSC_instance_zulaman();
-    AddSC_zulaman();
 
     // -------------------
 
