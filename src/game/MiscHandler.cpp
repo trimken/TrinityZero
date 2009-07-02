@@ -78,7 +78,6 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
     sLog.outDebug("WORLD: CMSG_GOSSIP_SELECT_OPTION");
 
     uint32 option;
-    //uint32 unk; [TZero]
     uint64 guid;
     std::string code = "";
 

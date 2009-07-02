@@ -47,8 +47,8 @@ void GossipMenu::AddMenuItem(uint8 Icon, const std::string& Message, uint32 dtSe
     gItem.m_gCoded      = Coded;
     gItem.m_gSender     = dtSender;
     gItem.m_gAction     = dtAction;
-    //gItem.m_gBoxMessage = BoxMessage;
-    //gItem.m_gBoxMoney   = BoxMoney;
+    /*[TZERO] gItem.m_gBoxMessage = BoxMessage;
+    gItem.m_gBoxMoney   = BoxMoney; */
 
     m_gItems.push_back(gItem);
 }
@@ -128,7 +128,6 @@ void PlayerMenu::SendGossipMenu( uint32 TitleTextId, uint64 npcGUID )
 {
     WorldPacket data( SMSG_GOSSIP_MESSAGE, (100) );         // guess size
     data << npcGUID;
-    //data << uint32(0);                                      // new 2.4.0
     data << uint32( TitleTextId );
     data << uint32( mGossipMenu.MenuItemCount() );          // max count 0x0F
 
@@ -138,9 +137,7 @@ void PlayerMenu::SendGossipMenu( uint32 TitleTextId, uint64 npcGUID )
         data << uint32( iI );
         data << uint8( gItem.m_gIcon );
         data << uint8( gItem.m_gCoded );                    // makes pop up box password
-        //data << uint32(gItem.m_gBoxMoney);                  // money required to open menu, 2.0.3
         data << gItem.m_gMessage;                           // text for gossip item
-        //data << gItem.m_gBoxMessage;                        // accept text (related to money) pop up box, 2.0.3
     }
 
     data << uint32( mQuestMenu.MenuItemCount() );           // max count 0x20
