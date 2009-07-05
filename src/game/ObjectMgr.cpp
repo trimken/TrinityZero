@@ -2358,15 +2358,16 @@ void ObjectMgr::LoadQuests()
         }
 
         // client quest log visual (area case)
+		/* [TZERO] "not error in 1.12"
         if( qinfo->ZoneOrSort > 0 )
         {
             if(!GetAreaEntryByAreaID(qinfo->ZoneOrSort))
             {
-                sLog.outErrorDb("Quest %u has `ZoneOrSort` = %u (zone case) but zone with this id does not exist.",
+                 sLog.outErrorDb("Quest %u has `ZoneOrSort` = %u (zone case) but zone with this id does not exist.",
                     qinfo->GetQuestId(),qinfo->ZoneOrSort);
                 // no changes, quest not dependent from this value but can have problems at client
             }
-        }
+        } */
         // client quest log visual (sort case)
         if( qinfo->ZoneOrSort < 0 )
         {
