@@ -417,7 +417,7 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
     data << uint32(pQuest->GetQuestId());
     data << Title << Details << Objectives;
     data << uint32(ActivateAccept);
-    data << uint32(pQuest->GetSuggestedPlayers());
+    // [TZERO] data << uint32(pQuest->GetSuggestedPlayers());
 
     if (pQuest->HasFlag(QUEST_FLAGS_HIDDEN_REWARDS))
     {
@@ -458,11 +458,23 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
         data << uint32(pQuest->GetRewOrReqMoney());
     }
 
-    // rewarded honor points. Multiply with 10 to satisfy client
-    data << uint32(10*Trinity::Honor::hk_honor_at_level(pSession->GetPlayer()->getLevel(), pQuest->GetRewHonorableKills()));
+	data << pQuest->GetReqItemsCount();
+    for (uint32 i=0; i <  QUEST_OBJECTIVES_COUNT; i++)
+    {
+        data << pQuest->ReqItemId[i];
+        data << pQuest->ReqItemCount[i];
+    }
+
+    data << pQuest->GetReqCreatureOrGOcount();
+    for (uint32 i=0; i <QUEST_OBJECTIVES_COUNT; i++)
+    {
+        data << uint32(pQuest->ReqCreatureOrGOId[i]);
+        data << pQuest->ReqCreatureOrGOCount[i];
+    }
+
+/*[TZERO]
     data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
     data << uint32(pQuest->GetRewSpellCast());              // casted spell
-    data << uint32(pQuest->GetCharTitleId());               // CharTitleId, new 2.4.0, player gets this title (id from CharTitles)
 
     data << uint32(QUEST_EMOTE_COUNT);
     for (uint32 i=0; i < QUEST_EMOTE_COUNT; i++)
@@ -470,6 +482,7 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
         data << uint32(pQuest->DetailsEmote[i]);
         data << uint32(0);                                  // DetailsEmoteDelay
     }
+*/
     pSession->SendPacket( &data );
 
     sLog.outDebug("WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS NPCGuid=%u, questid=%u", GUID_LOPART(npcGUID), pQuest->GetQuestId());
@@ -510,12 +523,12 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
     WorldPacket data( SMSG_QUEST_QUERY_RESPONSE, 100 );     // guess size
 
     data << uint32(pQuest->GetQuestId());
-    data << uint32(pQuest->GetQuestMethod());               // Accepted values: 0, 1 or 2. 0==IsAutoComplete() (skip objectives/details)
+    data << uint32(pQuest->GetMinLevel());                  
     data << uint32(pQuest->GetQuestLevel());                // may be 0
     data << uint32(pQuest->GetZoneOrSort());                // zone or sort to display in quest log
 
     data << uint32(pQuest->GetType());
-    data << uint32(pQuest->GetSuggestedPlayers());
+   //[TZERO] data << uint32(pQuest->GetSuggestedPlayers());
 
     data << uint32(pQuest->GetRepObjectiveFaction());       // shown in quest log as part of quest objective
     data << uint32(pQuest->GetRepObjectiveValue());         // shown in quest log as part of quest objective
@@ -531,14 +544,13 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
         data << uint32(pQuest->GetRewOrReqMoney());
 
     data << uint32(pQuest->GetRewMoneyMaxLevel());          // used in XP calculation at client
-    data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
-    data << uint32(pQuest->GetRewSpellCast());              // casted spell
+	if (pQuest->GetRewSpell())
+     data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
+	else
+     data << uint32(0);
 
-    // rewarded honor points
-    data << uint32(Trinity::Honor::hk_honor_at_level(pSession->GetPlayer()->getLevel(), pQuest->GetRewHonorableKills()));
     data << uint32(pQuest->GetSrcItemId());
     data << uint32(pQuest->GetFlags() & 0xFFFF);
-    data << uint32(pQuest->GetCharTitleId());               // CharTitleId, new 2.4.0, player gets this title (id from CharTitles)
 
     int iI;
 
@@ -622,7 +634,6 @@ void PlayerMenu::SendQuestGiverOfferReward( Quest const* pQuest, uint64 npcGUID,
     data << OfferRewardText;
 
     data << uint32( EnbleNext );
-    data << uint32(0);                                      // unk
 
     uint32 EmoteCount = 0;
     for (uint32 i = 0; i < QUEST_EMOTE_COUNT; i++)
@@ -670,12 +681,12 @@ void PlayerMenu::SendQuestGiverOfferReward( Quest const* pQuest, uint64 npcGUID,
 
     data << uint32(pQuest->GetRewOrReqMoney());
 
-    // rewarded honor points. Multiply with 10 to satisfy client
-    data << uint32(10*Trinity::Honor::hk_honor_at_level(pSession->GetPlayer()->getLevel(), pQuest->GetRewHonorableKills()));
-    data << uint32(0x08);                                   // unused by client?
-    data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
-    data << uint32(pQuest->GetRewSpellCast());              // casted spell
-    data << uint32(0x00);                                   // unk, NOT honor
+    data << uint32(0x00);                                   // unused by client?
+	if (pQuest->GetRewSpell())
+     data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
+	else
+	 data << uint32(0);
+
     pSession->SendPacket( &data );
     sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_OFFER_REWARD NPCGuid=%u, questid=%u",GUID_LOPART(npcGUID),pQuest->GetQuestId() );
 }
@@ -747,6 +758,8 @@ void PlayerMenu::SendQuestGiverRequestItems( Quest const *pQuest, uint64 npcGUID
         else
             data << uint32(0);
     }
+
+	data << uint32(0x02);
 
     if ( !Completable )
         data << uint32(0x00);
