@@ -3035,15 +3035,14 @@ void Spell::SendChannelUpdate(uint32 time)
 {
     if(time == 0)
     {
-        m_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,0);
+        m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT,0);
         m_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,0);
     }
 
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    WorldPacket data( MSG_CHANNEL_UPDATE, 8+4 );
-    data.append(m_caster->GetPackGUID());
+    WorldPacket data( MSG_CHANNEL_UPDATE, 4 );
     data << uint32(time);
 
     ((Player*)m_caster)->GetSession()->SendPacket( &data );
@@ -3054,6 +3053,7 @@ void Spell::SendChannelStart(uint32 duration)
     WorldObject* target = NULL;
 
     // select first not resisted target from target list for _0_ effect
+    //[TZERO] Target selection code needs to be redone since now it will pick the caster as target when the other target is dead. [e.g Arcane Missles]
     if(!m_UniqueTargetInfo.empty())
     {
         for(std::list<TargetInfo>::iterator itr= m_UniqueTargetInfo.begin();itr != m_UniqueTargetInfo.end();++itr)
@@ -3079,8 +3079,7 @@ void Spell::SendChannelStart(uint32 duration)
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
     {
-        WorldPacket data( MSG_CHANNEL_START, (8+4+4) );
-        data.append(m_caster->GetPackGUID());
+        WorldPacket data( MSG_CHANNEL_START, (4+4) );
         data << uint32(m_spellInfo->Id);
         data << uint32(duration);
 
@@ -3089,7 +3088,7 @@ void Spell::SendChannelStart(uint32 duration)
 
     m_timer = duration;
     if(target)
-        m_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, target->GetGUID());
+        m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT, target->GetGUID());
     m_caster->SetUInt32Value(UNIT_CHANNEL_SPELL, m_spellInfo->Id);
 }
 
