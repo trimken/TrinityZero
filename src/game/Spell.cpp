@@ -240,7 +240,8 @@ bool SpellCastTargets::read ( WorldPacket * data, Unit *caster )
 
 void SpellCastTargets::write ( WorldPacket * data )
 {
-    *data << uint32(m_targetMask);
+//         in SendSpellGo
+//    *data << uint32(m_targetMask);
     sLog.outDebug("Spell write, target mask = %u", m_targetMask);
 
     if( m_targetMask & ( TARGET_FLAG_UNIT | TARGET_FLAG_PVP_CORPSE | TARGET_FLAG_OBJECT | TARGET_FLAG_CORPSE | TARGET_FLAG_UNK2 ) )
@@ -2830,10 +2831,12 @@ void Spell::SendSpellGo()
     data.append(m_caster->GetPackGUID());
     data << uint32(m_spellInfo->Id);
     data << uint16(castFlags);
-    data << uint32(getMSTime());                            // timestamp
+//    data << uint32(getMSTime());                            // timestamp
 
     WriteSpellGoTargets(&data);
 
+    data << uint8(0); // timestamp?
+    data << m_targets.m_targetMask;
     m_targets.write(&data);
 
     if( castFlags & CAST_FLAG_AMMO )
@@ -2883,15 +2886,16 @@ void Spell::WriteAmmoToPacket( WorldPacket * data )
 
 void Spell::WriteSpellGoTargets( WorldPacket * data )
 {
-    *data << (uint8)m_countOfHit;
+    // temp solution - probably wrong but works
+    *data << (uint8)(m_countOfHit+m_countOfMiss);
     for(std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin();ihit != m_UniqueTargetInfo.end();++ihit)
         if ((*ihit).missCondition == SPELL_MISS_NONE)       // Add only hits
             *data << uint64(ihit->targetGUID);
 
     for(std::list<GOTargetInfo>::iterator ighit= m_UniqueGOTargetInfo.begin();ighit != m_UniqueGOTargetInfo.end();++ighit)
         *data << uint64(ighit->targetGUID);                 // Always hits
-
-    *data << (uint8)m_countOfMiss;
+/* [TZERO] prebc has some reflecting trinkets but idk how it was handled
+    data << (uint8)m_countOfMiss;
     for(std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin();ihit != m_UniqueTargetInfo.end();++ihit)
     {
         if( ihit->missCondition != SPELL_MISS_NONE )        // Add only miss
@@ -2901,7 +2905,7 @@ void Spell::WriteSpellGoTargets( WorldPacket * data )
             if( ihit->missCondition == SPELL_MISS_REFLECT )
                 *data << uint8(ihit->reflectResult);
         }
-    }
+    }*/
 }
 
 void Spell::SendLogExecute()
