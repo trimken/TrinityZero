@@ -2524,7 +2524,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     {
         if(modelid > 0)
             m_target->SetDisplayId(m_target->GetNativeDisplayId());
-        m_target->SetByteValue(UNIT_FIELD_BYTES_2, 3, FORM_NONE);
+        m_target->SetByteValue(UNIT_FIELD_BYTES_1, 2, FORM_NONE);
         if(m_target->getClass() == CLASS_DRUID)
             m_target->setPowerType(POWER_MANA);
         m_target->m_ShapeShiftFormSpellId = 0;
@@ -3065,9 +3065,10 @@ void Aura::HandleModStealth(bool apply, bool Real)
         // only at real aura add
         if(Real)
         {
-            m_target->SetByteValue(UNIT_FIELD_BYTES_1, 2, 0x02);
-            if(m_target->GetTypeId()==TYPEID_PLAYER)
-                m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
+            m_target->SetByteValue(UNIT_FIELD_BYTES_1, 0, 0x02);
+            // [TZERO]
+            //if(m_target->GetTypeId()==TYPEID_PLAYER)
+            //    m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
 
             // apply only if not in GM invisibility (and overwrite invisibility state)
             if(m_target->GetVisibility()!=VISIBILITY_OFF)
@@ -3094,9 +3095,10 @@ void Aura::HandleModStealth(bool apply, bool Real)
             // if last SPELL_AURA_MOD_STEALTH and no GM invisibility
             if(!m_target->HasAuraType(SPELL_AURA_MOD_STEALTH) && m_target->GetVisibility()!=VISIBILITY_OFF)
             {
-                m_target->SetByteValue(UNIT_FIELD_BYTES_1, 2, 0x00);
-                if(m_target->GetTypeId()==TYPEID_PLAYER)
-                    m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
+                m_target->SetByteValue(UNIT_FIELD_BYTES_1, 0, 0x00);
+                // [TZERO]
+                //if(m_target->GetTypeId()==TYPEID_PLAYER)
+                //    m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
 
                 // restore invisibility if any
                 if(m_target->HasAuraType(SPELL_AURA_MOD_INVISIBILITY))
