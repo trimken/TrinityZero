@@ -3065,7 +3065,7 @@ void Aura::HandleModStealth(bool apply, bool Real)
         // only at real aura add
         if(Real)
         {
-            m_target->SetByteValue(UNIT_FIELD_BYTES_1, 0, 0x02);
+            m_target->SetFlag(UNIT_FIELD_BYTES_1, 0x02000000);
             // [TZERO]
             //if(m_target->GetTypeId()==TYPEID_PLAYER)
             //    m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
@@ -3095,7 +3095,7 @@ void Aura::HandleModStealth(bool apply, bool Real)
             // if last SPELL_AURA_MOD_STEALTH and no GM invisibility
             if(!m_target->HasAuraType(SPELL_AURA_MOD_STEALTH) && m_target->GetVisibility()!=VISIBILITY_OFF)
             {
-                m_target->SetByteValue(UNIT_FIELD_BYTES_1, 0, 0x00);
+                m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x02000000);
                 // [TZERO]
                 //if(m_target->GetTypeId()==TYPEID_PLAYER)
                 //    m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
