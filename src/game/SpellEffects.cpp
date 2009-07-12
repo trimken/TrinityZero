@@ -4935,6 +4935,7 @@ void Spell::EffectAddComboPoints(uint32 /*i*/)
         return;
 
     ((Player*)m_caster)->AddComboPoints(unitTarget, damage);
+	m_caster->SetUInt64Value(PLAYER_FIELD_COMBO_TARGET,unitTarget->GetGUID());
 }
 
 void Spell::EffectDuel(uint32 i)

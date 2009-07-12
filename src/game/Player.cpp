@@ -16942,13 +16942,11 @@ void Player::InitPrimaryProffesions()
 
 void Player::SendComboPoints()
 {
+	Player *test = m_session->GetPlayer();;
     Unit *combotarget = ObjectAccessor::GetUnit(*this, m_comboTarget);
     if (combotarget)
     {
-        WorldPacket data(SMSG_UPDATE_COMBO_POINTS, combotarget->GetPackGUID().size()+1);
-        data.append(combotarget->GetPackGUID());
-        data << uint8(m_comboPoints);
-        GetSession()->SendPacket(&data);
+		test->SetUInt32Value(PLAYER_FIELD_BYTES,((test->GetUInt32Value(PLAYER_FIELD_BYTES) & ~(0xFF << 8)) | (m_comboPoints << 8)));
     }
 }
 
