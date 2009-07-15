@@ -496,7 +496,13 @@ struct ItemPrototype
     uint32 Area;                                            // id from AreaTable.dbc
     uint32 Map;                                             // id from Map.dbc
     uint32 BagFamily;                                       // id from ItemBagFamily.dbc
+
+	// useless in 1.12 but we have to keep it for SqlStorage ( to delete as soon as possible) 
+	uint32 TotemCategory;                                   // id from TotemCategory.dbc
+    _Socket Socket[3];
     uint32 socketBonus;                                     // id from SpellItemEnchantment.dbc
+	uint32 GemProperties; 
+
     uint32 RequiredDisenchantSkill;
     float  ArmorDamageModifier;
     uint32 ScriptId;
