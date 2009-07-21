@@ -144,7 +144,6 @@ SET(trinityscript_LIB_SRCS
    scripts/zone/scarlet_monastery/boss_houndmaster_loksey.cpp
    scripts/zone/scarlet_monastery/boss_interrogator_vishas.cpp
    scripts/zone/scarlet_monastery/boss_scorn.cpp
-   scripts/zone/scarlet_monastery/boss_headless_horseman.cpp
    scripts/zone/scarlet_monastery/boss_mograine_and_whitemane.cpp
    scripts/zone/scarlet_monastery/instance_scarlet_monastery.cpp
    scripts/zone/scarlet_monastery/def_scarlet_monastery.h
@@ -178,7 +177,6 @@ SET(trinityscript_LIB_SRCS
    scripts/zone/stratholme/boss_magistrate_barthilas.cpp
    scripts/zone/stratholme/boss_maleki_the_pallid.cpp
    scripts/zone/stratholme/boss_nerubenkan.cpp
-   scripts/zone/stratholme/boss_order_of_silver_hand.cpp
    scripts/zone/stratholme/boss_postmaster_malown.cpp
    scripts/zone/stratholme/boss_ramstein_the_gorger.cpp
    scripts/zone/stratholme/boss_timmy_the_cruel.cpp
