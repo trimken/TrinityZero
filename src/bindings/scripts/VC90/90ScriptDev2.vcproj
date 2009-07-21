@@ -735,10 +735,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\scripts\zone\scarlet_monastery\boss_headless_horseman.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\zone\scarlet_monastery\boss_herod.cpp"
 						>
 					</File>
@@ -1115,10 +1111,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\scripts\zone\stratholme\boss_order_of_silver_hand.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\zone\stratholme\boss_postmaster_malown.cpp"
 						>
 					</File>
@@ -1215,9 +1207,9 @@
 					Name="Thousand Needles"
 					>
 					<File
-                        RelativePath="..\scripts\zone\thousand_needles\thousand_needles.cpp"
-                        >
-                    </File>
+						RelativePath="..\scripts\zone\thousand_needles\thousand_needles.cpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Silithus"
@@ -1379,9 +1371,9 @@
 					Name="Un&apos;Goro Crater"
 					>
 					<File
-                            RelativePath="..\scripts\zone\ungoro_crater\ungoro_crater.cpp"
-                            >
-                        </File>
+						RelativePath="..\scripts\zone\ungoro_crater\ungoro_crater.cpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Blasted Lands"
@@ -1499,21 +1491,13 @@
 						>
 					</File>
 					<File
-						RelativePath="..\scripts\zone\blackrock_depths\def_blackrock_depths.h"
-						>
-					</File>
-					<File
-						RelativePath="..\scripts\zone\blackrock_depths\instance_blackrock_depths.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_ambassador_flamelash.cpp"
 						>
-					</File>				
+					</File>
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_anubshiah.cpp"
 						>
-					</File>									
+					</File>
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_emperor_dagran_thaurissan.cpp"
 						>
@@ -1521,7 +1505,7 @@
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_general_angerforge.cpp"
 						>
-					</File>					
+					</File>
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_gorosh_the_dervish.cpp"
 						>
@@ -1529,7 +1513,7 @@
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_grizzle.cpp"
 						>
-					</File>					
+					</File>
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_high_interrogator_gerstahn.cpp"
 						>
@@ -1541,9 +1525,17 @@
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_moira_bronzebeard.cpp"
 						>
-					</File>					
+					</File>
 					<File
 						RelativePath="..\scripts\zone\blackrock_depths\boss_tomb_of_seven.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\zone\blackrock_depths\def_blackrock_depths.h"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\zone\blackrock_depths\instance_blackrock_depths.cpp"
 						>
 					</File>
 				</Filter>
@@ -1629,4 +1621,3 @@
 	<Globals>
 	</Globals>
 </VisualStudioProject>
-

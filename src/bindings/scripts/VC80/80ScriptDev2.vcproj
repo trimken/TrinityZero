@@ -742,10 +742,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\scripts\zone\scarlet_monastery\boss_headless_horseman.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\zone\scarlet_monastery\boss_herod.cpp"
 						>
 					</File>
@@ -1119,10 +1115,6 @@
 					</File>
 					<File
 						RelativePath="..\scripts\zone\stratholme\boss_nerubenkan.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\scripts\zone\stratholme\boss_order_of_silver_hand.cpp"
 						>
 					</File>
 					<File
