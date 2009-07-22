@@ -143,7 +143,6 @@ SET(trinityscript_LIB_SRCS
    scripts/zone/scarlet_monastery/boss_high_inquisitor_fairbanks.cpp
    scripts/zone/scarlet_monastery/boss_houndmaster_loksey.cpp
    scripts/zone/scarlet_monastery/boss_interrogator_vishas.cpp
-   scripts/zone/scarlet_monastery/boss_scorn.cpp
    scripts/zone/scarlet_monastery/boss_mograine_and_whitemane.cpp
    scripts/zone/scarlet_monastery/instance_scarlet_monastery.cpp
    scripts/zone/scarlet_monastery/def_scarlet_monastery.h

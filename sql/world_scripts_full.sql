@@ -343,7 +343,6 @@ UPDATE `creature_template` SET `ScriptName`='boss_high_inquisitor_whitemane' WHE
 UPDATE `creature_template` SET `ScriptName`='boss_houndmaster_loksey' WHERE `entry`=3974;
 UPDATE `creature_template` SET `ScriptName`='boss_interrogator_vishas' WHERE `entry`=3983;
 UPDATE `creature_template` SET `ScriptName`='boss_scarlet_commander_mograine' WHERE `entry`=3976;
-UPDATE `creature_template` SET `ScriptName`='boss_scorn' WHERE `entry`=14693;
 UPDATE `creature_template` SET `ScriptName`='boss_headless_horseman' WHERE `entry` = 23682;
 UPDATE `creature_template` SET `ScriptName`='mob_head' WHERE `entry` = 23775;
 UPDATE `creature_template` SET `ScriptName`='mob_pulsing_pumpkin' WHERE `entry` = 23694;

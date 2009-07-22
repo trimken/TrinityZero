@@ -762,10 +762,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\scripts\zone\scarlet_monastery\boss_scorn.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\zone\scarlet_monastery\def_scarlet_monastery.h"
 						>
 					</File>
