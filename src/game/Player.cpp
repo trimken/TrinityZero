@@ -15574,13 +15574,13 @@ void Player::Whisper(const std::string& text, uint32 language,uint64 receiver)
     // when player you are whispering to is dnd, he cannot receive your message, unless you are in gm mode
     if(!rPlayer->isDND() || isGameMaster())
     {
-        WorldPacket data(SMSG_MESSAGECHAT, 200);
+        WorldPacket data(SMSG_MESSAGECHAT, 100);
         BuildPlayerChat(&data, CHAT_MSG_WHISPER, text, language);
         rPlayer->GetSession()->SendPacket(&data);
 
-       /* data.Initialize(SMSG_MESSAGECHAT, 200);
-        rPlayer->BuildPlayerChat(&data, CHAT_MSG_REPLY, text, language);
-        GetSession()->SendPacket(&data); */
+        data.Initialize(SMSG_MESSAGECHAT, 100);
+        rPlayer->BuildPlayerChat(&data, CHAT_MSG_WHISPER_INFORM, text, language);
+        GetSession()->SendPacket(&data); 
     }
     else
     {
