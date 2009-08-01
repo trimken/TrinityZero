@@ -419,7 +419,7 @@ void TransformData()
     delete mcells;
 }
 
-const char MAP_MAGIC[] = "MAP_2.50";
+const char MAP_MAGIC[] = "MAP_1.01";
 
 bool ConvertADT(char * filename,char * filename2)
 {
