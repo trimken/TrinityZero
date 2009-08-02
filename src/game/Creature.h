@@ -442,7 +442,7 @@ class TRINITY_DLL_SPEC Creature : public Unit
         bool IsOutOfThreatArea(Unit* pVictim) const;
         bool IsImmunedToSpell(SpellEntry const* spellInfo, bool useCharges = false);
                                                             // redefine Unit::IsImmunedToSpell
-        bool IsImmunedToSpellEffect(uint32 effect, uint32 mechanic) const;
+        bool IsImmunedToSpellEffect(uint32 effect) const;
                                                             // redefine Unit::IsImmunedToSpellEffect
         bool isElite() const
         {

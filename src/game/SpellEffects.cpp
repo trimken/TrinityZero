@@ -412,7 +412,7 @@ void Spell::SpellDamageSchoolDmg(uint32 effect_idx)
                     if(unitTarget->HasAuraState(AURA_STATE_IMMOLATE))
                         damage += int32(damage*0.25);
                 }
-
+/*[TZERO] not used in 1.12 [?]
                 // Conflagrate - consumes immolate
                 if (m_spellInfo->TargetAuraState == AURA_STATE_IMMOLATE)
                 {
@@ -428,6 +428,7 @@ void Spell::SpellDamageSchoolDmg(uint32 effect_idx)
                         }
                     }
                 }
+*/
                 break;
             }
             case SPELLFAMILY_DRUID:
@@ -2374,7 +2375,7 @@ void Spell::SpellDamageHeal(uint32 /*i*/)
             return;
 
         int32 addhealth = damage;
-
+/* [TZERO] not used in 1.12 [?]
         // Vessel of the Naaru (Vial of the Sunwell trinket)
         if (m_spellInfo->Id == 45064)
         {
@@ -2390,7 +2391,7 @@ void Spell::SpellDamageHeal(uint32 /*i*/)
             addhealth += damageAmount;
         }
         // Swiftmend - consumes Regrowth or Rejuvenation
-        else if (m_spellInfo->TargetAuraState == AURA_STATE_SWIFTMEND && unitTarget->HasAuraState(AURA_STATE_SWIFTMEND))
+		else if (m_spellInfo->TargetAuraState == AURA_STATE_SWIFTMEND && unitTarget->HasAuraState(AURA_STATE_SWIFTMEND))
         {
             Unit::AuraList const& RejorRegr = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_HEAL);
             // find most short by duration
@@ -2410,7 +2411,6 @@ void Spell::SpellDamageHeal(uint32 /*i*/)
                 sLog.outError("Target(GUID:" I64FMTD ") has aurastate AURA_STATE_SWIFTMEND but no matching aura.", unitTarget->GetGUID());
                 return;
             }
-
             int32 tickheal = targetAura->GetModifierValuePerStack();
             if(Unit* auraCaster = targetAura->GetCaster())
                 tickheal = auraCaster->SpellHealingBonus(targetAura->GetSpellProto(), tickheal, DOT, unitTarget);
@@ -2431,8 +2431,9 @@ void Spell::SpellDamageHeal(uint32 /*i*/)
 
             //addhealth += tickheal * tickcount;
             //addhealth = caster->SpellHealingBonus(m_spellInfo, addhealth,HEAL, unitTarget);
+
         }
-        else
+        else */
             addhealth = caster->SpellHealingBonus(m_spellInfo, addhealth,HEAL, unitTarget);
 
         m_damage -= addhealth;
@@ -4340,7 +4341,7 @@ void Spell::EffectInterruptCast(uint32 i)
         if (unitTarget->m_currentSpells[i])
         {
             // check if we can interrupt spell
-            if ( (unitTarget->m_currentSpells[i]->getState() == SPELL_STATE_CASTING || (unitTarget->m_currentSpells[i]->getState() == SPELL_STATE_PREPARING && unitTarget->m_currentSpells[i]->GetCastTime() > 0.0f)) && unitTarget->m_currentSpells[i]->m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT && unitTarget->m_currentSpells[i]->m_spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE )
+            if ( (unitTarget->m_currentSpells[i]->getState() == SPELL_STATE_CASTING || (unitTarget->m_currentSpells[i]->getState() == SPELL_STATE_PREPARING && unitTarget->m_currentSpells[i]->GetCastTime() > 0.0f)) && unitTarget->m_currentSpells[i]->m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT)
             {
                 if(m_originalCaster)
                 {
@@ -5813,7 +5814,7 @@ void Spell::EffectDispelMechanic(uint32 i)
         next = iter;
         ++next;
         SpellEntry const *spell = sSpellStore.LookupEntry(iter->second->GetSpellProto()->Id);
-        if(spell->Mechanic == mechanic || spell->EffectMechanic[iter->second->GetEffIndex()] == mechanic)
+        if(spell->Mechanic == mechanic)
         {
             unitTarget->RemoveAurasDueToSpell(spell->Id);
             if(Auras.empty())

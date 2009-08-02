@@ -737,6 +737,8 @@ enum Mechanics
     MECHANIC_INVULNERABILITY  = 25,
     MECHANIC_INTERRUPT        = 26,
     MECHANIC_DAZE             = 27,
+
+   //[TZERO] tbc enumeration [?]
     MECHANIC_DISCOVERY        = 28,
     MECHANIC_IMMUNE_SHIELD    = 29,                         // Divine (Blessing) Shield/Protection and Ice Block
     MECHANIC_SAPPED           = 30

@@ -979,8 +979,8 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
     uint32 procEx       = PROC_EX_NONE;
 
                             //Spells with this flag cannot trigger if effect is casted on self
-    bool canEffectTrigger = (m_spellInfo->AttributesEx4 & SPELL_ATTR_EX4_CANT_PROC_FROM_SELFCAST ? m_caster!=unitTarget : true) 
-        && m_canTrigger;
+
+	bool canEffectTrigger = m_caster!=unitTarget && m_canTrigger;
 
     if (missInfo==SPELL_MISS_NONE)                          // In case spell hit target, do all effect on that target
         DoSpellHitOnUnit(unit, mask);
@@ -1221,7 +1221,7 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
 
     if(m_caster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_caster)->IsAIEnabled)
         ((Creature*)m_caster)->AI()->SpellHitTarget(unit, m_spellInfo);
-
+/* [TZERO] not used in 1.12 [?]
     // spells with this flag can trigger only if not selfcast (eviscerate for example)
     if (m_ChanceTriggerSpells.size() && (!(m_spellInfo->AttributesEx4 & SPELL_ATTR_EX4_CANT_PROC_FROM_SELFCAST) || unit!=m_caster))
     {
@@ -1246,7 +1246,7 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
             }
         }
     }
-
+*/
     if(m_customAttr & SPELL_ATTR_CU_LINK_HIT)
     {
         if(const std::vector<int32> *spell_triggered = spellmgr.GetSpellLinked(m_spellInfo->Id + SPELL_LINK_HIT))
@@ -3299,12 +3299,11 @@ void Spell::HandleEffects(Unit *pUnitTarget,Item *pItemTarget,GameObject *pGOTar
     gameObjTarget = pGOTarget;
 
     uint8 eff = m_spellInfo->Effect[i];
-    uint32 mechanic = m_spellInfo->EffectMechanic[i];
 
     sLog.outDebug( "Spell: Effect : %u", eff);
 
     //Simply return. Do not display "immune" in red text on client
-    if(unitTarget && unitTarget->IsImmunedToSpellEffect(eff, mechanic))
+    if(unitTarget && unitTarget->IsImmunedToSpellEffect(eff))
         return;
 
     //we do not need DamageMultiplier here.
@@ -3395,8 +3394,8 @@ uint8 Spell::CanCast(bool strict)
         if(target != m_caster)
         {
             // target state requirements (apply to non-self only), to allow cast affects to self like Dirty Deeds
-            if(m_spellInfo->TargetAuraState && !target->HasAuraState(AuraState(m_spellInfo->TargetAuraState)))
-                return SPELL_FAILED_TARGET_AURASTATE;
+//[TZERO]            if(m_spellInfo->TargetAuraState && !target->HasAuraState(AuraState(m_spellInfo->TargetAuraState)))
+//                return SPELL_FAILED_TARGET_AURASTATE;
 
             // Not allow casting on flying player
             if (target->isInFlight())
@@ -4299,9 +4298,9 @@ uint8 Spell::CheckCasterAuras() const
     //    prevented_reason = SPELL_FAILED_CONFUSED;
     //else if(m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING) && !(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_USABLE_WHILE_FEARED))
     //    prevented_reason = SPELL_FAILED_FLEEING;
-    if(m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED) && m_spellInfo->PreventionType==SPELL_PREVENTION_TYPE_SILENCE)
+    if(m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
         prevented_reason = SPELL_FAILED_SILENCED;
-    else if(m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED) && m_spellInfo->PreventionType==SPELL_PREVENTION_TYPE_PACIFY)
+    else if(m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
         prevented_reason = SPELL_FAILED_PACIFIED;
 
     // Attr must make flag drop spell totally immune from all effects
@@ -4339,12 +4338,10 @@ uint8 Spell::CheckCasterAuras() const
 //                                return SPELL_FAILED_FLEEING;
                             break;
                         case SPELL_AURA_MOD_SILENCE:
+							    return SPELL_FAILED_SILENCED;
                         case SPELL_AURA_MOD_PACIFY:
                         case SPELL_AURA_MOD_PACIFY_SILENCE:
-                            if( m_spellInfo->PreventionType==SPELL_PREVENTION_TYPE_PACIFY)
                                 return SPELL_FAILED_PACIFIED;
-                            else if ( m_spellInfo->PreventionType==SPELL_PREVENTION_TYPE_SILENCE)
-                                return SPELL_FAILED_SILENCED;
                             break;
                     }
                 }
@@ -4504,8 +4501,8 @@ int32 Spell::CalculatePowerCost()
     // Flat mod from caster auras by spell school
     powerCost += m_caster->GetInt32Value(UNIT_FIELD_POWER_COST_MODIFIER + school);
     // Shiv - costs 20 + weaponSpeed*10 energy (apply only to non-triggered spell with energy cost)
-    if ( m_spellInfo->AttributesEx4 & SPELL_ATTR_EX4_SPELL_VS_EXTEND_COST )
-        powerCost += m_caster->GetAttackTime(OFF_ATTACK)/100;
+//[TZERO]    if ( m_spellInfo->AttributesEx4 & SPELL_ATTR_EX4_SPELL_VS_EXTEND_COST )
+//        powerCost += m_caster->GetAttackTime(OFF_ATTACK)/100;
     // Apply cost mod by spell
     if(Player* modOwner = m_caster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, powerCost, this);

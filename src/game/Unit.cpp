@@ -5370,14 +5370,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     return false;
                 // Need stun or root mechanic
                 if (procSpell->Mechanic != MECHANIC_ROOT && procSpell->Mechanic != MECHANIC_STUN)
-                {
-                    int32 i;
-                    for (i=0; i<3; i++)
-                        if (procSpell->EffectMechanic[i] == MECHANIC_ROOT || procSpell->EffectMechanic[i] == MECHANIC_STUN)
-                            break;
-                    if (i == 3)
                         return false;
-                }
 
                 switch (dummySpell->Id)
                 {
@@ -8506,10 +8499,11 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 CastingTime = 0;
             }
             // Seal of Righteousness trigger - already computed for parent spell
-            else if ( spellProto->SpellFamilyName==SPELLFAMILY_PALADIN && spellProto->SpellIconID==25 && spellProto->AttributesEx4 & 0x00800000LL )
+/*[TZERO]            else if ( spellProto->SpellFamilyName==SPELLFAMILY_PALADIN && spellProto->SpellIconID==25 && spellProto->AttributesEx4 & 0x00800000LL )
             {
                 return pdamage;
             }
+*/
             break;
         case  SPELLFAMILY_SHAMAN:
             // totem attack
@@ -9094,17 +9088,12 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo, bool useCharges)
     return false;
 }
 
-bool Unit::IsImmunedToSpellEffect(uint32 effect, uint32 mechanic) const
+bool Unit::IsImmunedToSpellEffect(uint32 effect) const
 {
     //If m_immuneToEffect type contain this effect type, IMMUNE effect.
     SpellImmuneList const& effectList = m_spellImmune[IMMUNITY_EFFECT];
     for (SpellImmuneList::const_iterator itr = effectList.begin(); itr != effectList.end(); ++itr)
         if(itr->type == effect)
-            return true;
-
-    SpellImmuneList const& mechanicList = m_spellImmune[IMMUNITY_MECHANIC];
-    for (SpellImmuneList::const_iterator itr = mechanicList.begin(); itr != mechanicList.end(); ++itr)
-        if(itr->type == mechanic)
             return true;
 
     return false;
@@ -13007,7 +12996,7 @@ void Unit::AddAura(uint32 spellId, Unit* target)
     {
         if(spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA)
         {
-            if(target->IsImmunedToSpellEffect(spellInfo->Effect[i], spellInfo->EffectMechanic[i]))
+            if(target->IsImmunedToSpellEffect(spellInfo->Effect[i]))
                 continue;
 
             /*if(spellInfo->EffectImplicitTargetA[i] == TARGET_UNIT_CASTER)

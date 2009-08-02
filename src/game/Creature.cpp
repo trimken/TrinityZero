@@ -1734,12 +1734,10 @@ bool Creature::IsImmunedToSpell(SpellEntry const* spellInfo, bool useCharges)
     return Unit::IsImmunedToSpell(spellInfo, useCharges);
 }
 
-bool Creature::IsImmunedToSpellEffect(uint32 effect, uint32 mechanic) const
+bool Creature::IsImmunedToSpellEffect(uint32 effect) const
 {
-    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (mechanic-1)))
-        return true;
-
-    return Unit::IsImmunedToSpellEffect(effect, mechanic);
+	//[TZERO] useless declaration of isImmunedToSpellEffect in creature.h [?]
+    return Unit::IsImmunedToSpellEffect(effect);
 }
 
 SpellEntry const *Creature::reachWithSpellAttack(Unit *pVictim)

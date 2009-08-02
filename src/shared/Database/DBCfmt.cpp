@@ -47,7 +47,7 @@ const char SkillLineAbilityfmt[]="niiiixxiiiiixxi";
 const char SoundEntriesfmt[]="nxxxxxxxxxxxxxxxxxxxxxxxxxxxx";	
 const char SpellCastTimefmt[]="nixx";
 const char SpellDurationfmt[]="niii";
-const char SpellEntryfmt[]="niixiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifxixxiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffiiiiiiiiiiiiiiiiiiiiifffiiiiiiiiiiiifffixiixssssssssxssssssssxxxxxxxxxxxxxxxxxxxiiiiiiiiiixfffxxx";
+const char SpellEntryfmt[]="niixiiiiixiixiiixiiiiiiiiiiiiiiiiiiiifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffiiixxxiiiiiiiiiiiiiiifffiiiiiiiiiiiifffixiiissssssssissssssssixxxxxxxxxxxxxxxxxxiiiiiixiixxfffxxx";
 const char SpellFocusObjectfmt[]="nxxxxxxxxx";
 const char SpellItemEnchantmentfmt[]="niiiiiixxxiiissssssssxii";
 const char SpellRadiusfmt[]="nfxf";
@@ -62,6 +62,8 @@ const char TaxiPathNodeEntryfmt[]="diiifffii";
 const char WorldMapAreaEntryfmt[]="xinxffff";
 const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
 // endof correct for 1.12
+
+
 
 // [TZERO] these must be replaced with sql tables
 const char ItemRandomPropertiesfmt[]="nxiiixxxxxxxxxxx";

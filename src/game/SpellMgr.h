@@ -600,15 +600,11 @@ inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, int32 effect)
     uint32 mask = 0;
     if (spellInfo->Mechanic)
         mask |= 1<<spellInfo->Mechanic;
-    if (spellInfo->EffectMechanic[effect])
-        mask |= 1<<spellInfo->EffectMechanic[effect];
     return mask;
 }
 
 inline Mechanics GetEffectMechanic(SpellEntry const* spellInfo, int32 effect)
 {
-    if (spellInfo->EffectMechanic[effect])
-        return Mechanics(spellInfo->EffectMechanic[effect]);
     if (spellInfo->Mechanic)
         return Mechanics(spellInfo->Mechanic);
     return MECHANIC_NONE;

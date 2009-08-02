@@ -725,6 +725,7 @@ CREATE TABLE `gm_tickets` (
   `playerGuid` int(11) unsigned NOT NULL default '0',
   `name` varchar(15) NOT NULL,
   `message` text NOT NULL,
+  `createtime` int(10) NOT NULL,
   `timestamp` int(10) NOT NULL default '0',
   `closed` int(10) NOT NULL default '0',
   `assignedto` int(10) NOT NULL default '0',
@@ -1205,4 +1206,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-06-29 18:52:11
+-- Dump completed on 2009-08-02 11:11:33

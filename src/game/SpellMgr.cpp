@@ -803,9 +803,6 @@ uint8 GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 form)
 
     uint32 stanceMask = (form ? 1 << (form - 1) : 0);
 
-    if (stanceMask & spellInfo->StancesNot)                 // can explicitly not be casted in this stance
-        return SPELL_FAILED_NOT_SHAPESHIFT;
-
     if (stanceMask & spellInfo->Stances)                    // can explicitly be casted in this stance
         return 0;
 
@@ -1650,7 +1647,7 @@ void SpellMgr::LoadSpellChains()
         entry.RangeIndex=SpellInfo->rangeIndex;
         entry.ProcFlags=SpellInfo->procFlags;
         entry.SpellFamilyFlags=SpellInfo->SpellFamilyFlags;
-        entry.TargetAuraState=SpellInfo->TargetAuraState;
+        entry.TargetAuraState=0; //[TZERO] Workaround , fix db structure first
         entry.SpellVisual=SpellInfo->SpellVisual;
         entry.ManaCost=SpellInfo->manaCost;
 
@@ -2589,26 +2586,25 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
     // Get by mechanic
     for (uint8 i=0;i<3;++i)
     {
-        if (spellproto->Mechanic      == MECHANIC_STUN    || spellproto->EffectMechanic[i] == MECHANIC_STUN)
+        if (spellproto->Mechanic      == MECHANIC_STUN )
             return triggered ? DIMINISHING_TRIGGER_STUN : DIMINISHING_CONTROL_STUN;
-        else if (spellproto->Mechanic == MECHANIC_SLEEP   || spellproto->EffectMechanic[i] == MECHANIC_SLEEP)
+        else if (spellproto->Mechanic == MECHANIC_SLEEP)
             return DIMINISHING_SLEEP;
-        else if (spellproto->Mechanic == MECHANIC_ROOT    || spellproto->EffectMechanic[i] == MECHANIC_ROOT)
+        else if (spellproto->Mechanic == MECHANIC_ROOT)
             return triggered ? DIMINISHING_TRIGGER_ROOT : DIMINISHING_CONTROL_ROOT;
-        else if (spellproto->Mechanic == MECHANIC_FEAR    || spellproto->EffectMechanic[i] == MECHANIC_FEAR)
+        else if (spellproto->Mechanic == MECHANIC_FEAR)
             return DIMINISHING_FEAR;
-        else if (spellproto->Mechanic == MECHANIC_CHARM   || spellproto->EffectMechanic[i] == MECHANIC_CHARM)
+        else if (spellproto->Mechanic == MECHANIC_CHARM)
             return DIMINISHING_CHARM;
-        else if (spellproto->Mechanic == MECHANIC_SILENCE || spellproto->EffectMechanic[i] == MECHANIC_SILENCE)
+        else if (spellproto->Mechanic == MECHANIC_SILENCE)
             return DIMINISHING_SILENCE;
-        else if (spellproto->Mechanic == MECHANIC_DISARM  || spellproto->EffectMechanic[i] == MECHANIC_DISARM)
+        else if (spellproto->Mechanic == MECHANIC_DISARM)
             return DIMINISHING_DISARM;
-        else if (spellproto->Mechanic == MECHANIC_FREEZE  || spellproto->EffectMechanic[i] == MECHANIC_FREEZE)
+        else if (spellproto->Mechanic == MECHANIC_FREEZE)
             return DIMINISHING_FREEZE;
-        else if (spellproto->Mechanic == MECHANIC_KNOCKOUT|| spellproto->EffectMechanic[i] == MECHANIC_KNOCKOUT ||
-                 spellproto->Mechanic == MECHANIC_SAPPED  || spellproto->EffectMechanic[i] == MECHANIC_SAPPED)
+        else if (spellproto->Mechanic == MECHANIC_KNOCKOUT || spellproto->Mechanic == MECHANIC_SAPPED)
             return DIMINISHING_KNOCKOUT;
-        else if (spellproto->Mechanic == MECHANIC_BANISH  || spellproto->EffectMechanic[i] == MECHANIC_BANISH)
+        else if (spellproto->Mechanic == MECHANIC_BANISH)
             return DIMINISHING_BANISH;
     }
 
