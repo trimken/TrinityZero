@@ -196,13 +196,13 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     {
         // recheck
         CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+4+4);
-
+        recv_data >> movementInfo.unk1;
         recv_data >> movementInfo.t_guid;
         recv_data >> movementInfo.t_x;
         recv_data >> movementInfo.t_y;
         recv_data >> movementInfo.t_z;
         recv_data >> movementInfo.t_o;
-        recv_data >> movementInfo.t_time;
+        //[TZERO]recv_data >> movementInfo.t_time;
     }
 
     if(MovementFlags & (MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING2))
