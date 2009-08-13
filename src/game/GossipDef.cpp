@@ -452,7 +452,7 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
             if ( IProto )
                 data << uint32(IProto->DisplayInfoID);
             else
-                data << uint32(0);
+                data << uint32(0x00);
         }
 
         data << uint32(pQuest->GetRewOrReqMoney());
@@ -587,19 +587,14 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
 
     for (iI = 0; iI < QUEST_OBJECTIVES_COUNT; iI++)
     {
-        if (pQuest->ReqCreatureOrGOId[iI] < 0)
-        {
-            // client expected gameobject template id in form (id|0x80000000)
-            data << uint32((pQuest->ReqCreatureOrGOId[iI]*(-1))|0x80000000);
-        }
-        else
-        {
-            data << uint32(pQuest->ReqCreatureOrGOId[iI]);
-        }
+        data << uint32(pQuest->ReqCreatureOrGOId[iI]);
         data << uint32(pQuest->ReqCreatureOrGOCount[iI]);
-        data << uint32(pQuest->ReqItemId[iI]);
+        data << uint32(pQuest->ReqItemId[iI]); 
         data << uint32(pQuest->ReqItemCount[iI]);
     }
+        
+
+    
 
     for (iI = 0; iI < QUEST_OBJECTIVES_COUNT; iI++)
         data << ObjectiveText[iI];
@@ -739,7 +734,7 @@ void PlayerMenu::SendQuestGiverRequestItems( Quest const *pQuest, uint64 npcGUID
     else
         data << uint32(0x00);
 
-    data << uint32(0x00);                                   // unknown
+    //[TZERO]data << uint32(0x00);                                   // unknown
 
     // Required Money
     data << uint32(pQuest->GetRewOrReqMoney() < 0 ? -pQuest->GetRewOrReqMoney() : 0);

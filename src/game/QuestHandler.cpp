@@ -40,8 +40,8 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 
     uint64 guid;
     recv_data >> guid;
-    uint8 questStatus = DIALOG_STATUS_NONE;
-    uint8 defstatus = DIALOG_STATUS_NONE;
+    uint32 questStatus = DIALOG_STATUS_NONE;
+    uint32 defstatus = DIALOG_STATUS_NONE;
 
     Object* questgiver = ObjectAccessor::GetObjectByTypeMask(*_player, guid,TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT);
     if(!questgiver)
@@ -172,7 +172,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
                     Script->QuestAccept(_player, ((Creature*)pObject), qInfo );
                     break;
                 case TYPEID_ITEM:
-                case TYPEID_CONTAINER:
+                //case TYPEID_CONTAINER:
                 {
                     Script->ItemQuestAccept(_player, ((Item*)pObject), qInfo );
 
@@ -180,7 +180,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
                     bool destroyItem = true;
                     for(int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
                     {
-                        if ((qInfo->ReqItemId[i] == ((Item*)pObject)->GetEntry()) && (((Item*)pObject)->GetProto()->MaxCount != 0))
+                        if ((qInfo->ReqItemId[i] == ((Item*)pObject)->GetEntry()))
                         {
                             destroyItem = false;
                             break;
@@ -512,7 +512,8 @@ void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
         {
             WorldPacket data( MSG_QUEST_PUSH_RESULT, (8+1) );
             data << uint64(guid);
-            data << uint8(msg);                             // valid values: 0-8
+            data << uint32(msg);                             // valid values: 0-8
+            data << uint8(0);
             pPlayer->GetSession()->SendPacket(&data);
             _player->SetDivider( 0 );
         }
