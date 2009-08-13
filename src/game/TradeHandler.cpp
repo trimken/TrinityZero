@@ -71,7 +71,7 @@ void WorldSession::SendTradeStatus(uint32 status)
         case TRADE_STATUS_OPEN_WINDOW:
             data.Initialize(SMSG_TRADE_STATUS, 4+4);
             data << uint32(status);
-            data << uint32(0);                              // added in 2.4.0
+            //[TZERO]data << uint32(0);                              // added in 2.4.0
             break;
         case TRADE_STATUS_CLOSE_WINDOW:
             data.Initialize(SMSG_TRADE_STATUS, 4+4+1+4);

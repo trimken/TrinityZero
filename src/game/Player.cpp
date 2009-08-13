@@ -10800,7 +10800,7 @@ void Player::SendEquipError( uint8 msg, Item* pItem, Item *pItem2 )
                 if(ItemPrototype const* proto =  pItem->GetProto())
                     level = proto->RequiredLevel;
 
-            data << uint32(level);                          // new 2.4.0
+            //[TZERO]data << uint32(level);                          // new 2.4.0
         }
     }
     GetSession()->SendPacket(&data);

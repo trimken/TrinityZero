@@ -10326,14 +10326,14 @@ void Unit::ApplyDiminishingToDuration(DiminishingGroup group, int32 &duration,Un
     Unit const* casterOwner = caster->GetCharmerOrOwner();
 
     // Duration of crowd control abilities on pvp target is limited by 10 sec. (2.2.0)
-    if(duration > 10000 && IsDiminishingReturnsGroupDurationLimited(group))
+    /*[TZERO]if(duration > 10000 && IsDiminishingReturnsGroupDurationLimited(group))
     {
         Unit const* target = targetOwner ? targetOwner : this;
         Unit const* source = casterOwner ? casterOwner : caster;
 
         if(target->GetTypeId() == TYPEID_PLAYER && source->GetTypeId() == TYPEID_PLAYER)
             duration = 10000;
-    }
+    }*/
 
     float mod = 1.0f;
 

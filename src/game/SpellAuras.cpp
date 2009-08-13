@@ -2658,8 +2658,8 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
                 ((Player*)m_target)->setRegenTimer(1000);
 
             //dismount polymorphed target (after patch 2.4.2)
-            if (m_target->IsMounted())
-                m_target->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+            /*[TZERO]if (m_target->IsMounted())
+                m_target->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);*/
         }
     }
     else
@@ -5378,7 +5378,7 @@ void Aura::PeriodicTick()
             data << uint32(1);
             data << uint32(m_modifier.m_auraname);
             data << (uint32)pdamage;
-            data << (uint32)GetSpellSchoolMask(GetSpellProto()); // will be mask in 2.4.x
+            //[TZERO]data << (uint32)GetSpellSchoolMask(GetSpellProto()); // will be mask in 2.4.x
             data << (uint32)absorb;
             data << (uint32)resist;
             m_target->SendMessageToSet(&data,true);
