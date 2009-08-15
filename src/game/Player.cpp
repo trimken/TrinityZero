@@ -134,10 +134,10 @@ PlayerTaxi::PlayerTaxi()
 
 void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
 {
-	memset(m_taximask, 0, sizeof(m_taximask));
+    memset(m_taximask, 0, sizeof(m_taximask));
     // capital and taxi hub masks
-   	ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
-	m_taximask[0] = rEntry->startingTaxiMask;
+    ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
+    m_taximask[0] = rEntry->startingTaxiMask;
 
  /* [TZERO] useless?
     switch(race)
@@ -514,7 +514,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     switch(powertype)
     {
         case POWER_ENERGY:
-			unitfield = 0x00000000;
+            unitfield = 0x00000000;
         case POWER_MANA:
             unitfield = 0x0000EE00;
             break;
@@ -554,8 +554,8 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY | UNIT_BYTE2_FLAG_UNK5 );
     SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE );
     SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);               // fix cast time showed in spell tooltip on client
-	
-	SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_SPECIALINFO); // [TZERO]
+
+    SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_SPECIALINFO); // [TZERO]
                                                             //-1 is default value
     SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, uint32(-1));
 
@@ -563,15 +563,15 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value(PLAYER_BYTES_2, (facialHair | (0x00 << 8) | (0x00 << 16) | (0x02 << 24)));
     SetByteValue(PLAYER_BYTES_3, 0, gender);
 
-	SetUInt32Value(PLAYER_FIELD_BYTES, 0xEEE00000 ); // [TZERO]
+    SetUInt32Value(PLAYER_FIELD_BYTES, 0xEEE00000 ); // [TZERO]
 
     SetUInt32Value( PLAYER_GUILDID, 0 );
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
     SetUInt32Value( PLAYER_GUILD_TIMESTAMP, 0 );
 
-	m_rating = 0;
-	m_highest_rank = 0;
-	m_standing = 0;
+    m_rating = 0;
+    m_highest_rank = 0;
+    m_standing = 0;
 
     // set starting level
     if (GetSession()->GetSecurity() >= SEC_MODERATOR)
@@ -706,11 +706,11 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
             {
                 switch(iProto->Spells[0].SpellCategory)
                 {
-                    case 11:                                // food
+                    case SPELL_CATEGORY_FOOD:                                // food
                         if(iProto->Stackable > 4)
                             count = 4;
                         break;
-                    case 59:                                // drink
+                    case SPELL_CATEGORY_DRINK:                                // drink
                         if(iProto->Stackable > 2)
                             count = 2;
                         break;
@@ -1364,11 +1364,11 @@ void Player::setDeathState(DeathState s)
 
 void Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
 {
-	 *p_data << GetGUID();
+     *p_data << GetGUID();
     *p_data << m_name;
 
     *p_data << getRace();
-	uint8 pClass = getClass();
+    uint8 pClass = getClass();
     *p_data << pClass;
     *p_data << getGender();
 
@@ -1400,7 +1400,7 @@ void Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
 
     *p_data << (uint8)0;
 
-	// Pets info
+    // Pets info
     {
         uint32 petDisplayId = 0;
         uint32 petLevel   = 0;
@@ -2432,7 +2432,7 @@ void Player::SendInitialSpells()
         spellCount +=1;
     }
 
- //	[from 1.12 ]:
+ // [from 1.12 ]:
  // data << uint16(0);
  // WPAssert(data.size() == 5+(4*size_t(spellCount)));
 
@@ -4107,7 +4107,7 @@ void Player::RepopAtGraveyard()
     if(ClosestGrave)
     {
         if(isDead())
-		{
+        {
          TeleportTo(ClosestGrave->map_id, ClosestGrave->x, ClosestGrave->y, ClosestGrave->z, GetOrientation());
         }
     }
@@ -4310,10 +4310,10 @@ float Player::GetMeleeCritFromAgility()
 
 float Player::GetDodgeFromAgility()
 {
-	 // from mangos 3462 for 1.12
-	float val=0,classrate=0;
+     // from mangos 3462 for 1.12
+    float val=0,classrate=0;
 
-	//dodge
+    //dodge
     if(getClass() == CLASS_HUNTER) classrate = 26.5;
     else if(getClass() == CLASS_ROGUE)  classrate = 14.5;
     else classrate = 20;
@@ -4323,7 +4323,7 @@ float Player::GetDodgeFromAgility()
     else
         val = GetStat(STAT_AGILITY)/classrate;
 
-	return val;
+    return val;
 
   /* [TZERO]
     // Table for base dodge values
@@ -4376,8 +4376,8 @@ float Player::GetSpellCritFromIntellect()
     // The formula keeps the crit chance at %5 on every level unless the player
     // increases his intelligence by other means (enchants, buffs, talents, ...)
 
-	//[TZERO] from mangos 3462 for 1.12 MUST BE CHECKED
-	float val=0;
+    //[TZERO] from mangos 3462 for 1.12 MUST BE CHECKED
+    float val=0;
 
     static const struct
     {
@@ -4443,7 +4443,7 @@ float Player::GetSpellCritFromIntellect()
 float Player::OCTRegenHPPerSpirit()
 {
 
-	float regen = 0.0f;
+    float regen = 0.0f;
 
     float Spirit = GetStat(STAT_SPIRIT);
     uint8 Class = getClass();
@@ -4466,23 +4466,23 @@ float Player::OCTRegenHPPerSpirit()
 
 float Player::OCTRegenMPPerSpirit()
 {
-	float addvalue = 0.0;
+    float addvalue = 0.0;
 
-	float Spirit = GetStat(STAT_SPIRIT);
+    float Spirit = GetStat(STAT_SPIRIT);
     uint8 Class = getClass();
 
-		switch (Class)
-		{
-			case CLASS_DRUID:   addvalue = (Spirit/5 + 15);   break;
-			case CLASS_HUNTER:  addvalue = (Spirit/5 + 15);    break;
-			case CLASS_MAGE:    addvalue = (Spirit/4 + 12.5); break;
-			case CLASS_PALADIN: addvalue = (Spirit/5 + 15);   break;
-			case CLASS_PRIEST:  addvalue = (Spirit/4 + 12.5); break;
-			case CLASS_SHAMAN:  addvalue = (Spirit/5 + 17);   break;
-			case CLASS_WARLOCK: addvalue = (Spirit/5 + 15);   break;
-		}
+        switch (Class)
+        {
+            case CLASS_DRUID:   addvalue = (Spirit/5 + 15);   break;
+            case CLASS_HUNTER:  addvalue = (Spirit/5 + 15);    break;
+            case CLASS_MAGE:    addvalue = (Spirit/4 + 12.5); break;
+            case CLASS_PALADIN: addvalue = (Spirit/5 + 15);   break;
+            case CLASS_PRIEST:  addvalue = (Spirit/4 + 12.5); break;
+            case CLASS_SHAMAN:  addvalue = (Spirit/5 + 17);   break;
+            case CLASS_WARLOCK: addvalue = (Spirit/5 + 15);   break;
+        }
 
-		return addvalue;
+        return addvalue;
 }
 
 void Player::SetRegularAttackTime()
@@ -5308,7 +5308,7 @@ void Player::SendFactionState(FactionState const* faction) const
 
 void Player::SendInitialReputations()
 {
-	//[TZERO] changed from 128 to 64 [ for 1.12 ? ]
+    //[TZERO] changed from 128 to 64 [ for 1.12 ? ]
     WorldPacket data(SMSG_INITIALIZE_FACTIONS, (4+64*5));
     data << uint32 (0x00000040);
 
@@ -7613,7 +7613,7 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
                     data << uint32(0x9a6) << uint32(0x1);           // 22 // show the horde stadium icon        // 2470
             }
             break;
-    } 
+    }
     GetSession()->SendPacket(&data);
 }
 
@@ -9508,7 +9508,7 @@ uint8 Player::CanUseItem( Item *pItem, bool not_loading ) const
             }
             if( pProto->RequiredSpell != 0 && !HasSpell( pProto->RequiredSpell ) )
                 return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
-		    if( not_loading && GetHonorRank() < pProto->RequiredHonorRank )
+            if( not_loading && GetHonorRank() < pProto->RequiredHonorRank )
                 return EQUIP_ERR_CANT_EQUIP_RANK;
             if( pProto->RequiredReputationFaction && uint32(GetReputationRank(pProto->RequiredReputationFaction)) < pProto->RequiredReputationRank )
                 return EQUIP_ERR_CANT_EQUIP_REPUTATION;
@@ -9537,7 +9537,7 @@ bool Player::CanUseItem( ItemPrototype const *pProto )
         }
         if( pProto->RequiredSpell != 0 && !HasSpell( pProto->RequiredSpell ) )
             return false;
-	    if( GetHonorRank() < pProto->RequiredHonorRank )
+        if( GetHonorRank() < pProto->RequiredHonorRank )
             return false;
         if( getLevel() < pProto->RequiredLevel )
             return false;
@@ -9569,7 +9569,7 @@ uint8 Player::CanUseAmmo( uint32 item ) const
         }
         if( pProto->RequiredSpell != 0 && !HasSpell( pProto->RequiredSpell ) )
             return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
-		if( GetHonorRank() < pProto->RequiredHonorRank )
+        if( GetHonorRank() < pProto->RequiredHonorRank )
             return EQUIP_ERR_CANT_EQUIP_RANK;
         /*if( GetReputation() < pProto->RequiredReputation )
         return EQUIP_ERR_CANT_EQUIP_REPUTATION;
@@ -9995,7 +9995,7 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
                     {
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_0);
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_1);
-					}
+                    }
                 }
             }
 
@@ -10017,7 +10017,7 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
         if( IsInWorld() && update )
             pItem->SendUpdateToPlayer( this );
 
-	}
+    }
 }
 
 // Common operation need to remove item from inventory without delete in trade, auction, guild bank, mail....
@@ -11053,7 +11053,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 break;
             /* case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
              [TZERO] to rewrite [?]
-			   if(enchant_spell_id)
+               if(enchant_spell_id)
                 {
                     if(apply)
                     {
@@ -11120,7 +11120,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                             }
                         }
                     }
-                } 
+                }
 
                 sLog.outDebug("Adding %u to stat nb %u",enchant_amount,enchant_spell_id);
                 switch (enchant_spell_id)
@@ -11155,7 +11155,7 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 }
                 break;
             }
-			*/
+            */
             case ITEM_ENCHANTMENT_TYPE_TOTEM:               // Shaman Rockbiter Weapon
             {
                 if(getClass() == CLASS_SHAMAN)
@@ -11705,11 +11705,11 @@ void Player::CompleteQuest( uint32 quest_id )
 
         uint16 log_slot = FindQuestSlot( quest_id );
         if( log_slot < MAX_QUEST_LOG_SIZE)
-		{
-		    uint32 state = GetQuestSlotState(log_slot);
-		    state |= 1 << 24;
+        {
+            uint32 state = GetQuestSlotState(log_slot);
+            state |= 1 << 24;
             SetQuestSlotState(log_slot,state);
-		}
+        }
 
         if(Quest const* qInfo = objmgr.GetQuestTemplate(quest_id))
         {
@@ -11728,8 +11728,8 @@ void Player::IncompleteQuest( uint32 quest_id )
         SetQuestStatus( quest_id, QUEST_STATUS_INCOMPLETE );
 
         uint16 log_slot = FindQuestSlot( quest_id );
-		uint32 state = GetQuestSlotState(log_slot);
-		state &= ~(1 << 24);
+        uint32 state = GetQuestSlotState(log_slot);
+        state &= ~(1 << 24);
 
         if( log_slot < MAX_QUEST_LOG_SIZE)
             SetQuestSlotState(log_slot,state);
@@ -11889,8 +11889,8 @@ void Player::FailQuest( uint32 quest_id )
         uint16 log_slot = FindQuestSlot( quest_id );
         if( log_slot < MAX_QUEST_LOG_SIZE)
         {
-			uint32 state = GetQuestSlotState(log_slot);
-		    state |= 1 << 25;
+            uint32 state = GetQuestSlotState(log_slot);
+            state |= 1 << 25;
             SetQuestSlotTimer(log_slot, 1 );
             SetQuestSlotState(log_slot,state);
         }
@@ -11912,8 +11912,8 @@ void Player::FailTimedQuest( uint32 quest_id )
         uint16 log_slot = FindQuestSlot( quest_id );
         if( log_slot < MAX_QUEST_LOG_SIZE)
         {
-			uint32 state = GetQuestSlotState(log_slot);
-		    state |= 1 << 25;
+            uint32 state = GetQuestSlotState(log_slot);
+            state |= 1 << 25;
             SetQuestSlotTimer(log_slot, 1 );
             SetQuestSlotState(log_slot,state);
         }
@@ -12268,7 +12268,7 @@ bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
         return false;
     }
 */
-    return true;  
+    return true;
 }
 
 bool Player::GiveQuestSourceItem( Quest const *pQuest )
@@ -13062,7 +13062,7 @@ uint32 Player::GetUInt32ValueFromDB(uint16 index, uint64 guid)
     if(!LoadValuesArrayFromDB(data,guid))
         return 0;
 
-    return GetUInt32ValueFromArray(data,index); 
+    return GetUInt32ValueFromArray(data,index);
 }
 
 float Player::GetFloatValueFromDB(uint16 index, uint64 guid)
@@ -13167,9 +13167,9 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     _LoadGroup(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGROUP));
 
-	m_highest_rank = fields[33].GetUInt32();
-	m_standing = fields[34].GetUInt32();
-	m_rating = fields[35].GetFloat();
+    m_highest_rank = fields[33].GetUInt32();
+    m_standing = fields[34].GetUInt32();
+    m_rating = fields[35].GetFloat();
 
     _LoadBoundInstances(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES));
 
@@ -14038,7 +14038,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
                 {
                     SetQuestSlot(slot,quest_id,quest_time);
 
-					uint32 state = 0;
+                    uint32 state = 0;
                     if(questStatusData.m_status == QUEST_STATUS_COMPLETE)
                        state |= 1 << 24;
 
@@ -14046,7 +14046,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
                         if(questStatusData.m_creatureOrGOcount[idx])
                             state += (questStatusData.m_creatureOrGOcount[idx] << ( 6 * idx ));
 
-					SetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot*MAX_QUEST_OFFSET + QUEST_STATE_OFFSET,state);
+                    SetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot*MAX_QUEST_OFFSET + QUEST_STATE_OFFSET,state);
 
                     ++slot;
                 }
@@ -14697,14 +14697,14 @@ void Player::SaveToDB()
 
     ss << "', ";
     ss << m_highest_rank;
-    
-	ss << ", ";
+
+    ss << ", ";
     ss << m_standing;
-	
-	ss << ", ";
+
+    ss << ", ";
     ss << m_rating;
-	
-	ss << ", '";
+
+    ss << ", '";
     ss << GetSession()->GetLatency();
     ss << "' )";
 
@@ -15536,8 +15536,8 @@ void Player::BuildPlayerChat(WorldPacket *data, uint8 msgtype, const std::string
     *data << (uint8)msgtype;
     *data << (uint32)language;
     *data << (uint64)GetGUID();
-    if (msgtype == CHAT_MSG_SAY || msgtype == CHAT_MSG_YELL || msgtype == CHAT_MSG_PARTY) 
-		 *data << (uint64)GetGUID(); //targetguid
+    if (msgtype == CHAT_MSG_SAY || msgtype == CHAT_MSG_YELL || msgtype == CHAT_MSG_PARTY)
+         *data << (uint64)GetGUID(); //targetguid
     *data << (uint32)(text.length()+1);
     *data << text;
     *data << (uint8)chatTag();
@@ -15580,7 +15580,7 @@ void Player::Whisper(const std::string& text, uint32 language,uint64 receiver)
 
         data.Initialize(SMSG_MESSAGECHAT, 100);
         rPlayer->BuildPlayerChat(&data, CHAT_MSG_WHISPER_INFORM, text, language);
-        GetSession()->SendPacket(&data); 
+        GetSession()->SendPacket(&data);
     }
     else
     {
@@ -16485,7 +16485,7 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
 
    /* [TZERO] to rewrite [?]
 
-	if(!enchantmentcondition)
+    if(!enchantmentcondition)
         return true;
 
     SpellItemEnchantmentConditionEntry const *Condition = sSpellItemEnchantmentConditionStore.LookupEntry(enchantmentcondition);
@@ -16942,11 +16942,11 @@ void Player::InitPrimaryProffesions()
 
 void Player::SendComboPoints()
 {
-	Player *test = m_session->GetPlayer();;
+    Player *test = m_session->GetPlayer();;
     Unit *combotarget = ObjectAccessor::GetUnit(*this, m_comboTarget);
     if (combotarget)
     {
-		test->SetUInt32Value(PLAYER_FIELD_BYTES,((test->GetUInt32Value(PLAYER_FIELD_BYTES) & ~(0xFF << 8)) | (m_comboPoints << 8)));
+        test->SetUInt32Value(PLAYER_FIELD_BYTES,((test->GetUInt32Value(PLAYER_FIELD_BYTES) & ~(0xFF << 8)) | (m_comboPoints << 8)));
     }
 }
 
@@ -17040,7 +17040,7 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     SendInitialActionButtons();
     SendInitialReputations();
-	UpdateHonor();
+    UpdateHonor();
     UpdateZone(GetZoneId());
     SendInitWorldStates();
 
@@ -17679,7 +17679,7 @@ bool Player::RewardPlayerAndGroupAtKill(Unit* pVictim)
     uint32 xp = 0;
     bool honored_kill = false;
 
-	float honordiff = GetTotalHonor();
+    float honordiff = GetTotalHonor();
     CalculateHonor(pVictim);
     honordiff -= GetTotalHonor();
 
