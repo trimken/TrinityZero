@@ -137,9 +137,11 @@ struct ChrRacesEntry
 struct CreatureDisplayInfoEntry
 {
     uint32      Displayid;                                  // 0
-                                                            // 1-8,unused
-    int32       scale;                                      // 9
-                                                            // 10-11,unused
+	                                                        // 1	iRefID_CreatureModelData Points to the model filename.
+                                                            // 3	iRefID_CreatureDisplayInfoExtra	
+                                                            // 4	
+    int32       scale;                                      // 4    Scale  Default model scale if not set by server for that spawn
+                                                            // 6	    Opacity	 Integer	 0 - 255. 0 is totally transparent, 255 is solid	
 };
 
 struct CreatureFamilyEntry
