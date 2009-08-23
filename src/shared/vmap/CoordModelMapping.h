@@ -23,6 +23,7 @@
 
 #include <G3D/Table.h>
 #include <G3D/Array.h>
+#include <cstdio>
 
 /**
 This Class is a helper Class to convert the raw vector data into BSP-Trees.

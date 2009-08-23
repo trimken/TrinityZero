@@ -23,6 +23,7 @@
 
 #include <G3D/Vector3.h>
 #include <G3D/Array.h>
+#include <cstdio>
 
 /**
 Class is used for debugging. We log activities into a file.
