@@ -2282,7 +2282,10 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 
     // reset size before reapply auras
-    SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
+    if (getRace() == RACE_TAUREN)
+       SetFloatValue(OBJECT_FIELD_SCALE_X,1.35f);
+    else
+       SetFloatValue(OBJECT_FIELD_SCALE_X, 1.00f);
 
     // save base values (bonuses already included in stored stats
     for(int i = STAT_STRENGTH; i < MAX_STATS; ++i)
@@ -14550,6 +14553,7 @@ void Player::SaveToDB()
         return;
 
     int is_save_resting = HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) ? 1 : 0;
+    RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
                                                             //save, far from tavern/city
                                                             //save, but in tavern/city
     sLog.outDebug("The value of player %s at save: ", m_name.c_str());

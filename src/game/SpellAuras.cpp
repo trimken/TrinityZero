@@ -2370,9 +2370,15 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             break;
         case FORM_DIREBEAR:
             if(Player::TeamForRace(m_target->getRace())==ALLIANCE)
+            {
+                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,2.0f);
                 modelid = 2281;
+            }
             else
+            {
+                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,2.35f);
                 modelid = 2289;
+            }
             PowerType = POWER_RAGE;
             break;
         case FORM_CREATUREBEAR:
@@ -2524,6 +2530,13 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     {
         if(modelid > 0)
             m_target->SetDisplayId(m_target->GetNativeDisplayId());
+
+        // Fix tauren size
+        if (m_target->getRace() == RACE_TAUREN)
+            m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.35f);
+        else
+            m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
+
         m_target->SetByteValue(UNIT_FIELD_BYTES_1, 2, FORM_NONE);
         if(m_target->getClass() == CLASS_DRUID)
             m_target->setPowerType(POWER_MANA);

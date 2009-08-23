@@ -138,7 +138,7 @@ struct CreatureDisplayInfoEntry
 {
     uint32      Displayid;                                  // 0
                                                             // 1-8,unused
-    float       scale;                                      // 9
+    int32       scale;                                      // 9
                                                             // 10-11,unused
 };
 

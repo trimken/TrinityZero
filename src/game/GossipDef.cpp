@@ -419,20 +419,11 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
     data << uint32(ActivateAccept);
     // [TZERO] data << uint32(pQuest->GetSuggestedPlayers());
 
-    if (pQuest->HasFlag(QUEST_FLAGS_HIDDEN_REWARDS))
-    {
-        data << uint32(0);                                  // Rewarded chosen items hidden
-        data << uint32(0);                                  // Rewarded items hidden
-        data << uint32(0);                                  // Rewarded money hidden
-    }
-    else
-    {
         ItemPrototype const* IProto;
 
         data << uint32(pQuest->GetRewChoiceItemsCount());
         for (uint32 i=0; i < QUEST_REWARD_CHOICES_COUNT; i++)
         {
-            if ( !pQuest->RewChoiceItemId[i] ) continue;
             data << uint32(pQuest->RewChoiceItemId[i]);
             data << uint32(pQuest->RewChoiceItemCount[i]);
             IProto = objmgr.GetItemPrototype(pQuest->RewChoiceItemId[i]);
@@ -445,7 +436,6 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
         data << uint32(pQuest->GetRewItemsCount());
         for (uint32 i=0; i < QUEST_REWARDS_COUNT; i++)
         {
-            if ( !pQuest->RewItemId[i] ) continue;
             data << uint32(pQuest->RewItemId[i]);
             data << uint32(pQuest->RewItemCount[i]);
             IProto = objmgr.GetItemPrototype(pQuest->RewItemId[i]);
@@ -456,7 +446,6 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
         }
 
         data << uint32(pQuest->GetRewOrReqMoney());
-    }
 
     data << pQuest->GetReqItemsCount();
     for (uint32 i=0; i <  QUEST_OBJECTIVES_COUNT; i++)
@@ -538,31 +527,17 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
 
     data << uint32(pQuest->GetNextQuestInChain());          // client will request this quest from NPC, if not 0
 
-    if (pQuest->HasFlag(QUEST_FLAGS_HIDDEN_REWARDS))
-        data << uint32(0);                                  // Hide money rewarded
-    else
-        data << uint32(pQuest->GetRewOrReqMoney());
-
+    data << uint32(pQuest->GetRewOrReqMoney());
     data << uint32(pQuest->GetRewMoneyMaxLevel());          // used in XP calculation at client
-    if (pQuest->GetRewSpell())
-     data << uint32(pQuest->GetRewSpell());                  // reward spell, this spell will display (icon) (casted if RewSpellCast==0)
-    else
-     data << uint32(0);
+
+    data << uint32(0);
 
     data << uint32(pQuest->GetSrcItemId());
     data << uint32(pQuest->GetFlags() & 0xFFFF);
 
     int iI;
 
-    if (pQuest->HasFlag(QUEST_FLAGS_HIDDEN_REWARDS))
-    {
-        for (iI = 0; iI < QUEST_REWARDS_COUNT; iI++)
-            data << uint32(0) << uint32(0);
-        for (iI = 0; iI < QUEST_REWARD_CHOICES_COUNT; iI++)
-            data << uint32(0) << uint32(0);
-    }
-    else
-    {
+
         for (iI = 0; iI < QUEST_REWARDS_COUNT; iI++)
         {
             data << uint32(pQuest->RewItemId[iI]);
@@ -573,7 +548,6 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
             data << uint32(pQuest->RewChoiceItemId[iI]);
             data << uint32(pQuest->RewChoiceItemCount[iI]);
         }
-    }
 
     data << pQuest->GetPointMapId();
     data << pQuest->GetPointX();

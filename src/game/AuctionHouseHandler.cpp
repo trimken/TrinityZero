@@ -185,18 +185,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 
     // client send time in minutes, convert to common used sec time
     etime *= MINUTE;
-
-    // client understand only 3 auction time
-    switch(etime)
-    {
-        case 1*MIN_AUCTION_TIME:
-        case 2*MIN_AUCTION_TIME:
-        case 4*MIN_AUCTION_TIME:
-            break;
-        default:
-            return;
-    }
-
+       
     // remove fake death
     if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
         GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
@@ -538,7 +527,7 @@ void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
     auctionHouse->BuildListBidderItems(data,pl,count,totalcount);
     data.put<uint32>( 0, count );                           // add count to placeholder
     data << totalcount;
-    data << (uint32)300;                                    //unk 2.3.0
+    //[TZERO] data << (uint32)300;                                    //unk 2.3.0
     SendPacket(&data);
 }
 
@@ -575,7 +564,7 @@ void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
     auctionHouse->BuildListOwnerItems(data,_player,count,totalcount);
     data.put<uint32>(0, count);
     data << (uint32) totalcount;
-    data << (uint32) 0;
+    //[TZERO] data << (uint32) 0;
     SendPacket(&data);
 }
 
@@ -615,7 +604,7 @@ void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 
     //sLog.outDebug("Auctionhouse search guid: " I64FMTD ", list from: %u, searchedname: %s, levelmin: %u, levelmax: %u, auctionSlotID: %u, auctionMainCategory: %u, auctionSubCategory: %u, quality: %u, usable: %u", guid, listfrom, searchedname.c_str(), levelmin, levelmax, auctionSlotID, auctionMainCategory, auctionSubCategory, quality, usable);
 
-    WorldPacket data( SMSG_AUCTION_LIST_RESULT, (4+4+4) );
+    WorldPacket data( SMSG_AUCTION_LIST_RESULT, (4+4) );
     uint32 count = 0;
     uint32 totalcount = 0;
     data << (uint32) 0;
@@ -634,7 +623,7 @@ void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 
     data.put<uint32>(0, count);
     data << (uint32) totalcount;
-    data << (uint32) 300;                                   // unk 2.3.0 const?
+    //[TZERO] data << (uint32) 300;                                   // unk 2.3.0 const?
     SendPacket(&data);
 }
 

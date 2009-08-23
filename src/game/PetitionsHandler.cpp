@@ -227,6 +227,8 @@ void WorldSession::HandlePetitionShowSignOpcode(WorldPacket & recv_data)
     }
     delete result;
     SendPacket(&data);
+
+    SendPetitionQueryOpcode(petitionguid);
 }
 
 void WorldSession::HandlePetitionQueryOpcode(WorldPacket & recv_data)
@@ -273,26 +275,16 @@ void WorldSession::SendPetitionQueryOpcode(uint64 petitionguid)
         return;
     }
 
-    WorldPacket data(SMSG_PETITION_QUERY_RESPONSE, (4+8+name.size()+1+1+4*13));
+    unsigned char tdata[51] =
+    {
+        0x00, 0x01, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+
+    WorldPacket data(SMSG_PETITION_QUERY_RESPONSE, (4+8+name.size()+sizeof(tdata)));
     data << GUID_LOPART(petitionguid);                      // guild/team guid (in Trinity always same as GUID_LOPART(petition guid)
     data << ownerguid;                                      // charter owner guid
     data << name;                                           // name (guild team)
-    data << uint8(0);                                       // 1
-    if(type == 9)
-    {
-        data << uint32(9);
-        data << uint32(9);
-        data << uint32(0);                                  // bypass client - side limitation, a different value is needed here for each petition
-    }
-    data << uint32(0);                                      // 5
-    data << uint32(0);                                      // 6
-    data << uint32(0);                                      // 7
-    data << uint32(0);                                      // 8
-    data << uint16(0);                                      // 9 2 bytes field
-    data << uint32(0);                                      // 10
-    data << uint32(0);                                      // 11
-    data << uint32(0);                                      // 13 count of next strings?
-    data << uint32(0);                                      // 14
+    data.append(tdata, sizeof(tdata));
 
     SendPacket(&data);
 }
@@ -357,16 +349,16 @@ void WorldSession::HandlePetitionRenameOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandlePetitionSignOpcode(WorldPacket & recv_data)
 {
-    CHECK_PACKET_SIZE(recv_data, 8+1);
+    CHECK_PACKET_SIZE(recv_data, 8);
 
     sLog.outDebug("Received opcode CMSG_PETITION_SIGN");    // ok
     //recv_data.hexlike();
 
     Field *fields;
     uint64 petitionguid;
-    uint8 unk;
+    // uint8 unk;
     recv_data >> petitionguid;                              // petition guid
-    recv_data >> unk;
+    // [TZERO] recv_data >> unk;
 
     QueryResult *result = CharacterDatabase.PQuery(
         "SELECT ownerguid, "
@@ -398,8 +390,6 @@ void WorldSession::HandlePetitionSignOpcode(WorldPacket & recv_data)
         return;
     }
 
-    if(type != 9)
-    {
         if(_player->GetGuildId())
         {
             SendGuildCommandResult(GUILD_INVITE_S, _player->GetName(), ALREADY_IN_GUILD);
@@ -410,7 +400,6 @@ void WorldSession::HandlePetitionSignOpcode(WorldPacket & recv_data)
             SendGuildCommandResult(GUILD_INVITE_S, _player->GetName(), ALREADY_INVITED_TO_GUILD);
             return;
         }
-    }
 
     if(++signs > type)                                        // client signs maximum
         return;
@@ -489,16 +478,16 @@ void WorldSession::HandlePetitionDeclineOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleOfferPetitionOpcode(WorldPacket & recv_data)
 {
-    CHECK_PACKET_SIZE(recv_data, 4+8+8);
+    CHECK_PACKET_SIZE(recv_data, 8+8);
 
     sLog.outDebug("Received opcode CMSG_OFFER_PETITION");   // ok
     //recv_data.hexlike();
 
     uint8 signs = 0;
     uint64 petitionguid, plguid;
-    uint32 type, junk;
+    uint32 type;
     Player *player;
-    recv_data >> junk;                                      // this is not petition type!
+    // [TZERO] recv_data >> junk;                                      // this is not petition type!
     recv_data >> petitionguid;                              // petition guid
     recv_data >> plguid;                                    // player guid
 
@@ -720,32 +709,17 @@ void WorldSession::SendPetitionShowList(uint64 guid)
     if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
         GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 
-    uint8 count = 0;
-    if(pCreature->isTabardDesigner())
-        count = 1;
-    else
-        count = 3;
-
-    WorldPacket data(SMSG_PETITION_SHOWLIST, 8+1+4*6);
+    WorldPacket data(SMSG_PETITION_SHOWLIST, 8 + sizeof(char)*21);
     data << guid;                                           // npc guid
-    data << count;                                          // count
 
-    data << uint32(1);                                  // index
-    data << uint32(GUILD_CHARTER);                      // charter entry
-    data << uint32(16161);                              // charter display id
-    data << uint32(GUILD_CHARTER_COST);                 // charter cost
-    data << uint32(0);                                  // unknown
-    data << uint32(9);                                  // required signs?
+    unsigned char tdata[21] =
+    {
+        0x01, 0x01, 0x00, 0x00, 0x00, 0xe7, 0x16, 0x00, 0x00, 0xef, 0x23, 0x00, 0x00, 0xe8, 0x03, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
+    };
 
-    //for(uint8 i = 0; i < count; i++)
-    //{
-    //    data << uint32(i);                      // index
-    //    data << uint32(GUILD_CHARTER);          // charter entry
-    //    data << uint32(16161);                  // charter display id
-    //    data << uint32(GUILD_CHARTER_COST+i);   // charter cost
-    //    data << uint32(0);                      // unknown
-    //    data << uint32(9);                      // required signs?
-    //}
+    sLog.outError("Data sended");
+
+    data.append( tdata, sizeof(tdata) );
     SendPacket(&data);
     sLog.outDebug("Sent SMSG_PETITION_SHOWLIST");
 }
