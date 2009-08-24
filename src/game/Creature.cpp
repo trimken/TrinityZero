@@ -353,7 +353,7 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData *data )
 
     RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
 
-    SetMeleeDamageSchool(SpellSchools(GetCreatureInfo()->dmgschool));
+    SetMeleeDamageSchool(GetCreatureInfo()->dmgschool);
     SetModifierValue(UNIT_MOD_ARMOR,             BASE_VALUE, float(GetCreatureInfo()->armor));
     SetModifierValue(UNIT_MOD_RESISTANCE_HOLY,   BASE_VALUE, float(GetCreatureInfo()->resistance1));
     SetModifierValue(UNIT_MOD_RESISTANCE_FIRE,   BASE_VALUE, float(GetCreatureInfo()->resistance2));

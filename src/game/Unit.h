@@ -111,7 +111,7 @@ enum SpellModOp
     SPELLMOD_EFFECT_PAST_FIRST      = 20,
     SPELLMOD_CASTING_TIME_OLD       = 21,
     SPELLMOD_DOT                    = 22,
-     //[TZERO] next enumerations changed in tbc
+	 //[TZERO] next enumerations changed in tbc
     SPELLMOD_EFFECT3                = 23,
     SPELLMOD_SPELL_BONUS_DAMAGE     = 24,
     // spellmod 25, 26 unused
@@ -239,7 +239,7 @@ enum HitInfo
     HITINFO_CRUSHING           = 0x8000,
     HITINFO_NOACTION           = 0x10000,
     HITINFO_SWINGNOHITSOUND    = 0x80000,
-    //[TZERO] tbc enumerations [?]
+	//[TZERO] tbc enumerations [?]
     HITINFO_UNK1                = 0x00000001,               // req correct packet structure
     HITINFO_UNK2                = 0x00000100,               // wotlk?
     HITINFO_UNK3                = 0x00002000,               // wotlk?
@@ -364,14 +364,14 @@ enum DeathState
     JUST_DIED   = 1,
     CORPSE      = 2,
     DEAD        = 3,
-    //[TZERO] Tbc enumerations [?]
+	//[TZERO] Tbc enumerations [?]
     JUST_ALIVED = 4,
     DEAD_FALLING= 5
 };
 
 enum UnitState
 {
-    UNIT_STAT_STOPPED       = 0,
+	UNIT_STAT_STOPPED       = 0,
     UNIT_STAT_DIED            = 0x00000001,
     UNIT_STAT_MELEE_ATTACKING = 0x00000002,                     // player is melee attacking someone
     UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone
@@ -460,14 +460,14 @@ enum UnitFlags
     UNIT_FLAG_PVP_ATTACKABLE = 0x00000008,                // allow apply pvp rules to attackable state in addition to faction dependent state, UNIT_FLAG_UNKNOWN1 in pre-bc mangos
     UNIT_FLAG_RENAME         = 0x00000010,                // rename creature
     UNIT_FLAG_PREPARATION    = 0x00000020,                // don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP   // UNIT_FLAG_RESTING in pre-bc mangos
-    UNIT_FLAG_PVP            = 0x00001000,                  
+    UNIT_FLAG_PVP            = 0x00001000,				  
     UNIT_FLAG_MOUNT          = 0x00002000,
     UNIT_FLAG_DISABLE_ROTATE = 0x00040000,
     UNIT_FLAG_IN_COMBAT      = 0x00080000,
     UNIT_FLAG_SKINNABLE      = 0x04000000,
     UNIT_FLAG_SHEATHE        = 0x40000000,
 
-    // [TZERO] TBC enumerations [?]
+	// [TZERO] TBC enumerations [?]
     UNIT_FLAG_UNKNOWN7         = 0x00000001,
     UNIT_FLAG_NON_ATTACKABLE   = 0x00000002,                // not attackable
     UNIT_FLAG_UNKNOWN9         = 0x00000040,
@@ -561,7 +561,7 @@ enum MovementFlags
     MOVEMENTFLAG_SPLINE         = 0x4000000,
 
     //[TZERO] other enumeration to delete or check  
-    MOVEMENTFLAG_NONE           = 0x00000000,
+	MOVEMENTFLAG_NONE           = 0x00000000,
     MOVEMENTFLAG_LEVITATING     = 0x00000400,
     MOVEMENTFLAG_FLY_UNK1       = 0x00000800,
     MOVEMENTFLAG_UNK4           = 0x00002000,
@@ -615,7 +615,7 @@ struct CalcDamageInfo
 {
     Unit  *attacker;             // Attacker
     Unit  *target;               // Target for damage
-    uint32 damageSchoolMask;
+    uint32 School;               // 1.12 Only one school no mask
     uint32 damage;
     uint32 absorb;
     uint32 resist;
@@ -1481,7 +1481,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         CharmInfo *m_charmInfo;
         SharedVisionList m_sharedVision;
 
-        virtual SpellSchoolMask GetMeleeDamageSchoolMask() const;
+        virtual uint32 GetMeleeSchoolMask() const;
 
         MotionMaster i_motionMaster;
         uint32 m_unit_movement_flags;
