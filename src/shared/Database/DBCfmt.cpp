@@ -22,7 +22,7 @@
 // correct for 1.12
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssxixxxx";
 const char AreaTriggerEntryfmt[]="niffffffff";                                       // new
-const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";                                   // new                                    // new
+const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";                                   // new
 const char BankBagSlotPricesEntryfmt[]="ni";
 const char ChrClassesEntryfmt[]="nxxixssssssssixxx";
 const char ChrRacesEntryfmt[]="nxixiixxixxxxxixissssssssxxxx";
