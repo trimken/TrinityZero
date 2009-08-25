@@ -32,7 +32,7 @@ struct Realm
 {
     std::string name;
     std::string address;
-    uint8 icon;
+    uint32 icon;
     uint8 color;
     uint8 timezone;
     uint32 m_ID;
@@ -58,7 +58,7 @@ class RealmList
         uint32 size() const { return m_realms.size(); }
     private:
         void UpdateRealms(bool init);
-        void UpdateRealm( uint32 ID, const std::string& name, const std::string& address, uint32 port, uint8 icon, uint8 color, uint8 timezone, AccountTypes allowedSecurityLevel, float popu);
+        void UpdateRealm( uint32 ID, const std::string& name, const std::string& address, uint32 port, uint32 icon, uint8 color, uint8 timezone, AccountTypes allowedSecurityLevel, float popu);
     private:
         RealmMap m_realms;                                  ///< Internal map of realms
         uint32   m_UpdateInterval;

@@ -12963,6 +12963,10 @@ bool Player::MinimalLoadFromDB( QueryResult *result, uint32 guid )
     m_Played_time[0] = fields[7].GetUInt32();
     m_Played_time[1] = fields[8].GetUInt32();
 
+    // Prevent PLAYER_FLAGS_RESTING to be considered like a rename at login flag                                                                                                                             g
+    if(HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING))
+       RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
+
     m_atLoginFlags = fields[9].GetUInt32();
 
     // I don't see these used anywhere ..

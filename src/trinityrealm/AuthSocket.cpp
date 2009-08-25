@@ -675,7 +675,7 @@ bool AuthSocket::_HandleLogonProof()
     }
     else
     {
-        char data[4]={AUTH_LOGON_PROOF,REALM_AUTH_NO_MATCH,3,0};
+        char data[2]={AUTH_LOGON_PROOF,REALM_AUTH_NO_MATCH};
         SendBuf(data,sizeof(data));
         sLog.outBasic("[AuthChallenge] account %s tried to login with wrong password!",_login.c_str ());
 
@@ -851,7 +851,7 @@ bool AuthSocket::_HandleRealmList()
     ///- Circle through realms in the RealmList and construct the return packet (including # of user characters in each realm)
     ByteBuffer pkt;
     pkt << (uint32) 0;
-    pkt << (uint32) m_realmList.size();
+    pkt << (uint8) m_realmList.size();
     RealmList::RealmMap::const_iterator i;
     for( i = m_realmList.begin(); i != m_realmList.end(); i++ )
     {
