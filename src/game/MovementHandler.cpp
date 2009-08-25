@@ -183,6 +183,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     /* extract packet */
     MovementInfo movementInfo;
     uint32 MovementFlags;
+    uint32 unk1, unk2;
 
     recv_data >> MovementFlags;
     //recv_data >> movementInfo.unk1;
@@ -196,7 +197,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     {
         // recheck
         CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+4+4);
-        recv_data >> movementInfo.unk1;
+        //[TZERO]recv_data >> movementInfo.unk1;
         recv_data >> movementInfo.t_guid;
         recv_data >> movementInfo.t_x;
         recv_data >> movementInfo.t_y;
@@ -205,7 +206,20 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         //[TZERO]recv_data >> movementInfo.t_time;
     }
 
-    if(MovementFlags & (MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING2))
+    if(MovementFlags & MOVEMENTFLAG_JUMPING)
+    {
+        // recheck
+        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4);
+
+        //[TZERO]recv_data >> movementInfo.j_unk;           // constant, but different when jumping in water and on land?
+        recv_data >> unk1; // Jump duration
+        recv_data >> unk2; // ?
+        recv_data >> movementInfo.j_sinAngle;               // sin of angle between orientation0 and players orientation
+        recv_data >> movementInfo.j_cosAngle;               // cos of angle between orientation0 and players orientation
+        //[TZERO]recv_data >> movementInfo.j_xyspeed;       // speed of xy movement
+    }
+
+    if(MovementFlags & MOVEMENTFLAG_SWIMMING)
     {
         // recheck
         CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4);
@@ -217,17 +231,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4);
 
     recv_data >> movementInfo.fallTime;                     // duration of last jump (when in jump duration from jump begin to now)
-
-    if(MovementFlags & MOVEMENTFLAG_JUMPING)
-    {
-        // recheck
-        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4);
-
-        recv_data >> movementInfo.j_unk;                    // constant, but different when jumping in water and on land?
-        recv_data >> movementInfo.j_sinAngle;               // sin of angle between orientation0 and players orientation
-        recv_data >> movementInfo.j_cosAngle;               // cos of angle between orientation0 and players orientation
-        recv_data >> movementInfo.j_xyspeed;                // speed of xy movement
-    }
 
     if(MovementFlags & MOVEMENTFLAG_SPLINE)
     {
@@ -241,7 +244,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     if(recv_data.size() != recv_data.rpos())
     {
         sLog.outError("MovementHandler: player %s (guid %d, account %u) sent a packet (opcode %u) that is %u bytes larger than it should be. Kicked as cheater.", _player->GetName(), _player->GetGUIDLow(), _player->GetSession()->GetAccountId(), recv_data.GetOpcode(), recv_data.size() - recv_data.rpos());
-        KickPlayer();
+        //KickPlayer();
         return;
     }
 
