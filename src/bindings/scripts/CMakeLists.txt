@@ -10,7 +10,6 @@ SET(trinityscript_LIB_SRCS
    include/sc_creature.h
    include/sc_gossip.h
    include/sc_instance.h
-   scripts/areatrigger/areatrigger_scripts.cpp
    scripts/boss/boss_emeriss.cpp
    scripts/boss/boss_lethon.cpp
    scripts/boss/boss_taerar.cpp
@@ -20,19 +19,14 @@ SET(trinityscript_LIB_SRCS
    scripts/creature/mob_generic_creature.cpp
    scripts/creature/simple_ai.cpp
    scripts/creature/simple_ai.h
-   scripts/custom/custom_example.cpp
-   scripts/custom/custom_gossip_codebox.cpp
-   scripts/custom/test.cpp
    scripts/go/go_scripts.cpp
    scripts/guard/guard_ai.cpp
    scripts/guard/guard_ai.h
    scripts/guard/guards.cpp
    scripts/item/item_scripts.cpp
-   scripts/item/item_test.cpp
    scripts/npc/npc_escortAI.cpp
    scripts/npc/npc_escortAI.h
    scripts/npc/npc_innkeeper.cpp
-   scripts/npc/npc_professions.cpp
    scripts/npc/npcs_special.cpp
    scripts/zone/arathi_highlands/arathi_highlands.cpp
    scripts/zone/alterac_mountains/alterac_mountains.cpp

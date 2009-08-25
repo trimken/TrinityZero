@@ -70,7 +70,7 @@ void LoadOverridenDBCData();
 // -- Scripts to be added --
 
 // -- Areatrigger --
-extern void AddSC_areatrigger_scripts();
+// extern void AddSC_areatrigger_scripts();
 
 // -- Boss --
 extern void AddSC_boss_emeriss();
@@ -82,9 +82,9 @@ extern void AddSC_mob_event();
 extern void AddSC_generic_creature();
 
 // -- Custom --
-extern void AddSC_custom_example();
-extern void AddSC_custom_gossip_codebox();
-extern void AddSC_test();
+// extern void AddSC_custom_example();
+// extern void AddSC_custom_gossip_codebox();
+// extern void AddSC_test();
 
 // -- GO --
 extern void AddSC_go_scripts();
@@ -99,7 +99,6 @@ extern void AddSC_item_scripts();
 extern void AddSC_item_test();
 
 // -- NPC --
-extern void AddSC_npc_professions();
 extern void AddSC_npcs_special();
 
 // -- Servers --
@@ -1211,7 +1210,7 @@ void ScriptsInit()
     // -- Scripts to be added --
 
     // -- Areatrigger --
-    AddSC_areatrigger_scripts();
+//    AddSC_areatrigger_scripts();
 
     // -- Boss --
     AddSC_boss_emeriss();
@@ -1223,9 +1222,9 @@ void ScriptsInit()
     AddSC_generic_creature();
 
     // -- Custom --
-    AddSC_custom_example();
-    AddSC_custom_gossip_codebox();
-    AddSC_test();
+//    AddSC_custom_example();
+//    AddSC_custom_gossip_codebox();
+//    AddSC_test();
 
     // -- GO --
     AddSC_go_scripts();
@@ -1237,10 +1236,9 @@ void ScriptsInit()
 
     // -- Item --
     AddSC_item_scripts();
-    AddSC_item_test();
+//    AddSC_item_test();
 
     // -- NPC --
-    AddSC_npc_professions();
     AddSC_npcs_special();
 
     // -- Servers --

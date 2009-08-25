@@ -436,10 +436,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\scripts\npc\npc_professions.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\scripts\npc\npcs_special.cpp"
 					>
 				</File>
