@@ -147,18 +147,6 @@ bool GOHello_go_tablet_of_the_seven(Player *player, GameObject* _GO)
     return true;
 }
 
-/*#####
-## go_jump_a_tron
-######*/
-
-bool GOHello_go_jump_a_tron(Player *player, GameObject* _GO)
-{
-    if (player->GetQuestStatus(10111) == QUEST_STATUS_INCOMPLETE)
-     player->CastSpell(player,33382,true);
-
-    return true;
-}
-
 /*######
 ## go_sacred_fire_of_life
 ######*/
@@ -215,11 +203,6 @@ void AddSC_go_scripts()
     newscript = new Script;
     newscript->Name="go_tablet_of_the_seven";
     newscript->pGOHello =           &GOHello_go_tablet_of_the_seven;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name="go_jump_a_tron";
-    newscript->pGOHello =           &GOHello_go_jump_a_tron;
     newscript->RegisterSelf();
 
     newscript = new Script;

@@ -56,7 +56,7 @@ class TransportPath
         std::vector<PathNode> i_nodes;
 };
 
-class Transport : private GameObject
+class Transport : public GameObject
 {
     public:
         explicit Transport();

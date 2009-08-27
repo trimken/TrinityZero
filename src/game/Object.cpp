@@ -283,7 +283,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2 
             *data << ((Player *)this)->GetTransport()->GetPositionX();
             *data << ((Player *)this)->GetTransport()->GetPositionY();
             *data << ((Player *)this)->GetTransport()->GetPositionZ();
-            //[[TZERO]: strange error while compiling, should be checked] *data << ((Player *)this)->GetTransport()->GetOrientation();
+            *data << ((Player *)this)->GetTransport()->GetOrientation();
 
             *data << (uint64)(((Player *)this)->GetTransport()->GetGUID());
             *data << ((Player *)this)->GetTransOffsetX();
