@@ -461,9 +461,9 @@ void Transport::TeleportTransport(uint32 newMapid, float x, float y, float z)
         }
         plr->TeleportTo(newMapid, x, y, z, GetOrientation(), TELE_TO_NOT_LEAVE_TRANSPORT);
 
-        //WorldPacket data(SMSG_811, 4);
-        //data << uint32(0);
-        //plr->GetSession()->SendPacket(&data);
+        WorldPacket data(0x32B, 4);
+        data << uint32(0);
+        plr->GetSession()->SendPacket(&data);
     }
 }
 
@@ -513,10 +513,10 @@ void Transport::Update(uint32 /*p_time*/)
         else
         {
             //MapManager::Instance().GetMap(m_curr->second.mapid)->GameobjectRelocation((GameObject *)this, m_curr->second.x, m_curr->second.y, m_curr->second.z, this->m_orientation);
-            Relocate(m_curr->second.x, m_curr->second.y, m_curr->second.z);
+            Relocate(m_curr->second.x, m_curr->second.y, m_curr->second.z,this->GetOrientation());
         }
-/*
-        if(m_curr->second.delayed)
+
+        if(m_curr == m_WayPoints.begin())
         {
             switch (GetEntry())
             {
@@ -535,7 +535,7 @@ void Transport::Update(uint32 /*p_time*/)
                     SendPlaySound(5154, false); break;      // ShipDocked
             }
         }
-*/
+
         /*
         for(PlayerSet::iterator itr = m_passengers.begin(); itr != m_passengers.end();)
         {
