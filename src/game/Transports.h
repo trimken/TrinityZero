@@ -56,7 +56,7 @@ class TransportPath
         std::vector<PathNode> i_nodes;
 };
 
-class Transport : public GameObject
+class Transport : private GameObject
 {
     public:
         explicit Transport();
@@ -70,6 +70,7 @@ class Transport : public GameObject
         using GameObject::GetPositionX;
         using GameObject::GetPositionY;
         using GameObject::GetPositionZ;
+        using GameObject::GetOrientation;
         using GameObject::BuildCreateUpdateBlockForPlayer;
         using GameObject::BuildOutOfRangeUpdateBlock;
 
