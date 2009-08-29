@@ -4438,6 +4438,9 @@ uint8 Spell::CheckRange(bool strict)
         else if(min_range && m_caster->IsWithinCombatRange(target, min_range)) // skip this check if min_range = 0
             return SPELL_FAILED_TOO_CLOSE;
 
+        if( m_caster->GetTypeId() == TYPEID_PLAYER && 
+            !m_caster->IsFriendlyTo(target) && !m_caster->HasInArc( (3*M_PI)/4, target ) ) 
+            return SPELL_FAILED_UNIT_NOT_INFRONT;
 //        if( m_caster->GetTypeId() == TYPEID_PLAYER &&
 //            (m_spellInfo->FacingCasterFlags & SPELL_FACING_FLAG_INFRONT) && !m_caster->HasInArc( M_PI, target ) )
 //            return SPELL_FAILED_UNIT_NOT_INFRONT;

@@ -2885,7 +2885,7 @@ void World::_UpdateRealmCharCount(QueryResult *resultCharCount, uint32 accountId
 
 void World::UpdateAllowedSecurity()
 {
-     QueryResult *result = loginDatabase.PQuery("SELECT allowedSecurityLevel from realmlist WHERE id = '%d'", realmID);
+     QueryResult *result = LoginDatabase.PQuery("SELECT allowedSecurityLevel FROM realmlist WHERE id = '%d'", realmID);
      if (result)
      {
         m_allowedSecurityLevel = AccountTypes(result->Fetch()->GetUInt16());
