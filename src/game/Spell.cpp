@@ -2757,6 +2757,7 @@ void Spell::SendCastResult(uint8 result)
 
     if(result != 0)
     {
+		data << uint8(2); // status = fail
         data << uint8(result);                              // problem
         switch (result)
         {
@@ -3505,12 +3506,7 @@ uint8 Spell::CanCast(bool strict)
     // not let players cast spells at mount (and let do it to creatures)
     if( m_caster->IsMounted() && m_caster->GetTypeId()==TYPEID_PLAYER && !m_IsTriggeredSpell &&
         !IsPassiveSpell(m_spellInfo->Id) && !(m_spellInfo->Attributes & SPELL_ATTR_CASTABLE_WHILE_MOUNTED) )
-    {
-        if(m_caster->isInFlight())
-            return SPELL_FAILED_NOT_FLYING;
-        else
             return SPELL_FAILED_NOT_MOUNTED;
-    }
 
     // always (except passive spells) check items (focus object can be required for any type casts)
     if(!IsPassiveSpell(m_spellInfo->Id))
@@ -4674,7 +4670,8 @@ uint8 Spell::CheckItems()
         focusObject = ok;                                   // game object found in range
     }
 
-/*  uint32 itemcount;
+/* [TZERO] to rewrite?
+    uint32 itemcount;
 
     if (!(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP &&
         m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION)))
@@ -4707,7 +4704,8 @@ uint8 Spell::CheckItems()
             if( !p_caster->HasItemCount(itemid,itemcount) )
                 return (uint8)SPELL_FAILED_ITEM_NOT_READY;      //0x54
         }
-    }*/
+    }
+
 
     uint32 totems = 2;
     for(int i=0;i<2;++i)
@@ -4740,9 +4738,9 @@ uint8 Spell::CheckItems()
        // else
             TotemCategory -= 1;
     }
-    if(TotemCategory != 0)
-        return (uint8)SPELL_FAILED_TOTEM_CATEGORY;          //0x7B
-
+   // if(TotemCategory != 0)
+   //     return (uint8)SPELL_FAILED_TOTEM_CATEGORY;          //0x7B
+*/
     for(int i = 0; i < 3; i++)
     {
         switch (m_spellInfo->Effect[i])
@@ -4765,7 +4763,7 @@ uint8 Spell::CheckItems()
             {
                 Item* targetItem = m_targets.getItemTarget();
                 if(!targetItem)
-                    return SPELL_FAILED_ITEM_NOT_FOUND;
+                    return SPELL_FAILED_ITEM_GONE;
 
                 if( targetItem->GetProto()->ItemLevel < m_spellInfo->baseLevel )
                     return SPELL_FAILED_LOWLEVEL;
@@ -4785,7 +4783,7 @@ uint8 Spell::CheckItems()
             {
                 Item *item = m_targets.getItemTarget();
                 if(!item)
-                    return SPELL_FAILED_ITEM_NOT_FOUND;
+                    return SPELL_FAILED_ITEM_GONE;
                 // Not allow enchant in trade slot for some enchant type
                 if( item->GetOwner() != m_caster )
                 {
@@ -4833,7 +4831,6 @@ uint8 Spell::CheckItems()
             case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
             {
                 if(m_caster->GetTypeId() != TYPEID_PLAYER) return SPELL_FAILED_TARGET_NOT_PLAYER;
-                if( m_attackType != RANGED_ATTACK )
                     break;
                 Item *pItem = ((Player*)m_caster)->GetWeaponForAttack(m_attackType);
                 if(!pItem || pItem->IsBroken())
