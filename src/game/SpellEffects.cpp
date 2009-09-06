@@ -30,7 +30,6 @@
 #include "ObjectMgr.h"
 #include "SpellMgr.h"
 #include "Player.h"
-#include "SkillExtraItems.h"
 #include "Unit.h"
 #include "CreatureAI.h"
 #include "Spell.h"
@@ -2567,13 +2566,6 @@ void Spell::DoCreateItem(uint32 i, uint32 itemtype)
     float additionalCreateChance=0.0f;
     // the maximum number of created additional items
     uint8 additionalMaxNum=0;
-    // get the chance and maximum number for creating extra items
-    if ( canCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, additionalMaxNum) )
-    {
-        // roll with this chance till we roll not to create or we create the max num
-        while ( roll_chance_f(additionalCreateChance) && items_count<=additionalMaxNum )
-            ++items_count;
-    }
 
     // really will be created more items
     num_to_add *= items_count;

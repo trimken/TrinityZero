@@ -33,8 +33,6 @@
 #include "WorldPacket.h"
 #include "Weather.h"
 #include "Player.h"
-#include "SkillExtraItems.h"
-#include "SkillDiscovery.h"
 #include "World.h"
 #include "AccountMgr.h"
 #include "AuctionHouseMgr.h"
@@ -1233,12 +1231,6 @@ void World::SetInitialWorldSettings()
 
     sLog.outString( "Loading Loot Tables..." );
     LoadLootTables();
-
-    sLog.outString( "Loading Skill Discovery Table..." );
-    LoadSkillDiscoveryTable();
-
-    sLog.outString( "Loading Skill Extra Item Table..." );
-    LoadSkillExtraItemTable();
 
     sLog.outString( "Loading Skill Fishing base level requirements..." );
     objmgr.LoadFishingBaseSkillLevel();
