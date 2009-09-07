@@ -4434,10 +4434,24 @@ uint8 Spell::CheckRange(bool strict)
         else if(min_range && m_caster->IsWithinCombatRange(target, min_range)) // skip this check if min_range = 0
             return SPELL_FAILED_TOO_CLOSE;
 
-        if( m_caster->GetTypeId() == TYPEID_PLAYER && 
-            !m_caster->IsFriendlyTo(target) && !m_caster->HasInArc( (3*M_PI)/4, target ) ) 
-            return SPELL_FAILED_UNIT_NOT_INFRONT;
-//        if( m_caster->GetTypeId() == TYPEID_PLAYER &&
+		//[TZERO] workaround for facing flag
+        if( (m_caster->GetTypeId() == TYPEID_PLAYER) && // is a player
+
+            !m_caster->IsFriendlyTo(target) && !m_caster->HasInArc( M_PI, target ) &&
+
+            ((m_spellInfo->Attributes >> 28) != 0x04) )// is not a crowd control spell
+
+                    if( (GetSpellCastTime(m_spellInfo, this) != 0) || 
+
+                        ((GetSpellCastTime(m_spellInfo, this) == 0) && (m_spellInfo->Category != 0) &&
+
+                         (m_spellInfo->Category != 44) && (m_spellInfo->Category != 88) &&
+
+                        m_spellInfo->Category != 82))
+
+                    return SPELL_FAILED_UNIT_NOT_INFRONT;
+
+//        if( m_caster->GetTypeId() == TYPEID_PLAYER && // leaving this in here incase we find out where FacingCasterFlags is later on.
 //            (m_spellInfo->FacingCasterFlags & SPELL_FACING_FLAG_INFRONT) && !m_caster->HasInArc( M_PI, target ) )
 //            return SPELL_FAILED_UNIT_NOT_INFRONT;
     }
