@@ -279,8 +279,6 @@ class TRINITY_DLL_SPEC Group
         }
 
         void SetTargetIcon(uint8 id, uint64 guid);
-        void SetDifficulty(uint8 difficulty);
-        uint8 GetDifficulty() { return m_difficulty; }
         uint16 InInstance();
         bool InCombatToInstance(uint32 instanceId);
         void ResetInstances(uint8 method, Player* SendMsgTo);
@@ -326,9 +324,9 @@ class TRINITY_DLL_SPEC Group
         void DelinkMember(GroupReference* /*pRef*/ ) { }
 
         InstanceGroupBind* BindToInstance(InstanceSave *save, bool permanent, bool load = false);
-        void UnbindInstance(uint32 mapid, uint8 difficulty, bool unload = false);
-        InstanceGroupBind* GetBoundInstance(uint32 mapid, uint8 difficulty);
-        BoundInstancesMap& GetBoundInstances(uint8 difficulty) { return m_boundInstances[difficulty]; }
+        void UnbindInstance(uint32 mapid, bool unload = false);
+        InstanceGroupBind* GetBoundInstance(uint32 mapid);
+        BoundInstancesMap& GetBoundInstances() { return m_boundInstances; }
 
         // FG: evil hacks
         void BroadcastGroupUpdate(void);
@@ -400,14 +398,13 @@ class TRINITY_DLL_SPEC Group
         uint64              m_mainTank;
         uint64              m_mainAssistant;
         GroupType           m_groupType;
-        uint8               m_difficulty;
         BattleGround*       m_bgGroup;
         uint64              m_targetIcons[TARGETICONCOUNT];
         LootMethod          m_lootMethod;
         ItemQualities       m_lootThreshold;
         uint64              m_looterGuid;
         Rolls               RollId;
-        BoundInstancesMap   m_boundInstances[TOTAL_DIFFICULTIES];
+        BoundInstancesMap   m_boundInstances;
         uint8*              m_subGroupsCounts;
 };
 #endif

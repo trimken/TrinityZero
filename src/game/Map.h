@@ -110,11 +110,6 @@ struct InstanceTemplate
     uint32 script_id;
 };
 
-enum LevelRequirementVsMode
-{
-    LEVELREQUIREMENT_HEROIC = 70
-};
-
 #if defined( __GNUC__ )
 #pragma pack()
 #else
@@ -133,7 +128,7 @@ class TRINITY_DLL_SPEC Map : public GridRefManager<NGridType>, public Trinity::O
 {
     friend class MapReference;
     public:
-        Map(uint32 id, time_t, uint32 InstanceId, uint8 SpawnMode);
+        Map(uint32 id, time_t, uint32 InstanceId);
         virtual ~Map();
 
         // currently unused for normal maps
@@ -222,7 +217,6 @@ class TRINITY_DLL_SPEC Map : public GridRefManager<NGridType>, public Trinity::O
         bool CheckGridIntegrity(Creature* c, bool moved) const;
 
         uint32 GetInstanceId() { return i_InstanceId; }
-        uint8 GetSpawnMode() { return (i_spawnMode); }
         virtual bool CanEnter(Player* /*player*/) { return true; }
         const char* GetMapName() const;
 
@@ -230,7 +224,6 @@ class TRINITY_DLL_SPEC Map : public GridRefManager<NGridType>, public Trinity::O
         // NOTE: this duplicate of Instanceable(), but Instanceable() can be changed when BG also will be instanceable
         bool IsDungeon() const { return i_mapEntry && i_mapEntry->IsDungeon(); }
         bool IsRaid() const { return i_mapEntry && i_mapEntry->IsRaid(); }
-        bool IsHeroic() const { return i_spawnMode == DIFFICULTY_HEROIC; }
         bool IsBattleGround() const { return i_mapEntry && i_mapEntry->IsBattleGround(); }
 
         void AddObjectToRemoveList(WorldObject *obj);
@@ -319,7 +312,6 @@ class TRINITY_DLL_SPEC Map : public GridRefManager<NGridType>, public Trinity::O
         typedef Trinity::ObjectLevelLockable<Map, ZThread::Mutex>::Lock Guard;
 
         MapEntry const* i_mapEntry;
-        uint8 i_spawnMode;
         uint32 i_id;
         uint32 i_InstanceId;
         uint32 m_unloadTimer;
@@ -388,7 +380,6 @@ class TRINITY_DLL_SPEC Map : public GridRefManager<NGridType>, public Trinity::O
 enum InstanceResetMethod
 {
     INSTANCE_RESET_ALL,
-    INSTANCE_RESET_CHANGE_DIFFICULTY,
     INSTANCE_RESET_GLOBAL,
     INSTANCE_RESET_GROUP_DISBAND,
     INSTANCE_RESET_GROUP_JOIN,
@@ -398,7 +389,7 @@ enum InstanceResetMethod
 class TRINITY_DLL_SPEC InstanceMap : public Map
 {
     public:
-        InstanceMap(uint32 id, time_t, uint32 InstanceId, uint8 SpawnMode);
+        InstanceMap(uint32 id, time_t, uint32 InstanceId);
         ~InstanceMap();
         bool Add(Player *);
         void Remove(Player *, bool);

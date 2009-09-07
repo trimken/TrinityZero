@@ -82,7 +82,6 @@ bool OutdoorPvPObjective::AddObject(uint32 type, uint32 entry, uint32 map, float
     data.rotation3      = rotation3;
     data.spawntimesecs  = 0;
     data.animprogress   = 100;
-    data.spawnMask      = 1;
     data.go_state       = 1;
 
     objmgr.AddGameobjectToGrid(guid, &data);
@@ -145,7 +144,6 @@ bool OutdoorPvPObjective::AddCreature(uint32 type, uint32 entry, uint32 teamval,
     data.curmana = cinfo->maxmana;
     data.is_dead = false;
     data.movementType = cinfo->MovementType;
-    data.spawnMask = 1;
 
     objmgr.AddCreatureToGrid(guid, &data);
 
@@ -216,7 +214,6 @@ bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, uint32 map, float x, flo
     cdata.curmana = cinfo->maxmana;
     cdata.is_dead = false;
     cdata.movementType = cinfo->MovementType;
-    cdata.spawnMask = 1;
 
     objmgr.AddCreatureToGrid(creature_guid, &cdata);
     m_CapturePointCreature = MAKE_NEW_GUID(creature_guid, OPVP_TRIGGER_CREATURE_ENTRY, HIGHGUID_UNIT);
@@ -238,7 +235,6 @@ bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, uint32 map, float x, flo
     data.rotation3      = rotation3;
     data.spawntimesecs  = 1;
     data.animprogress   = 100;
-    data.spawnMask      = 1;
     data.go_state       = 1;
 
     objmgr.AddGameobjectToGrid(guid, &data);

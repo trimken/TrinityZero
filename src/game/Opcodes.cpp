@@ -837,7 +837,6 @@ OpcodeHandler opcodeTable[NUM_MSG_TYPES] =
     /*0x326*/ { "SMSG_GHOSTEE_GONE",                STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x327*/ { "CMSG_GM_UPDATE_TICKET_STATUS",     STATUS_NEVER,    &WorldSession::Handle_NULL                     },
     /*0x328*/ { "SMSG_GM_TICKET_STATUS_UPDATE",     STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
-    /*0x329*/ { "MSG_SET_DUNGEON_DIFFICULTY",       STATUS_LOGGEDIN, &WorldSession::HandleDungeonDifficultyOpcode   },
     /*0x32A*/ { "CMSG_GMSURVEY_SUBMIT",             STATUS_LOGGEDIN, &WorldSession::Handle_NULL                     },//&WorldSession::HandleGMSurveySubmit
     /*0x32B*/ { "SMSG_UPDATE_INSTANCE_OWNERSHIP",   STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x32C*/ { "CMSG_IGNORE_KNOCKBACK_CHEAT",      STATUS_NEVER,    &WorldSession::Handle_NULL                     },
@@ -855,7 +854,6 @@ OpcodeHandler opcodeTable[NUM_MSG_TYPES] =
     /*0x338*/ { "SMSG_CHARACTER_PROFILE",           STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x339*/ { "SMSG_CHARACTER_PROFILE_REALM_CONNECTED",STATUS_NEVER,&WorldSession::Handle_ServerSide              },
     /*0x33A*/ { "SMSG_DEFENSE_MESSAGE",             STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
-    /*0x33B*/ { "SMSG_INSTANCE_DIFFICULTY",         STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x33C*/ { "MSG_GM_RESETINSTANCELIMIT",        STATUS_NEVER,    &WorldSession::Handle_NULL                     },
     /*0x33D*/ { "SMSG_MOTD",                        STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x33E*/ { "SMSG_MOVE_SET_FLIGHT_OBSOLETE",    STATUS_NEVER,    &WorldSession::Handle_ServerSide               },

@@ -73,7 +73,7 @@ class TRINITY_DLL_SPEC WorldSession
 {
     friend class CharacterHandler;
     public:
-        WorldSession(uint32 id, WorldSocket *sock, uint32 sec, uint8 expansion, time_t mute_time, LocaleConstant locale);
+        WorldSession(uint32 id, WorldSocket *sock, uint32 sec, time_t mute_time, LocaleConstant locale);
         ~WorldSession();
 
         bool PlayerLoading() const { return m_playerLoading; }
@@ -96,7 +96,6 @@ class TRINITY_DLL_SPEC WorldSession
         void SetSecurity(uint32 security) { _security = security; }
         std::string const& GetRemoteAddress() { return m_Address; }
         void SetPlayer(Player *plr) { _player = plr; }
-        uint8 Expansion() const { return m_expansion; }
 
         /// Session in auth.queue currently
         void SetInQueue(bool state) { m_inQueue = state; }
@@ -566,7 +565,6 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleRandomRollOpcode(WorldPacket& recv_data);
         void HandleFarSightOpcode(WorldPacket& recv_data);
         void HandleSetLfgOpcode(WorldPacket& recv_data);
-        void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
         void HandleMoveFlyModeChangeAckOpcode(WorldPacket& recv_data);
         void HandleLfgAutoJoinOpcode(WorldPacket& recv_data);
         void HandleLfgCancelAutoJoinOpcode(WorldPacket& recv_data);
@@ -605,7 +603,6 @@ class TRINITY_DLL_SPEC WorldSession
 
         uint32 _security;
         uint32 _accountId;
-        uint8 m_expansion;
 
         time_t _logoutTime;
         bool m_inQueue;                                     // session wait in auth.queue

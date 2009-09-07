@@ -183,10 +183,6 @@ SET(game_STAT_SRCS
    Spell.cpp
    SpellEffects.cpp
    Spell.h
-#   SkillDiscovery.cpp
-#   SkillDiscovery.h
-#   SkillExtraItems.cpp
-#   SkillExtraItems.h
    SpellHandler.cpp
    SocialMgr.cpp
    SocialMgr.h

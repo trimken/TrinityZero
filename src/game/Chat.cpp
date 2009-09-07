@@ -41,7 +41,6 @@ ChatCommand * ChatHandler::getCommandTable()
 {
     static ChatCommand accountSetCommandTable[] =
     {
-        { "addon",          SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleAccountSetAddonCommand,     "", NULL },
         { "gmlevel",        SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetGmLevelCommand,   "", NULL },
         { "password",       SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetPasswordCommand,  "", NULL },
         { NULL,             0,                  false, NULL,                                           "", NULL }

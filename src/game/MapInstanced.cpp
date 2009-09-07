@@ -26,7 +26,7 @@
 #include "InstanceSaveMgr.h"
 #include "World.h"
 
-MapInstanced::MapInstanced(uint32 id, time_t expiry) : Map(id, expiry, 0, 0)
+MapInstanced::MapInstanced(uint32 id, time_t expiry) : Map(id, expiry, 0)
 {
     // initialize instanced maps list
     m_InstancedMaps.clear();
@@ -161,7 +161,7 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
                 return map;
             }
 
-            InstancePlayerBind *pBind = player->GetBoundInstance(GetId(), player->GetDifficulty());
+            InstancePlayerBind *pBind = player->GetBoundInstance(GetId());
             InstanceSave *pSave = pBind ? pBind->save : NULL;
 
             // the player's permanet player bind is taken into consideration first
@@ -170,8 +170,8 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
             {
                 InstanceGroupBind *groupBind = NULL;
                 Group *group = player->GetGroup();
-                // use the player's difficulty setting (it may not be the same as the group's)
-                if(group && (groupBind = group->GetBoundInstance(GetId(), player->GetDifficulty())))
+                //(it may not be the same as the group's)
+                if(group && (groupBind = group->GetBoundInstance(GetId())))
                     pSave = groupBind->save;
             }
 
@@ -182,7 +182,7 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
                 map = _FindMap(NewInstanceId);
                 // it is possible that the save exists but the map doesn't
                 if(!map)
-                    map = CreateInstance(NewInstanceId, pSave, pSave->GetDifficulty());
+                    map = CreateInstance(NewInstanceId, pSave);
                 return map;
             }
             else if(!player->GetSession()->PlayerLoading())
@@ -190,7 +190,7 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
                 // if no instanceId via group members or instance saves is found
                 // the instance will be created for the first time
                 NewInstanceId = MapManager::Instance().GenerateInstanceId();
-                return CreateInstance(NewInstanceId, NULL, player->GetDifficulty());
+                return CreateInstance(NewInstanceId, NULL);
             }
             else
             {
@@ -201,7 +201,7 @@ Map* MapInstanced::GetInstance(const WorldObject* obj)
     }
 }
 
-InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave *save, uint8 difficulty)
+InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave *save)
 {
     // load/create a map
     Guard guard(*this);
@@ -220,12 +220,9 @@ InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave *save,
         assert(false);
     }
 
-    // some instances only have one difficulty
-    if(!entry->SupportsHeroicMode()) difficulty = DIFFICULTY_NORMAL;
+    sLog.outDebug("MapInstanced::CreateInstance: %smap instance %d for %d created ", save?"":"new ", InstanceId, GetId());
 
-    sLog.outDebug("MapInstanced::CreateInstance: %smap instance %d for %d created with difficulty %s", save?"":"new ", InstanceId, GetId(), difficulty?"heroic":"normal");
-
-    InstanceMap *map = new InstanceMap(GetId(), GetGridExpiry(), InstanceId, difficulty);
+    InstanceMap *map = new InstanceMap(GetId(), GetGridExpiry(), InstanceId);
     assert(map->IsDungeon());
 
     bool load_data = save != NULL;

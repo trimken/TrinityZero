@@ -443,67 +443,6 @@ void ObjectMgr::LoadCreatureTemplates()
         if(!cInfo)
             continue;
 
-        if(cInfo->HeroicEntry)
-        {
-            CreatureInfo const* heroicInfo = GetCreatureTemplate(cInfo->HeroicEntry);
-            if(!heroicInfo)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) have `heroic_entry`=%u but creature entry %u not exist.",cInfo->HeroicEntry,cInfo->HeroicEntry);
-                continue;
-            }
-
-            if(heroicEntries.find(i)!=heroicEntries.end())
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed as heroic but have value in `heroic_entry`.",i);
-                continue;
-            }
-
-            if(heroicEntries.find(cInfo->HeroicEntry)!=heroicEntries.end())
-            {
-                sLog.outErrorDb("Creature (Entry: %u) already listed as heroic for another entry.",cInfo->HeroicEntry);
-                continue;
-            }
-
-            if(hasHeroicEntries.find(cInfo->HeroicEntry)!=hasHeroicEntries.end())
-            {
-                sLog.outErrorDb("Creature (Entry: %u) have `heroic_entry`=%u but creature entry %u have heroic entry also.",i,cInfo->HeroicEntry,cInfo->HeroicEntry);
-                continue;
-            }
-
-            if(cInfo->npcflag != heroicInfo->npcflag)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed in `creature_template_substitution` has different `npcflag` in heroic mode.",i);
-                continue;
-            }
-
-            if(cInfo->classNum != heroicInfo->classNum)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed in `creature_template_substitution` has different `classNum` in heroic mode.",i);
-                continue;
-            }
-
-            if(cInfo->race != heroicInfo->race)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed in `creature_template_substitution` has different `race` in heroic mode.",i);
-                continue;
-            }
-
-            if(cInfo->trainer_type != heroicInfo->trainer_type)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed in `creature_template_substitution` has different `trainer_type` in heroic mode.",i);
-                continue;
-            }
-
-            if(cInfo->trainer_spell != heroicInfo->trainer_spell)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed in `creature_template_substitution` has different `trainer_spell` in heroic mode.",i);
-                continue;
-            }
-
-            hasHeroicEntries.insert(i);
-            heroicEntries.insert(cInfo->HeroicEntry);
-        }
-
         FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_A);
         if(!factionTemplate)
             sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_A template (%u)", cInfo->Entry, cInfo->faction_A);
@@ -796,13 +735,6 @@ bool ObjectMgr::CheckCreatureLinkedRespawn(uint32 guid, uint32 linkedGuid) const
         return false;
     }
 
-    if(!(master->spawnMask & slave->spawnMask)  // they must have a possibility to meet (normal/heroic difficulty)
-        && (!map || map->Instanceable()))
-    {
-        sLog.outError("LinkedRespawn: Creature '%u' linking to '%u' with not corresponding spawnMask",guid,linkedGuid);
-        return false;
-    }
-
     return true;
 }
 
@@ -871,8 +803,8 @@ void ObjectMgr::LoadCreatures()
     QueryResult *result = WorldDatabase.Query("SELECT creature.guid, id, map, modelid,"
     //   4             5           6           7           8            9              10         11
         "equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, currentwaypoint,"
-    //   12         13       14          15            16         17
-        "curhealth, curmana, DeathState, MovementType, spawnMask, event "
+    //   12         13       14          15             16
+        "curhealth, curmana, DeathState, MovementType, event "
         "FROM creature LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid");
 
     if(!result)
@@ -885,13 +817,6 @@ void ObjectMgr::LoadCreatures()
         sLog.outErrorDb(">> Loaded 0 creature. DB table `creature` is empty.");
         return;
     }
-
-    // build single time for check creature data
-    std::set<uint32> heroicCreatures;
-    for(uint32 i = 0; i < sCreatureStorage.MaxEntry; ++i)
-        if(CreatureInfo const* cInfo = sCreatureStorage.LookupEntry<CreatureInfo>(i))
-            if(cInfo->HeroicEntry)
-                heroicCreatures.insert(cInfo->HeroicEntry);
 
     barGoLink bar(result->GetRowCount());
 
@@ -919,19 +844,12 @@ void ObjectMgr::LoadCreatures()
         data.curmana        = fields[13].GetUInt32();
         data.is_dead        = fields[14].GetBool();
         data.movementType   = fields[15].GetUInt8();
-        data.spawnMask      = fields[16].GetUInt8();
-        int16 gameEvent     = fields[17].GetInt16();
+        int16 gameEvent     = fields[16].GetInt16();
 
         CreatureInfo const* cInfo = GetCreatureTemplate(data.id);
         if(!cInfo)
         {
             sLog.outErrorDb("Table `creature` have creature (GUID: %u) with not existed creature entry %u, skipped.",guid,data.id );
-            continue;
-        }
-
-        if(heroicCreatures.find(data.id)!=heroicCreatures.end())
-        {
-            sLog.outErrorDb("Table `creature` have creature (GUID: %u) that listed as heroic template in `creature_template_substitution`, skipped.",guid,data.id );
             continue;
         }
 
@@ -992,34 +910,20 @@ void ObjectMgr::LoadCreatures()
 
 void ObjectMgr::AddCreatureToGrid(uint32 guid, CreatureData const* data)
 {
-    uint8 mask = data->spawnMask;
-    for(uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if(mask & 1)
-        {
-            CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
-            uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
+    CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
+    uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
-            CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
-            cell_guids.creatures.insert(guid);
-        }
-    }
+    CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,0)][cell_id];
+    cell_guids.creatures.insert(guid);
 }
 
 void ObjectMgr::RemoveCreatureFromGrid(uint32 guid, CreatureData const* data)
 {
-    uint8 mask = data->spawnMask;
-    for(uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if(mask & 1)
-        {
-            CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
-            uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
+    CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
+    uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
-            CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
-            cell_guids.creatures.erase(guid);
-        }
-    }
+    CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,0)][cell_id];
+    cell_guids.creatures.erase(guid);
 }
 
 void ObjectMgr::LoadGameobjects()
@@ -1028,8 +932,8 @@ void ObjectMgr::LoadGameobjects()
 
     //                                                0                1   2    3           4           5           6
     QueryResult *result = WorldDatabase.Query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation,"
-    //   7          8          9          10         11             12            13     14         15
-        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, event "
+    //   7          8          9          10         11             12            13     14
+        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, event "
         "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid");
 
     if(!result)
@@ -1068,8 +972,7 @@ void ObjectMgr::LoadGameobjects()
         data.animprogress   = fields[12].GetUInt32();
         data.go_state       = fields[13].GetUInt32();
         data.ArtKit         = 0;
-        data.spawnMask      = fields[14].GetUInt8();
-        int16 gameEvent     = fields[15].GetInt16();
+        int16 gameEvent     = fields[14].GetInt16();
 
         GameObjectInfo const* gInfo = GetGameObjectInfo(data.id);
         if(!gInfo)
@@ -1092,34 +995,20 @@ void ObjectMgr::LoadGameobjects()
 
 void ObjectMgr::AddGameobjectToGrid(uint32 guid, GameObjectData const* data)
 {
-    uint8 mask = data->spawnMask;
-    for(uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if(mask & 1)
-        {
-            CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
-            uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
+    CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
+    uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
-            CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
-            cell_guids.gameobjects.insert(guid);
-        }
-    }
+    CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,0)][cell_id];
+    cell_guids.gameobjects.insert(guid);
 }
 
 void ObjectMgr::RemoveGameobjectFromGrid(uint32 guid, GameObjectData const* data)
 {
-    uint8 mask = data->spawnMask;
-    for(uint8 i = 0; mask != 0; i++, mask >>= 1)
-    {
-        if(mask & 1)
-        {
-            CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
-            uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
+    CellPair cell_pair = Trinity::ComputeCellPair(data->posX, data->posY);
+    uint32 cell_id = (cell_pair.y_coord*TOTAL_NUMBER_OF_CELLS_PER_MAP) + cell_pair.x_coord;
 
-            CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,i)][cell_id];
-            cell_guids.gameobjects.erase(guid);
-        }
-    }
+    CellObjectGuids& cell_guids = mMapObjectGuids[MAKE_PAIR32(data->mapid,0)][cell_id];
+    cell_guids.gameobjects.erase(guid);
 }
 
 void ObjectMgr::LoadCreatureRespawnTimes()
@@ -1190,7 +1079,7 @@ void ObjectMgr::LoadGameobjectRespawnTimes()
 
         uint32 loguid       = fields[0].GetUInt32();
         uint64 respawn_time = fields[1].GetUInt64();
-        uint32 instance     = fields[2].GetUInt32();
+		uint32 instance     = fields[2].GetUInt32();
 
         mGORespawnTimes[MAKE_PAIR64(loguid,instance)] = time_t(respawn_time);
 
@@ -1933,15 +1822,6 @@ void ObjectMgr::LoadPlayerInfo()
             if(!pInfo->displayId_m || !pInfo->displayId_f)
                 continue;
 
-            // skip expansion races if not playing with expansion
-           /*[TZERO]
-              if (sWorld.getConfig(CONFIG_EXPANSION) < 1 && (race == RACE_BLOODELF || race == RACE_DRAENEI))
-                continue; */
-
-            // skip expansion classes if not playing with expansion
-            if (sWorld.getConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
-                continue;
-
             // fatal error if no level 1 data
             if(!pInfo->levelInfo || pInfo->levelInfo[0].stats[0] == 0 )
             {
@@ -2116,8 +1996,8 @@ void ObjectMgr::LoadGroups()
     Group *group = NULL;
     uint64 leaderGuid = 0;
     uint32 count = 0;
-    //                                                     0         1              2           3           4              5      6      7      8      9      10     11     12     13      14          15
-    QueryResult *result = CharacterDatabase.Query("SELECT mainTank, mainAssistant, lootMethod, looterGuid, lootThreshold, icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, isRaid, difficulty, leaderGuid FROM groups");
+    //                                                     0         1              2           3           4              5      6      7      8      9      10     11     12     13      14
+    QueryResult *result = CharacterDatabase.Query("SELECT mainTank, mainAssistant, lootMethod, looterGuid, lootThreshold, icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, isRaid, leaderGuid FROM groups");
 
     if( !result )
     {
@@ -2137,7 +2017,7 @@ void ObjectMgr::LoadGroups()
         bar.step();
         Field *fields = result->Fetch();
         ++count;
-        leaderGuid = MAKE_NEW_GUID(fields[15].GetUInt32(),0,HIGHGUID_PLAYER);
+        leaderGuid = MAKE_NEW_GUID(fields[14].GetUInt32(),0,HIGHGUID_PLAYER);
 
         group = new Group;
         if(!group->LoadGroupFromDB(leaderGuid, result, false))
@@ -2213,9 +2093,9 @@ void ObjectMgr::LoadGroups()
     group = NULL;
     leaderGuid = 0;
     result = CharacterDatabase.Query(
-        //      0           1    2         3          4           5
-        "SELECT leaderGuid, map, instance, permanent, difficulty, resettime, "
-        // 6
+        //      0           1         2          3      4
+        "SELECT leaderGuid, map, instance, permanent, resettime, "
+        // 5
         "(SELECT COUNT(*) FROM character_instance WHERE guid = leaderGuid AND instance = group_instance.instance AND permanent = 1 LIMIT 1) "
         "FROM group_instance LEFT JOIN instance ON instance = id ORDER BY leaderGuid"
     );
@@ -2244,7 +2124,7 @@ void ObjectMgr::LoadGroups()
                 }
             }
 
-            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(fields[1].GetUInt32(), fields[2].GetUInt32(), fields[4].GetUInt8(), (time_t)fields[5].GetUInt64(), (fields[6].GetUInt32() == 0), true);
+            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(fields[1].GetUInt32(), fields[2].GetUInt32(), (time_t)fields[4].GetUInt64(), (fields[5].GetUInt32() == 0), true);
             group->BindToInstance(save, fields[3].GetBool(), true);
         }while( result->NextRow() );
         delete result;
@@ -4522,8 +4402,8 @@ void ObjectMgr::LoadAccessRequirements()
 
     uint32 count = 0;
 
-    //                                                0       1          2       3      4        5           6             7              8                   9                  10
-    QueryResult *result = WorldDatabase.Query("SELECT id, level_min, level_max, item, item2, heroic_key, heroic_key2, quest_done, quest_failed_text, heroic_quest_done, heroic_quest_failed_text FROM access_requirement");
+    //                                                0       1          2       3      4        5               6
+    QueryResult *result = WorldDatabase.Query("SELECT id, level_min, level_max, item, item2, quest_done, quest_failed_text FROM access_requirement");
     if( !result )
     {
 
@@ -4554,12 +4434,8 @@ void ObjectMgr::LoadAccessRequirements()
         ar.levelMax                 = fields[2].GetUInt32();
         ar.item                     = fields[3].GetUInt32();
         ar.item2                    = fields[4].GetUInt32();
-        ar.heroicKey                = fields[5].GetUInt32();
-        ar.heroicKey2               = fields[6].GetUInt32();
-        ar.quest                    = fields[7].GetUInt32();
-        ar.questFailedText          = fields[8].GetCppString();
-        ar.heroicQuest              = fields[9].GetUInt32();
-        ar.heroicQuestFailedText    = fields[10].GetCppString();
+        ar.quest                    = fields[5].GetUInt32();
+        ar.questFailedText          = fields[6].GetCppString();
 
         if(ar.item)
         {
@@ -4578,35 +4454,6 @@ void ObjectMgr::LoadAccessRequirements()
             {
                 sLog.outError("Second item %u does not exist for requirement %u, removing key requirement.", ar.item2, requiremt_ID);
                 ar.item2 = 0;
-            }
-        }
-
-        if(ar.heroicKey)
-        {
-            ItemPrototype const *pProto = GetItemPrototype(ar.heroicKey);
-            if(!pProto)
-            {
-                sLog.outError("Heroic key %u not exist for trigger %u, remove key requirement.", ar.heroicKey, requiremt_ID);
-                ar.heroicKey = 0;
-            }
-        }
-
-        if(ar.heroicKey2)
-        {
-            ItemPrototype const *pProto = GetItemPrototype(ar.heroicKey2);
-            if(!pProto)
-            {
-                sLog.outError("Second heroic key %u not exist for trigger %u, remove key requirement.", ar.heroicKey2, requiremt_ID);
-                ar.heroicKey2 = 0;
-            }
-        }
-
-        if(ar.heroicQuest)
-        {
-            if(!GetQuestTemplate(ar.heroicQuest))
-            {
-                sLog.outErrorDb("Required Heroic Quest %u not exist for trigger %u, remove heroic quest done requirement.",ar.heroicQuest,requiremt_ID);
-                ar.heroicQuest = 0;
             }
         }
 
@@ -5398,7 +5245,7 @@ void ObjectMgr::LoadWeatherZoneChances()
 
 void ObjectMgr::SaveCreatureRespawnTime(uint32 loguid, uint32 instance, time_t t)
 {
-    mCreatureRespawnTimes[MAKE_PAIR64(loguid,instance)] = t;
+    mCreatureRespawnTimes[MAKE_PAIR64(loguid,0)] = t;
     WorldDatabase.PExecute("DELETE FROM creature_respawn WHERE guid = '%u' AND instance = '%u'", loguid, instance);
     if(t)
         WorldDatabase.PExecute("INSERT INTO creature_respawn VALUES ( '%u', '" I64FMTD "', '%u' )", loguid, uint64(t), instance);

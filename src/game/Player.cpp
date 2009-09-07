@@ -392,7 +392,6 @@ Player::Player (WorldSession *session): Unit()
 
     m_HomebindTimer = 0;
     m_InstanceValid = true;
-    m_dungeonDifficulty = DIFFICULTY_NORMAL;
 
     for (int i = 0; i < BASEMOD_END; i++)
     {
@@ -458,8 +457,7 @@ Player::~Player ()
             delete ItemSetEff[x];
 
     // clean up player-instance binds, may unload some instance saves
-    for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
-        for(BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
+    for(BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end(); ++itr)
             itr->second.save->RemovePlayer(this);
 
     delete m_declinedname;
@@ -1544,22 +1542,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         return false;
     }
 
-    // client without expansion support
-    if(GetSession()->Expansion() < mEntry->Expansion())
-    {
-        sLog.outDebug("Player %s using client without required expansion tried teleport to non accessible map %u", GetName(), mapid);
-
-        if(GetTransport())
-            RepopAtGraveyard();                             // teleport to near graveyard if on transport, looks blizz like :)
-
-        SendTransferAborted(mapid, TRANSFER_ABORT_INSUF_EXPAN_LVL1);
-
-        return false;                                       // normal client can't teleport to this map...
-    }
-    else
-    {
         sLog.outDebug("Player %s will teleported to map %u", GetName(), mapid);
-    }
 
     // if we were on a transport, leave
     if (!(options & TELE_TO_NOT_LEAVE_TRANSPORT) && m_transport)
@@ -13062,8 +13045,8 @@ float Player::GetFloatValueFromDB(uint16 index, uint64 guid)
 
 bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 {
-    ////                                                     0     1        2     3     4     5      6           7           8           9    10           11        12         13         14         15          16           17                 18                 19                 20       21       22       23       24         25           26            27        [28]  [29]    30                 31         32                         33             34              35
-    //QueryResult *result = CharacterDatabase.PQuery("SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, dungeon_difficulty, honor_highest_rank, honor_standing, honor_rating FROM characters WHERE guid = '%u'", guid);
+    ////                                                     0     1        2     3     4     5      6           7           8           9    10           11        12         13         14         15          16           17                 18                 19                 20       21       22       23       24         25           26            27        [28]  [29]    30                 31                   32             33              34
+    //QueryResult *result = CharacterDatabase.PQuery("SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, honor_highest_rank, honor_standing, honor_rating FROM characters WHERE guid = '%u'", guid);
     QueryResult *result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADFROM);
 
     if(!result)
@@ -13149,13 +13132,12 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     Relocate(fields[6].GetFloat(),fields[7].GetFloat(),fields[8].GetFloat(),fields[10].GetFloat());
     SetFallInformation(0, fields[8].GetFloat());
     SetMapId(fields[9].GetUInt32());
-    SetDifficulty(fields[32].GetUInt32());                  // may be changed in _LoadGroup
 
     _LoadGroup(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGROUP));
 
-    m_highest_rank = fields[33].GetUInt32();
-    m_standing = fields[34].GetUInt32();
-    m_rating = fields[35].GetFloat();
+    m_highest_rank = fields[32].GetUInt32();
+    m_standing = fields[33].GetUInt32();
+    m_rating = fields[34].GetFloat();
 
     _LoadBoundInstances(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES));
 
@@ -14209,23 +14191,17 @@ void Player::_LoadGroup(QueryResult *result)
         {
             uint8 subgroup = group->GetMemberGroup(GetGUID());
             SetGroup(group, subgroup);
-            if(getLevel() >= LEVELREQUIREMENT_HEROIC)
-            {
-                // the group leader may change the instance difficulty while the player is offline
-                SetDifficulty(group->GetDifficulty());
-            }
         }
     }
 }
 
 void Player::_LoadBoundInstances(QueryResult *result)
 {
-    for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
-        m_boundInstances[i].clear();
+    m_boundInstances.clear();
 
     Group *group = GetGroup();
 
-    //QueryResult *result = CharacterDatabase.PQuery("SELECT id, permanent, map, difficulty, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
+    //QueryResult *result = CharacterDatabase.PQuery("SELECT id, permanent, map, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
     if(result)
     {
         do
@@ -14234,53 +14210,50 @@ void Player::_LoadBoundInstances(QueryResult *result)
             bool perm = fields[1].GetBool();
             uint32 mapId = fields[2].GetUInt32();
             uint32 instanceId = fields[0].GetUInt32();
-            uint8 difficulty = fields[3].GetUInt8();
-            time_t resetTime = (time_t)fields[4].GetUInt64();
+            time_t resetTime = (time_t)fields[3].GetUInt64();
             // the resettime for normal instances is only saved when the InstanceSave is unloaded
             // so the value read from the DB may be wrong here but only if the InstanceSave is loaded
             // and in that case it is not used
 
             if(!perm && group)
             {
-                sLog.outError("_LoadBoundInstances: player %s(%d) is in group %d but has a non-permanent character bind to map %d,%d,%d", GetName(), GetGUIDLow(), GUID_LOPART(group->GetLeaderGUID()), mapId, instanceId, difficulty);
+                sLog.outError("_LoadBoundInstances: player %s(%d) is in group %d but has a non-permanent character bind to map %d,%d", GetName(), GetGUIDLow(), GUID_LOPART(group->GetLeaderGUID()), mapId, instanceId);
                 CharacterDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%d' AND instance = '%d'", GetGUIDLow(), instanceId);
                 continue;
             }
 
             // since non permanent binds are always solo bind, they can always be reset
-            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(mapId, instanceId, difficulty, resetTime, !perm, true);
+            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(mapId, instanceId, resetTime, !perm, true);
             if(save) BindToInstance(save, perm, true);
         } while(result->NextRow());
         delete result;
     }
 }
 
-InstancePlayerBind* Player::GetBoundInstance(uint32 mapid, uint8 difficulty)
+InstancePlayerBind* Player::GetBoundInstance(uint32 mapid)
 {
-    // some instances only have one difficulty
     const MapEntry* entry = sMapStore.LookupEntry(mapid);
-    if(!entry || !entry->SupportsHeroicMode()) difficulty = DIFFICULTY_NORMAL;
 
-    BoundInstancesMap::iterator itr = m_boundInstances[difficulty].find(mapid);
-    if(itr != m_boundInstances[difficulty].end())
+    BoundInstancesMap::iterator itr = m_boundInstances.find(mapid);
+    if(itr != m_boundInstances.end())
         return &itr->second;
     else
         return NULL;
 }
 
-void Player::UnbindInstance(uint32 mapid, uint8 difficulty, bool unload)
+void Player::UnbindInstance(uint32 mapid, bool unload)
 {
-    BoundInstancesMap::iterator itr = m_boundInstances[difficulty].find(mapid);
-    UnbindInstance(itr, difficulty, unload);
+    BoundInstancesMap::iterator itr = m_boundInstances.find(mapid);
+    UnbindInstance(itr, unload);
 }
 
-void Player::UnbindInstance(BoundInstancesMap::iterator &itr, uint8 difficulty, bool unload)
+void Player::UnbindInstance(BoundInstancesMap::iterator &itr, bool unload)
 {
-    if(itr != m_boundInstances[difficulty].end())
+    if(itr != m_boundInstances.end())
     {
         if(!unload) CharacterDatabase.PExecute("DELETE FROM character_instance WHERE guid = '%u' AND instance = '%u'", GetGUIDLow(), itr->second.save->GetInstanceId());
         itr->second.save->RemovePlayer(this);               // save can become invalid
-        m_boundInstances[difficulty].erase(itr++);
+        m_boundInstances.erase(itr++);
     }
 }
 
@@ -14288,7 +14261,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 {
     if(save)
     {
-        InstancePlayerBind& bind = m_boundInstances[save->GetDifficulty()][save->GetMapId()];
+        InstancePlayerBind& bind = m_boundInstances[save->GetMapId()];
         if(bind.save)
         {
             // update the save when the group kills a boss
@@ -14308,7 +14281,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 
         bind.save = save;
         bind.perm = permanent;
-        if(!load) sLog.outDebug("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d, difficulty %d", GetName(), GetGUIDLow(), save->GetMapId(), save->GetInstanceId(), save->GetDifficulty());
+        if(!load) sLog.outDebug("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d", GetName(), GetGUIDLow(), save->GetMapId(), save->GetInstanceId());
         return &bind;
     }
     else
@@ -14319,25 +14292,21 @@ void Player::SendRaidInfo()
 {
     WorldPacket data(SMSG_RAID_INSTANCE_INFO, 4);
 
-    uint32 counter = 0, i;
-    for(i = 0; i < TOTAL_DIFFICULTIES; i++)
-        for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
+    uint32 counter = 0;
+    for (BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end(); ++itr)
             if(itr->second.perm) counter++;
 
     data << counter;
-    for(i = 0; i < TOTAL_DIFFICULTIES; i++)
+    for (BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end(); ++itr)
     {
-        for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
+        if(itr->second.perm)
         {
-            if(itr->second.perm)
-            {
-                InstanceSave *save = itr->second.save;
-                data << (save->GetMapId());
-                data << (uint32)(save->GetResetTime() - time(NULL));
-                data << save->GetInstanceId();
-                data << uint32(counter);
-                counter--;
-            }
+            InstanceSave *save = itr->second.save;
+            data << (save->GetMapId());
+            data << (uint32)(save->GetResetTime() - time(NULL));
+            data << save->GetInstanceId();
+            data << uint32(counter);
+            counter--;
         }
     }
     GetSession()->SendPacket(&data);
@@ -14351,15 +14320,12 @@ void Player::SendSavedInstances()
     bool hasBeenSaved = false;
     WorldPacket data;
 
-    for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+    for (BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end(); ++itr)
     {
-        for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
+        if(itr->second.perm)                                // only permanent binds are sent
         {
-            if(itr->second.perm)                                // only permanent binds are sent
-            {
-                hasBeenSaved = true;
-                break;
-            }
+            hasBeenSaved = true;
+            break;
         }
     }
 
@@ -14371,16 +14337,13 @@ void Player::SendSavedInstances()
     if(!hasBeenSaved)
         return;
 
-    for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+    for (BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end(); ++itr)
     {
-        for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
+        if(itr->second.perm)
         {
-            if(itr->second.perm)
-            {
-                data.Initialize(SMSG_UPDATE_LAST_INSTANCE);
-                data << uint32(itr->second.save->GetMapId());
-                GetSession()->SendPacket(&data);
-            }
+            data.Initialize(SMSG_UPDATE_LAST_INSTANCE);
+            data << uint32(itr->second.save->GetMapId());
+            GetSession()->SendPacket(&data);
         }
     }
 }
@@ -14399,21 +14362,18 @@ void Player::ConvertInstancesToGroup(Player *player, Group *group, uint64 player
 
     if(player)
     {
-        for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+        for (BoundInstancesMap::iterator itr = player->m_boundInstances.begin(); itr != player->m_boundInstances.end();)
         {
-            for (BoundInstancesMap::iterator itr = player->m_boundInstances[i].begin(); itr != player->m_boundInstances[i].end();)
+            has_binds = true;
+            if(group) group->BindToInstance(itr->second.save, itr->second.perm, true);
+            // permanent binds are not removed
+            if(!itr->second.perm)
             {
-                has_binds = true;
-                if(group) group->BindToInstance(itr->second.save, itr->second.perm, true);
-                // permanent binds are not removed
-                if(!itr->second.perm)
-                {
-                    player->UnbindInstance(itr, i, true);   // increments itr
-                    has_solo = true;
-                }
-                else
-                    ++itr;
+                player->UnbindInstance(itr, true);   // increments itr
+                has_solo = true;
             }
+            else
+                ++itr;
         }
     }
 
@@ -14446,36 +14406,19 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
             missingItem = ar->item2;
 
         uint32 missingKey = 0;
-        uint32 missingHeroicQuest = 0;
-        if(GetDifficulty() == DIFFICULTY_HEROIC)
-        {
-            if(ar->heroicKey)
-            {
-                if(!HasItemCount(ar->heroicKey, 1) &&
-                    (!ar->heroicKey2 || !HasItemCount(ar->heroicKey2, 1)))
-                    missingKey = ar->heroicKey;
-            }
-            else if(ar->heroicKey2 && !HasItemCount(ar->heroicKey2, 1))
-                missingKey = ar->heroicKey2;
-
-            if(ar->heroicQuest && !GetQuestRewardStatus(ar->heroicQuest))
-                missingHeroicQuest = ar->heroicQuest;
-        }
 
         uint32 missingQuest = 0;
         if(ar->quest && !GetQuestRewardStatus(ar->quest))
             missingQuest = ar->quest;
 
-        if(LevelMin || LevelMax || missingItem || missingKey || missingQuest || missingHeroicQuest)
+        if(LevelMin || LevelMax || missingItem || missingKey || missingQuest)
         {
             if(report)
             {
                 if(missingItem)
                     GetSession()->SendAreaTriggerMessage(GetSession()->GetTrinityString(LANG_LEVEL_MINREQUIRED_AND_ITEM), ar->levelMin, objmgr.GetItemPrototype(missingItem)->Name1);
                 else if(missingKey)
-                    SendTransferAborted(target_map, TRANSFER_ABORT_DIFFICULTY2);
-                else if(missingHeroicQuest)
-                    GetSession()->SendAreaTriggerMessage(ar->heroicQuestFailedText.c_str());
+                    SendTransferAborted(target_map, TRANSFER_ABORT_DIFFICULTY1);
                 else if(missingQuest)
                     GetSession()->SendAreaTriggerMessage(ar->questFailedText.c_str());
                 else if(LevelMin)
@@ -14578,7 +14521,7 @@ void Player::SaveToDB()
 
     std::ostringstream ss;
     ss << "INSERT INTO characters (guid,account,name,race,class,"
-        "map, dungeon_difficulty, position_x, position_y, position_z, orientation, data, "
+        "map, position_x, position_y, position_z, orientation, data, "
         "taximask, online, cinematic, "
         "totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, "
         "trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, "
@@ -14601,7 +14544,6 @@ void Player::SaveToDB()
     if(!save_to_dest)
     {
         ss << GetMapId() << ", "
-        << (uint32)GetDifficulty() << ", "
         << finiteAlways(GetPositionX()) << ", "
         << finiteAlways(GetPositionY()) << ", "
         << finiteAlways(GetPositionZ()) << ", "
@@ -14610,7 +14552,6 @@ void Player::SaveToDB()
     else
     {
         ss << GetTeleportDest().mapid << ", "
-        << (uint32)GetDifficulty() << ", "
         << finiteAlways(GetTeleportDest().x) << ", "
         << finiteAlways(GetTeleportDest().y) << ", "
         << finiteAlways(GetTeleportDest().z) << ", "
@@ -15237,16 +15178,6 @@ void Player::SendExplorationExperience(uint32 Area, uint32 Experience)
     GetSession()->SendPacket(&data);
 }
 
-void Player::SendDungeonDifficulty(bool IsInGroup)
-{
-    uint8 val = 0x00000001;
-    WorldPacket data(MSG_SET_DUNGEON_DIFFICULTY, 12);
-    data << (uint32)GetDifficulty();
-    data << uint32(val);
-    data << uint32(IsInGroup);
-    GetSession()->SendPacket(&data);
-}
-
 void Player::SendResetFailedNotify(uint32 mapid)
 {
     WorldPacket data(SMSG_RESET_FAILED_NOTIFY, 4);
@@ -15257,12 +15188,9 @@ void Player::SendResetFailedNotify(uint32 mapid)
 /// Reset all solo instances and optionally send a message on success for each
 void Player::ResetInstances(uint8 method)
 {
-    // method can be INSTANCE_RESET_ALL, INSTANCE_RESET_CHANGE_DIFFICULTY, INSTANCE_RESET_GROUP_JOIN
+    // method can be INSTANCE_RESET_ALL, INSTANCE_RESET_GROUP_JOIN
 
-    // we assume that when the difficulty changes, all instances that can be reset will be
-    uint8 dif = GetDifficulty();
-
-    for (BoundInstancesMap::iterator itr = m_boundInstances[dif].begin(); itr != m_boundInstances[dif].end();)
+    for (BoundInstancesMap::iterator itr = m_boundInstances.begin(); itr != m_boundInstances.end();)
     {
         InstanceSave *p = itr->second.save;
         const MapEntry *entry = sMapStore.LookupEntry(itr->first);
@@ -15275,7 +15203,7 @@ void Player::ResetInstances(uint8 method)
         if(method == INSTANCE_RESET_ALL)
         {
             // the "reset all instances" method can only reset normal maps
-            if(dif == DIFFICULTY_HEROIC || entry->map_type == MAP_RAID)
+            if( entry->map_type == MAP_RAID)
             {
                 ++itr;
                 continue;
@@ -15292,11 +15220,11 @@ void Player::ResetInstances(uint8 method)
             }
 
         // since this is a solo instance there should not be any players inside
-        if(method == INSTANCE_RESET_ALL || method == INSTANCE_RESET_CHANGE_DIFFICULTY)
+        if(method == INSTANCE_RESET_ALL)
             SendResetInstanceSuccess(p->GetMapId());
 
         p->DeleteFromDB();
-        m_boundInstances[dif].erase(itr++);
+        m_boundInstances.erase(itr++);
 
         // the following should remove the instance save from the manager and delete it as well
         p->RemovePlayer(this);

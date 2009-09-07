@@ -248,19 +248,6 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     // get heroic mode entry
     uint32 actualEntry = Entry;
     CreatureInfo const *cinfo = normalInfo;
-    if(normalInfo->HeroicEntry)
-    {
-        Map *map = MapManager::Instance().FindMap(GetMapId(), GetInstanceId());
-        if(map && map->IsHeroic())
-        {
-            cinfo = objmgr.GetCreatureTemplate(normalInfo->HeroicEntry);
-            if(!cinfo)
-            {
-                sLog.outErrorDb("Creature::UpdateEntry creature heroic entry %u does not exist.", actualEntry);
-                return false;
-            }
-        }
-    }
 
     SetEntry(Entry);                                        // normal entry always
     m_creatureInfo = cinfo;                                 // map mode related always
@@ -1171,10 +1158,10 @@ void Creature::SaveToDB()
         return;
     }
 
-    SaveToDB(GetMapId(), data->spawnMask);
+    SaveToDB(GetMapId());
 }
 
-void Creature::SaveToDB(uint32 mapid, uint8 spawnMask)
+void Creature::SaveToDB(uint32 mapid)
 {
     // update in loaded data
     if (!m_DBTableGuid)
@@ -1210,7 +1197,6 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask)
     // prevent add data integrity problems
     data.movementType = !m_respawnradius && GetDefaultMovementType()==RANDOM_MOTION_TYPE
         ? IDLE_MOTION_TYPE : GetDefaultMovementType();
-    data.spawnMask = spawnMask;
 
     // updated in DB
     WorldDatabase.BeginTransaction();
@@ -1222,7 +1208,6 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask)
         << m_DBTableGuid << ","
         << GetEntry() << ","
         << mapid <<","
-        << (uint32)spawnMask << ","
         << displayId <<","
         << GetEquipmentId() <<","
         << GetPositionX() << ","

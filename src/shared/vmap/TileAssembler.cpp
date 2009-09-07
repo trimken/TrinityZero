@@ -74,7 +74,6 @@ namespace VMAP
         iCoordModelMapping = new CoordModelMapping();
         addWorldAreaMapId(0);                               //Azeroth
         addWorldAreaMapId(1);                               //Kalimdor
-        addWorldAreaMapId(530);                             //Expansion01
     }
     //=================================================================
 

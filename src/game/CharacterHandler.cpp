@@ -64,9 +64,9 @@ bool LoginQueryHolder::Initialize()
 
     // NOTE: all fields in `characters` must be read to prevent lost character data at next save in case wrong DB structure.
     // !!! NOTE: including unused `zone`,`online`
-    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADFROM,            "SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, dungeon_difficulty, honor_highest_rank, honor_standing, honor_rating FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
+    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADFROM,            "SELECT guid, account, data, name, race, class, position_x, position_y, position_z, map, orientation, taximask, cinematic, totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, trans_x, trans_y, trans_z, trans_o, transguid, extra_flags, stable_slots, at_login, zone, online, death_expire_time, taxi_path, honor_highest_rank, honor_standing, honor_rating FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADGROUP,           "SELECT leaderGuid FROM group_member WHERE memberGuid ='%u'", GUID_LOPART(m_guid));
-    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES,  "SELECT id, permanent, map, difficulty, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
+    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES,  "SELECT id, permanent, map, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADAURAS,           "SELECT caster_guid,spell,effect_index,stackcount,amount,maxduration,remaintime,remaincharges FROM character_aura WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADSPELLS,          "SELECT spell,slot,active,disabled FROM character_spell WHERE guid = '%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADQUESTSTATUS,     "SELECT quest,status,rewarded,explored,timer,mobcount1,mobcount2,mobcount3,mobcount4,itemcount1,itemcount2,itemcount3,itemcount4 FROM character_queststatus WHERE guid = '%u'", GUID_LOPART(m_guid));
@@ -226,25 +226,6 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
         data << (uint8)CHAR_CREATE_FAILED;
         SendPacket( &data );
         sLog.outError("Class: %u or Race %u not found in DBC (Wrong DBC files?) or Cheater?", class_, race_);
-        return;
-    }
-
-    // prevent character creating Expansion race without Expansion account
-//    if (raceEntry->addon > Expansion())
-    {
-  //      data << (uint8)CHAR_CREATE_EXPANSION;
-  //      sLog.outError("Not Expansion 1 account:[%d] but tried to Create character with expansion 1 race (%u)",GetAccountId(),race_);
-  //      SendPacket( &data );
-  //      return;
-    }
-
-    // prevent character creating Expansion class without Expansion account
-    // TODO: use possible addon field in ChrClassesEntry in next dbc version
-    if (Expansion() < 2 && class_ == CLASS_DEATH_KNIGHT)
-    {
-        data << (uint8)CHAR_CREATE_EXPANSION;
-        sLog.outError("Not Expansion 2 account:[%d] but tried to Create character with expansion 2 class (%u)",GetAccountId(),class_);
-        SendPacket( &data );
         return;
     }
 
@@ -495,8 +476,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
     SetPlayer(pCurrChar);
 
      WorldPacket data;
-
-   // pCurrChar->SendDungeonDifficulty(false);
 
     data.Initialize( SMSG_LOGIN_VERIFY_WORLD, 20 );
     data << pCurrChar->GetMapId();

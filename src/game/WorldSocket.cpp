@@ -644,7 +644,6 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     uint32 unk2;
     uint32 BuiltNumberClient;
     uint32 id, security;
-    //uint8 expansion = 0;
     LocaleConstant locale;
     std::string account;
     Sha1Hash sha1;
@@ -694,9 +693,8 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
                                 "sha_pass_hash, " //5
                                 "v, " //6
                                 "s, " //7
-                                "expansion, " //8
-                                "mutetime, " //9
-                                "locale " //10
+                                "mutetime, " //8
+                                "locale " //9
                                 "FROM account "
                                 "WHERE username = '%s'",
                                 safe_account.c_str ());
@@ -715,11 +713,6 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
 
     Field* fields = result->Fetch ();
 
-    uint8 expansion = fields[8].GetUInt8();
-    uint32 world_expansion = sWorld.getConfig(CONFIG_EXPANSION);
-    if(expansion > world_expansion)
-        expansion = world_expansion;
-    //expansion = ((sWorld.getConfig(CONFIG_EXPANSION) > fields[8].GetUInt8()) ? fields[8].GetUInt8() : sWorld.getConfig(CONFIG_EXPANSION));
 
     N.SetHexStr ("894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7");
     g.SetDword (7);
@@ -792,9 +785,9 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     security = fields[1].GetUInt16 ();
     K.SetHexStr (fields[2].GetString ());
 
-    time_t mutetime = time_t (fields[9].GetUInt64 ());
+    time_t mutetime = time_t (fields[8].GetUInt64 ());
 
-    locale = LocaleConstant (fields[10].GetUInt8 ());
+    locale = LocaleConstant (fields[9].GetUInt8 ());
     if (locale >= MAX_LOCALE)
         locale = LOCALE_enUS;
 
@@ -878,7 +871,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
                             safe_account.c_str ());
 
     // NOTE ATM the socket is singlethreaded, have this in mind ...
-    ACE_NEW_RETURN (m_Session, WorldSession (id, this, security, expansion, mutetime, locale), -1);
+    ACE_NEW_RETURN (m_Session, WorldSession (id, this, security, mutetime, locale), -1);
 
     m_Crypt.SetKey (K.AsByteArray(), 40 );
     m_Crypt.Init ();

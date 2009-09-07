@@ -73,7 +73,7 @@ enum Classes
     CLASS_HUNTER        = 3,
     CLASS_ROGUE         = 4,
     CLASS_PRIEST        = 5,
-    CLASS_DEATH_KNIGHT  = 6,
+    //CLASS_DEATH_KNIGHT  = 6,
     CLASS_SHAMAN        = 7,
     CLASS_MAGE          = 8,
     CLASS_WARLOCK       = 9,
@@ -737,7 +737,6 @@ enum Mechanics
     MECHANIC_INVULNERABILITY  = 25,
     MECHANIC_INTERRUPT        = 26,
     MECHANIC_DAZE             = 27,
-    MECHANIC_DISCOVERY        = 28,
     MECHANIC_IMMUNE_SHIELD    = 29,                         // Divine (Blessing) Shield/Protection and Ice Block
     MECHANIC_SAPPED           = 30
 };
@@ -956,9 +955,6 @@ enum GameobjectTypes
     GAMEOBJECT_TYPE_LOTTERY_KIOSK          = 28,
     GAMEOBJECT_TYPE_CAPTURE_POINT          = 29,
     GAMEOBJECT_TYPE_AURA_GENERATOR         = 30,
-    GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY     = 31,
-    GAMEOBJECT_TYPE_BARBER_CHAIR           = 32,
-    GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING  = 33,
 };
 
 #define MAX_GAMEOBJECT_TYPE                  35             // sending to client this or greater value can crash client.
@@ -2045,13 +2041,6 @@ enum DiminishingGroup
     DIMINISHING_LIMITONLY
 };
 
-enum DungeonDifficulties
-{
-    DIFFICULTY_NORMAL = 0,
-    DIFFICULTY_HEROIC = 1,
-    TOTAL_DIFFICULTIES
-};
-
 enum SummonType
 {
     SUMMON_TYPE_CRITTER     = 41,
@@ -2140,7 +2129,6 @@ enum ResponseCodes
     CHAR_CREATE_ACCOUNT_LIMIT                              = 0x35,
     CHAR_CREATE_SERVER_QUEUE                               = 0x30,/// UNSURE
     CHAR_CREATE_ONLY_EXISTING                              = 0x30,/// UNSURE
-    CHAR_CREATE_EXPANSION                                  = 0x30,/// UNSURE
 
     CHAR_DELETE_IN_PROGRESS                                = 0x38,
     CHAR_DELETE_SUCCESS                                    = 0x39,

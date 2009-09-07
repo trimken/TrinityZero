@@ -6565,32 +6565,27 @@ bool ChatHandler::HandleInstanceListBindsCommand(const char* /*args*/)
     Player* player = getSelectedPlayer();
     if (!player) player = m_session->GetPlayer();
     uint32 counter = 0;
-    for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+    Player::BoundInstancesMap &binds = player->GetBoundInstances();
+    for(Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end(); ++itr)
     {
-        Player::BoundInstancesMap &binds = player->GetBoundInstances(i);
-        for(Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end(); ++itr)
-        {
-            InstanceSave *save = itr->second.save;
-            std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
-            PSendSysMessage("map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no",  save->GetDifficulty() == DIFFICULTY_NORMAL ? "normal" : "heroic", save->CanReset() ? "yes" : "no", timeleft.c_str());
-            counter++;
-        }
+        InstanceSave *save = itr->second.save;
+        std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
+        PSendSysMessage("map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no", save->CanReset() ? "yes" : "no", timeleft.c_str());
+        counter++;
     }
+
     PSendSysMessage("player binds: %d", counter);
     counter = 0;
     Group *group = player->GetGroup();
     if(group)
     {
-        for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+        Group::BoundInstancesMap &binds = group->GetBoundInstances();
+        for(Group::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end(); ++itr)
         {
-            Group::BoundInstancesMap &binds = group->GetBoundInstances(i);
-            for(Group::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end(); ++itr)
-            {
-                InstanceSave *save = itr->second.save;
-                std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
-                PSendSysMessage("map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no",  save->GetDifficulty() == DIFFICULTY_NORMAL ? "normal" : "heroic", save->CanReset() ? "yes" : "no", timeleft.c_str());
-                counter++;
-            }
+            InstanceSave *save = itr->second.save;
+            std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
+            PSendSysMessage("map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no", save->CanReset() ? "yes" : "no", timeleft.c_str());
+            counter++;
         }
     }
     PSendSysMessage("group binds: %d", counter);
@@ -6609,22 +6604,19 @@ bool ChatHandler::HandleInstanceUnbindCommand(const char* args)
         Player* player = getSelectedPlayer();
         if (!player) player = m_session->GetPlayer();
         uint32 counter = 0;
-        for(uint8 i = 0; i < TOTAL_DIFFICULTIES; i++)
+        Player::BoundInstancesMap &binds = player->GetBoundInstances();
+        for(Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end();)
         {
-            Player::BoundInstancesMap &binds = player->GetBoundInstances(i);
-            for(Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end();)
+            if(itr->first != player->GetMapId())
             {
-                if(itr->first != player->GetMapId())
-                {
-                    InstanceSave *save = itr->second.save;
-                    std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
-                    PSendSysMessage("unbinding map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no",  save->GetDifficulty() == DIFFICULTY_NORMAL ? "normal" : "heroic", save->CanReset() ? "yes" : "no", timeleft.c_str());
-                    player->UnbindInstance(itr, i);
-                    counter++;
-                }
-                else
-                    ++itr;
+                InstanceSave *save = itr->second.save;
+                std::string timeleft = GetTimeString(save->GetResetTime() - time(NULL));
+                PSendSysMessage("unbinding map: %d inst: %d perm: %s diff: %s canReset: %s TTR: %s", itr->first, save->GetInstanceId(), itr->second.perm ? "yes" : "no", save->CanReset() ? "yes" : "no", timeleft.c_str());
+                player->UnbindInstance(itr);
+                counter++;
             }
+            else
+                ++itr;
         }
         PSendSysMessage("instances unbound: %d", counter);
     }
@@ -6696,59 +6688,6 @@ bool ChatHandler::HandleServerSetMotdCommand(const char* args)
 {
     sWorld.SetMotd(args);
     PSendSysMessage(LANG_MOTD_NEW, args);
-    return true;
-}
-
-/// Set/Unset the expansion level for an account
-bool ChatHandler::HandleAccountSetAddonCommand(const char* args)
-{
-    ///- Get the command line arguments
-    char *szAcc = strtok((char*)args," ");
-    char *szExp = strtok(NULL," ");
-
-    if(!szAcc)
-        return false;
-
-    std::string account_name;
-    uint32 account_id;
-
-    if(!szExp)
-    {
-        Player* player = getSelectedPlayer();
-        if(!player)
-            return false;
-
-        account_id = player->GetSession()->GetAccountId();
-        accmgr.GetName(account_id,account_name);
-        szExp = szAcc;
-    }
-    else
-    {
-        ///- Convert Account name to Upper Format
-        account_name = szAcc;
-        if(!AccountMgr::normilizeString(account_name))
-        {
-            PSendSysMessage(LANG_ACCOUNT_NOT_EXIST,account_name.c_str());
-            SetSentErrorMessage(true);
-            return false;
-        }
-
-        account_id = accmgr.GetId(account_name);
-        if(!account_id)
-        {
-            PSendSysMessage(LANG_ACCOUNT_NOT_EXIST,account_name.c_str());
-            SetSentErrorMessage(true);
-            return false;
-        }
-    }
-
-    int lev=atoi(szExp);                                    //get int anyway (0 if error)
-    if(lev < 0)
-        return false;
-
-    // No SQL injection
-    LoginDatabase.PExecute("UPDATE account SET expansion = '%d' WHERE id = '%u'",lev,account_id);
-    PSendSysMessage(LANG_ACCOUNT_SETADDON,account_name.c_str(),account_id,lev);
     return true;
 }
 

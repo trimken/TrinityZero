@@ -94,12 +94,12 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
         SendPartyResult(PARTY_OP_INVITE, membername, PARTY_RESULT_NOT_IN_YOUR_INSTANCE);
         return;
     }
-    // just ignore us
+    /*[TZERO] not used in 1.12?
     if(player->GetInstanceId() != 0 && player->GetDifficulty() != GetPlayer()->GetDifficulty())
     {
         SendPartyResult(PARTY_OP_INVITE, membername, PARTY_RESULT_TARGET_IGNORE_YOU);
         return;
-    }
+    }*/
 
     if(player->GetSocial()->HasIgnore(GetPlayer()->GetGUIDLow()))
     {

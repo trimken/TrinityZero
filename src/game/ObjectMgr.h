@@ -117,7 +117,7 @@ struct CellObjectGuids
     CellCorpseSet corpses;
 };
 typedef UNORDERED_MAP<uint32/*cell_id*/,CellObjectGuids> CellObjectGuidsMap;
-typedef UNORDERED_MAP<uint32/*(mapid,spawnMode) pair*/,CellObjectGuidsMap> MapObjectGuids;
+typedef UNORDERED_MAP<uint32/*mapid*/,CellObjectGuidsMap> MapObjectGuids;
 
 typedef UNORDERED_MAP<uint64/*(instance,guid) pair*/,time_t> RespawnTimes;
 
@@ -583,9 +583,9 @@ class ObjectMgr
                 return NULL;
         }
 
-        CellObjectGuids const& GetCellObjectGuids(uint16 mapid, uint8 spawnMode, uint32 cell_id)
+        CellObjectGuids const& GetCellObjectGuids(uint16 mapid, uint32 cell_id)
         {
-            return mMapObjectGuids[MAKE_PAIR32(mapid,spawnMode)][cell_id];
+            return mMapObjectGuids[MAKE_PAIR32(mapid,0)][cell_id];
         }
 
         CreatureData const* GetCreatureData(uint32 guid) const

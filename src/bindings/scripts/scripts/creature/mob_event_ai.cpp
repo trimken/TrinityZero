@@ -1410,7 +1410,6 @@ CreatureAI* GetAI_Mob_EventAI(Creature *pCreature)
 #endif
             if( pCreature->GetMap()->IsDungeon() )
             {
-                if ((pCreature->GetMap()->IsHeroic() && (*i).event_flags & EFLAG_HEROIC) || (!pCreature->GetMap()->IsHeroic() && (*i).event_flags & EFLAG_NORMAL))
                     EventList.push_back(EventHolder(*i));
                 continue;
             }

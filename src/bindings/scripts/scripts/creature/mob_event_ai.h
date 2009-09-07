@@ -125,8 +125,6 @@ enum CastFlags
 enum EventFlags
 {
     EFLAG_REPEATABLE            = 0x01,     //Event repeats
-    EFLAG_NORMAL                = 0x02,     //Event only occurs in Normal instance difficulty
-    EFLAG_HEROIC                = 0x04,     //Event only occurs in Heroic instance difficulty
     EFLAG_RESERVED_3            = 0x08,
     EFLAG_RESERVED_4            = 0x10,
     EFLAG_RESERVED_5            = 0x20,

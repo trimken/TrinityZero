@@ -1070,25 +1070,20 @@ void LoadDatabase()
                         if (!temp.action[j].param1)
                             error_db_log("TSCR: Event %u Action %u is incrementing phase by 0. Was this intended?", i, j+1);
                         break;
-
+                    //[TZERO] ACTION_T_SET_INST_DAT & ACTION_T_SET_INST_DATA64   must be checked
                     case ACTION_T_SET_INST_DATA:
                         {
-                            if (!(temp.event_flags & EFLAG_NORMAL) && !(temp.event_flags & EFLAG_HEROIC))
-                                error_db_log("TSCR: Event %u Action %u. Cannot set instance data without event flags (normal/heroic).", i, j+1);
-
                             if (temp.action[j].param2 > SPECIAL)
                                 error_db_log("TSCR: Event %u Action %u attempts to set instance data above encounter state 4. Custom case?", i, j+1);
                         }
                         break;
                     case ACTION_T_SET_INST_DATA64:
                         {
-                            if (!(temp.event_flags & EFLAG_NORMAL) && !(temp.event_flags & EFLAG_HEROIC))
-                                error_db_log("TSCR: Event %u Action %u. Cannot set instance data without event flags (normal/heroic).", i, j+1);
-
                             if (temp.action[j].param2 >= TARGET_T_END)
                                 error_db_log("TSCR: Event %u Action %u uses incorrect Target type", i, j+1);
                         }
                         break;
+
                     case ACTION_T_UPDATE_TEMPLATE:
                         {
                             if (!GetCreatureTemplateStore(temp.action[j].param1))

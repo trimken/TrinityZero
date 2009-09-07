@@ -61,13 +61,13 @@ InstanceSaveManager::~InstanceSaveManager()
         for(InstanceSave::PlayerListType::iterator itr = save->m_playerList.begin(), next = itr; itr != save->m_playerList.end(); itr = next)
         {
             ++next;
-            (*itr)->UnbindInstance(save->GetMapId(), save->GetDifficulty(), true);
+            (*itr)->UnbindInstance(save->GetMapId(), true);
         }
         save->m_playerList.clear();
         for(InstanceSave::GroupListType::iterator itr = save->m_groupList.begin(), next = itr; itr != save->m_groupList.end(); itr = next)
         {
             ++next;
-            (*itr)->UnbindInstance(save->GetMapId(), save->GetDifficulty(), true);
+            (*itr)->UnbindInstance(save->GetMapId(), true);
         }
         save->m_groupList.clear();
         delete save;
@@ -78,7 +78,7 @@ InstanceSaveManager::~InstanceSaveManager()
 - adding instance into manager
 - called from InstanceMap::Add, _LoadBoundInstances, LoadGroups
 */
-InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instanceId, uint8 difficulty, time_t resetTime, bool canReset, bool load)
+InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instanceId, time_t resetTime, bool canReset, bool load)
 {
     InstanceSave *save = GetInstanceSave(instanceId);
     if(save) return save;
@@ -94,7 +94,7 @@ InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instance
     {
         // initialize reset time
         // for normal instances if no creatures are killed the instance will reset in two hours
-        if(entry->map_type == MAP_RAID || difficulty == DIFFICULTY_HEROIC)
+        if(entry->map_type == MAP_RAID)
             resetTime = GetResetTimeFor(mapId);
         else
         {
@@ -106,7 +106,7 @@ InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instance
 
     sLog.outDebug("InstanceSaveManager::AddInstanceSave: mapid = %d, instanceid = %d", mapId, instanceId);
 
-    save = new InstanceSave(mapId, instanceId, difficulty, resetTime, canReset);
+    save = new InstanceSave(mapId, instanceId, resetTime, canReset);
     if(!load) save->SaveToDB();
 
     m_instanceSaveById[instanceId] = save;
@@ -142,10 +142,10 @@ void InstanceSaveManager::RemoveInstanceSave(uint32 InstanceId)
     }
 }
 
-InstanceSave::InstanceSave(uint16 MapId, uint32 InstanceId, uint8 difficulty,
+InstanceSave::InstanceSave(uint16 MapId, uint32 InstanceId,
                            time_t resetTime, bool canReset)
 : m_mapid(MapId), m_instanceid(InstanceId), m_resetTime(resetTime),
-  m_difficulty(difficulty), m_canReset(canReset)
+  m_canReset(canReset)
 {
 }
 
@@ -175,14 +175,14 @@ void InstanceSave::SaveToDB()
         }
     }
 
-    CharacterDatabase.PExecute("INSERT INTO instance VALUES ('%u', '%u', '"I64FMTD"', '%u', '%s')", m_instanceid, GetMapId(), (uint64)GetResetTimeForDB(), GetDifficulty(), data.c_str());
+    CharacterDatabase.PExecute("INSERT INTO instance VALUES ('%u', '%u', '"I64FMTD"', '%s')", m_instanceid, GetMapId(), (uint64)GetResetTimeForDB(), data.c_str());
 }
 
 time_t InstanceSave::GetResetTimeForDB()
 {
     // only save the reset time for normal instances
     const MapEntry *entry = sMapStore.LookupEntry(GetMapId());
-    if(!entry || entry->map_type == MAP_RAID || GetDifficulty() == DIFFICULTY_HEROIC)
+    if(!entry || entry->map_type == MAP_RAID)
         return 0;
     else
         return GetResetTime();
@@ -262,7 +262,7 @@ void InstanceSaveManager::CleanupInstances()
     _DelHelper(CharacterDatabase, "group_instance.leaderGuid, instance", "group_instance", "LEFT JOIN characters ON group_instance.leaderGuid = characters.guid LEFT JOIN groups ON group_instance.leaderGuid = groups.leaderGuid WHERE characters.guid IS NULL OR groups.leaderGuid IS NULL");
 
     // clean instances that do not have any players or groups bound to them
-    _DelHelper(CharacterDatabase, "id, map, difficulty", "instance", "LEFT JOIN character_instance ON character_instance.instance = id LEFT JOIN group_instance ON group_instance.instance = id WHERE character_instance.instance IS NULL AND group_instance.instance IS NULL");
+    _DelHelper(CharacterDatabase, "id, map", "instance", "LEFT JOIN character_instance ON character_instance.instance = id LEFT JOIN group_instance ON group_instance.instance = id WHERE character_instance.instance IS NULL AND group_instance.instance IS NULL");
 
     // clean invalid instance references in other tables
     _DelHelper(CharacterDatabase, "character_instance.guid, instance", "character_instance", "LEFT JOIN instance ON character_instance.instance = instance.id WHERE instance.id IS NULL");
@@ -448,7 +448,7 @@ void InstanceSaveManager::LoadResetTimes()
 
     // clean expired instances, references to them will be deleted in CleanupInstances
     // must be done before calculating new reset times
-    _DelHelper(CharacterDatabase, "id, map, difficulty", "instance", "LEFT JOIN instance_reset ON mapid = map WHERE (instance.resettime < '"I64FMTD"' AND instance.resettime > '0') OR (NOT instance_reset.resettime IS NULL AND instance_reset.resettime < '"I64FMTD"')",  (uint64)now, (uint64)now);
+    _DelHelper(CharacterDatabase, "id, map", "instance", "LEFT JOIN instance_reset ON mapid = map WHERE (instance.resettime < '"I64FMTD"' AND instance.resettime > '0') OR (NOT instance_reset.resettime IS NULL AND instance_reset.resettime < '"I64FMTD"')",  (uint64)now, (uint64)now);
 
     // calculate new global reset times for expired instances and those that have never been reset yet
     // add the global reset times to the priority queue
@@ -551,13 +551,13 @@ void InstanceSaveManager::_ResetSave(InstanceSaveHashMap::iterator &itr)
     while(!pList.empty())
     {
         Player *player = *(pList.begin());
-        player->UnbindInstance(itr->second->GetMapId(), itr->second->GetDifficulty(), true);
+        player->UnbindInstance(itr->second->GetMapId(), true);
     }
     InstanceSave::GroupListType &gList = itr->second->m_groupList;
     while(!gList.empty())
     {
         Group *group = *(gList.begin());
-        group->UnbindInstance(itr->second->GetMapId(), itr->second->GetDifficulty(), true);
+        group->UnbindInstance(itr->second->GetMapId(), true);
     }
     m_instanceSaveById.erase(itr++);
     lock_instLists = false;

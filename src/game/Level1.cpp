@@ -902,11 +902,11 @@ bool ChatHandler::HandleGonameCommand(const char* args)
 
             // if the player or the player's group is bound to another instance
             // the player will not be bound to another one
-            InstancePlayerBind *pBind = _player->GetBoundInstance(chr->GetMapId(), chr->GetDifficulty());
+			InstancePlayerBind *pBind = _player->GetBoundInstance(chr->GetMapId());
             if(!pBind)
             {
                 Group *group = _player->GetGroup();
-                InstanceGroupBind *gBind = group ? group->GetBoundInstance(chr->GetMapId(), chr->GetDifficulty()) : NULL;
+                InstanceGroupBind *gBind = group ? group->GetBoundInstance(chr->GetMapId()) : NULL;
                 if(!gBind)
                 {
                     // if no bind exists, create a solo bind
@@ -914,8 +914,6 @@ bool ChatHandler::HandleGonameCommand(const char* args)
                     if(save) _player->BindToInstance(save, !save->CanReset());
                 }
             }
-
-            _player->SetDifficulty(chr->GetDifficulty());
         }
 
         PSendSysMessage(LANG_APPEARING_AT, chr->GetName());

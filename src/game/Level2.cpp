@@ -959,7 +959,7 @@ bool ChatHandler::HandleNpcAddCommand(const char* args)
         return false;
     }
 
-    pCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+    pCreature->SaveToDB(map->GetId());
 
     uint32 db_guid = pCreature->GetDBTableGUIDLow();
 
@@ -2627,7 +2627,7 @@ bool ChatHandler::HandleWpModifyCommand(const char* args)
                     return false;
                 }
 
-                wpCreature2->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+                wpCreature2->SaveToDB(map->GetId());
                 // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
                 wpCreature2->LoadFromDB(wpCreature2->GetDBTableGUIDLow(), map);
                 map->Add(wpCreature2);
@@ -2865,7 +2865,7 @@ bool ChatHandler::HandleWpShowCommand(const char* args)
             // set "wpguid" column to the visual waypoint
             WorldDatabase.PExecuteLog("UPDATE waypoint_data SET wpguid = '%u' WHERE id = '%u' and point = '%u'", wpCreature->GetGUIDLow(), pathid, point);
 
-            wpCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+            wpCreature->SaveToDB(map->GetId());
             wpCreature->LoadFromDB(wpCreature->GetDBTableGUIDLow(),map);
             map->Add(wpCreature);
 
@@ -2924,7 +2924,7 @@ bool ChatHandler::HandleWpShowCommand(const char* args)
             return false;
         }
 
-        pCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+        pCreature->SaveToDB(map->GetId());
         pCreature->LoadFromDB(pCreature->GetDBTableGUIDLow(), map);
         map->Add(pCreature);
 
@@ -2989,7 +2989,7 @@ bool ChatHandler::HandleWpShowCommand(const char* args)
             return false;
         }
 
-        pCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+        pCreature->SaveToDB(map->GetId());
         pCreature->LoadFromDB(pCreature->GetDBTableGUIDLow(), map);
         map->Add(pCreature);
 
@@ -3165,7 +3165,7 @@ bool ChatHandler::HandleGameObjectCommand(const char* args)
     }
 
     // fill the gameobject data and save to the db
-    pGameObj->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()));
+    pGameObj->SaveToDB(map->GetId());
 
     // this will generate a new guid if the object is in an instance
     if(!pGameObj->LoadFromDB(db_lowGUID, map))

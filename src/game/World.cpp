@@ -253,10 +253,6 @@ World::AddSession_ (WorldSession* s)
 
     WorldPacket packet(SMSG_AUTH_RESPONSE, 1);
     packet << uint8 (AUTH_OK);
-//  packet << uint32 (0); // unknown random value...
-//  packet << uint8 (0);
-//  packet << uint32 (0);
-//  packet << uint8 (s->Expansion()); // 0 - normal, 1 - TBC, must be set in database manually for each account
     s->SendPacket (&packet);
 
     UpdateMaxSessionCounters ();
@@ -309,12 +305,11 @@ void World::AddQueuedPlayer(WorldSession* sess)
     m_QueuedPlayer.push_back (sess);
 
     // The 1st SMSG_AUTH_RESPONSE needs to contain other info too.
-    WorldPacket packet (SMSG_AUTH_RESPONSE, 1 + 4 + 1 + 4 + 1);
+    WorldPacket packet (SMSG_AUTH_RESPONSE, 1 + 4 + 1 + 4 + 4);
     packet << uint8 (AUTH_WAIT_QUEUE);
     packet << uint32 (0); // unknown random value...
     packet << uint8 (0);
     packet << uint32 (0);
-    packet << uint8 (sess->Expansion () ? 1 : 0); // 0 - normal, 1 - TBC, must be set in database manually for each account
     packet << uint32(GetQueuePos (sess));
     sess->SendPacket (&packet);
 
@@ -456,7 +451,6 @@ void World::LoadConfigSettings(bool reload)
     }
     rate_values[RATE_POWER_FOCUS] = sConfig.GetFloatDefault("Rate.Focus", 1.0f);
     rate_values[RATE_LOYALTY]     = sConfig.GetFloatDefault("Rate.Loyalty", 1.0f);
-    rate_values[RATE_SKILL_DISCOVERY] = sConfig.GetFloatDefault("Rate.Skill.Discovery", 1.0f);
     rate_values[RATE_DROP_ITEM_POOR]       = sConfig.GetFloatDefault("Rate.Drop.Item.Poor", 1.0f);
     rate_values[RATE_DROP_ITEM_NORMAL]     = sConfig.GetFloatDefault("Rate.Drop.Item.Normal", 1.0f);
     rate_values[RATE_DROP_ITEM_UNCOMMON]   = sConfig.GetFloatDefault("Rate.Drop.Item.Uncommon", 1.0f);
@@ -823,15 +817,6 @@ void World::LoadConfigSettings(bool reload)
 
     m_configs[CONFIG_ALWAYS_MAX_SKILL_FOR_LEVEL] = sConfig.GetBoolDefault("AlwaysMaxSkillForLevel", false);
 
-    if(reload)
-    {
-        uint32 val = sConfig.GetIntDefault("Expansion",1);
-        if(val!=m_configs[CONFIG_EXPANSION])
-            sLog.outError("Expansion option can't be changed at Trinityd.conf reload, using current value (%u).",m_configs[CONFIG_EXPANSION]);
-    }
-    else
-        m_configs[CONFIG_EXPANSION] = sConfig.GetIntDefault("Expansion",1);
-
     m_configs[CONFIG_CHATFLOOD_MESSAGE_COUNT] = sConfig.GetIntDefault("ChatFlood.MessageCount",10);
     m_configs[CONFIG_CHATFLOOD_MESSAGE_DELAY] = sConfig.GetIntDefault("ChatFlood.MessageDelay",1);
     m_configs[CONFIG_CHATFLOOD_MUTE_TIME]     = sConfig.GetIntDefault("ChatFlood.MuteTime",10);
@@ -1030,8 +1015,7 @@ void World::SetInitialWorldSettings()
         ||!MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f)
         ||!MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f)
         ||!MapManager::ExistMapAndVMap(1,-2917.58f,-257.98f)
-        ||m_configs[CONFIG_EXPANSION] && (
-        !MapManager::ExistMapAndVMap(530,10349.6f,-6357.29f) || !MapManager::ExistMapAndVMap(530,-3961.64f,-13931.2f) ) )
+        && ( !MapManager::ExistMapAndVMap(530,10349.6f,-6357.29f) || !MapManager::ExistMapAndVMap(530,-3961.64f,-13931.2f) ) )
     {
         sLog.outError("Correct *.map files not found in path '%smaps' or *.vmap/*vmdir files in '%svmaps'. Please place *.map/*.vmap/*.vmdir files in appropriate directories or correct the DataDir value in the Trinityd.conf file.",m_dataPath.c_str(),m_dataPath.c_str());
         exit(1);

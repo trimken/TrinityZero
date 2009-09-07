@@ -330,26 +330,6 @@ struct GameObjectInfo
             uint32 conditionID2;                            //5
             uint32 serverOnly;                              //6
         } auraGenerator;
-        //31 GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY
-        struct
-        {
-            uint32 mapID;                                   //0
-            uint32 difficulty;                              //1
-        } dungeonDifficulty;
-        //32 GAMEOBJECT_TYPE_DO_NOT_USE_YET
-        struct
-        {
-            uint32 mapID;                                   //0
-            uint32 difficulty;                              //1
-        } doNotUseYet;
-        //33 GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING
-        struct
-        {
-            uint32 dmgPctState1;                            //0
-            uint32 dmgPctState2;                            //1
-            uint32 state1Name;                              //2
-            uint32 state2Name;                              //3
-        } destructibleBuilding;
 
         // not use for specific field access (only for output with loop by all filed), also this determinate max union size
         struct                                              // GAMEOBJECT_TYPE_SPELLCASTER
@@ -382,7 +362,6 @@ struct GameObjectData
     int32  spawntimesecs;
     uint32 animprogress;
     uint32 go_state;
-    uint8 spawnMask;
     uint32 ArtKit;
 };
 
@@ -449,7 +428,7 @@ class TRINITY_DLL_SPEC GameObject : public WorldObject
         const char* GetNameForLocaleIdx(int32 locale_idx) const;
 
         void SaveToDB();
-        void SaveToDB(uint32 mapid, uint8 spawnMask);
+        void SaveToDB(uint32 mapid);
         bool LoadFromDB(uint32 guid, Map *map);
         void DeleteFromDB();
         void SetLootState(LootState s) { m_lootState = s; }

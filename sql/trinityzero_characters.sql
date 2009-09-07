@@ -122,10 +122,7 @@ CREATE TABLE `auctionhousebot` (
 
 LOCK TABLES `auctionhousebot` WRITE;
 /*!40000 ALTER TABLE `auctionhousebot` DISABLE KEYS */;
-INSERT INTO `auctionhousebot` VALUES
-(2,'Alliance',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1),
-(6,'Horde',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1),
-(7,'Neutral',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1);
+INSERT INTO `auctionhousebot` VALUES (2,'Alliance',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,1,5,12,15,20,22,1,1),(6,'Horde',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,1,5,12,15,20,22,1,1),(7,'Neutral',0,0,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,1,5,12,15,20,22,1,1);
 /*!40000 ALTER TABLE `auctionhousebot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -600,7 +597,6 @@ CREATE TABLE `characters` (
   `position_y` float NOT NULL default '0',
   `position_z` float NOT NULL default '0',
   `map` int(11) unsigned NOT NULL default '0' COMMENT 'Map Identifier',
-  `dungeon_difficulty` tinyint(1) unsigned NOT NULL default '0',
   `orientation` float NOT NULL default '0',
   `taximask` longtext,
   `online` tinyint(3) unsigned NOT NULL default '0',
@@ -727,10 +723,10 @@ CREATE TABLE `gm_tickets` (
   `name` varchar(15) NOT NULL,
   `message` text NOT NULL,
   `createtime` int(10) NOT NULL,
-  `map` int NOT NULL DEFAULT '0',
-  `posX` float NOT NULL DEFAULT '0',
-  `posY` float NOT NULL DEFAULT '0',
-  `posZ` float NOT NULL DEFAULT '0',
+  `map` int(11) NOT NULL default '0',
+  `posX` float NOT NULL default '0',
+  `posY` float NOT NULL default '0',
+  `posZ` float NOT NULL default '0',
   `timestamp` int(10) NOT NULL default '0',
   `closed` int(10) NOT NULL default '0',
   `assignedto` int(10) NOT NULL default '0',
@@ -812,7 +808,6 @@ CREATE TABLE `groups` (
   `icon7` int(11) unsigned NOT NULL,
   `icon8` int(11) unsigned NOT NULL,
   `isRaid` tinyint(1) unsigned NOT NULL,
-  `difficulty` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`leaderGuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Groups';
 
@@ -934,7 +929,6 @@ CREATE TABLE `instance` (
   `id` int(11) unsigned NOT NULL default '0',
   `map` int(11) unsigned NOT NULL default '0',
   `resettime` bigint(40) NOT NULL default '0',
-  `difficulty` tinyint(1) unsigned NOT NULL default '0',
   `data` longtext,
   PRIMARY KEY  (`id`),
   KEY `map` (`map`),
@@ -1211,4 +1205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-08-02 11:11:33
+-- Dump completed on 2009-09-07 11:23:50

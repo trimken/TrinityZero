@@ -504,10 +504,10 @@ void GameObject::SaveToDB()
         return;
     }
 
-    SaveToDB(GetMapId(), data->spawnMask);
+    SaveToDB(GetMapId());
 }
 
-void GameObject::SaveToDB(uint32 mapid, uint8 spawnMask)
+void GameObject::SaveToDB(uint32 mapid)
 {
     const GameObjectInfo *goI = GetGOInfo();
 
@@ -533,7 +533,6 @@ void GameObject::SaveToDB(uint32 mapid, uint8 spawnMask)
     data.spawntimesecs = m_spawnedByDefault ? m_respawnDelayTime : -(int32)m_respawnDelayTime;
     data.animprogress = GetGoAnimProgress();
     data.go_state = GetGoState();
-    data.spawnMask = spawnMask;
     data.ArtKit = GetUInt32Value (GAMEOBJECT_ARTKIT);
 
     // updated in DB
@@ -542,7 +541,6 @@ void GameObject::SaveToDB(uint32 mapid, uint8 spawnMask)
         << m_DBTableGuid << ", "
         << GetUInt32Value (OBJECT_FIELD_ENTRY) << ", "
         << mapid << ", "
-        << (uint32)spawnMask << ", "
         << GetFloatValue(GAMEOBJECT_POS_X) << ", "
         << GetFloatValue(GAMEOBJECT_POS_Y) << ", "
         << GetFloatValue(GAMEOBJECT_POS_Z) << ", "

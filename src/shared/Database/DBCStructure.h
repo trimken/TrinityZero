@@ -318,14 +318,12 @@ struct MapEntry
     uint32      multimap_id;                                // 38
 															// 39-42 unused
     // Helpers
-    uint32 Expansion() const { return 0;/*addon;*/ }
 
 
     bool IsDungeon() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID; }
     bool Instanceable() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID || map_type == MAP_BATTLEGROUND; }
     bool IsRaid() const { return map_type == MAP_RAID; }
     bool IsBattleGround() const { return map_type == MAP_BATTLEGROUND; }
-    bool SupportsHeroicMode() const { return false; /*resetTimeHeroic && !resetTimeRaid;*/ }
     bool HasResetTime() const { return false; /* resetTimeHeroic || resetTimeRaid; */}
 
     bool IsMountAllowed() const

@@ -115,7 +115,7 @@ MapManager::_GetBaseMap(uint32 id)
         }
         else
         {
-            m = new Map(id, i_gridCleanUpDelay, 0, 0);
+            m = new Map(id, i_gridCleanUpDelay, 0);
         }
         i_maps[id] = m;
     }
@@ -170,13 +170,6 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                     return false;
                 }
             }
-        }
-
-        //The player has a heroic mode and tries to enter into instance which has no a heroic mode
-        if (!entry->SupportsHeroicMode() && player->GetDifficulty() == DIFFICULTY_HEROIC)
-        {
-            player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY2);      //Send aborted message
-            return false;
         }
 
         if (!player->isAlive())

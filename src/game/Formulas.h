@@ -142,10 +142,9 @@ namespace Trinity
             return 17;
         }
 
-        inline uint32 BaseGain(uint32 pl_level, uint32 mob_level, ContentLevels content)
+        inline uint32 BaseGain(uint32 pl_level, uint32 mob_level)
         {
-            //TODO: need modifier for CONTENT_71_80 different from CONTENT_61_70?
-            const uint32 nBaseExp = content == CONTENT_1_60 ? 45 : 235;
+            const uint32 nBaseExp = 45;
             if( mob_level >= pl_level )
             {
                 uint32 nLevelDiff = mob_level - pl_level;
@@ -172,7 +171,7 @@ namespace Trinity
                 (((Creature*)u)->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_XP_AT_KILL) ))
                 return 0;
 
-            uint32 xp_gain= BaseGain(pl->getLevel(), u->getLevel(), GetContentLevelsForMapAndZone(pl->GetMapId(),pl->GetZoneId()));
+            uint32 xp_gain= BaseGain(pl->getLevel(), u->getLevel());
             if( xp_gain == 0 )
                 return 0;
 
@@ -231,13 +230,6 @@ namespace Trinity
 
             // The XP to Level is always rounded to the nearest 100 points (50 rounded to high).
             xp = ((xp + 50) / 100) * 100;                   // use additional () for prevent free association operations in C++
-
-            /*[TZERO]if ((lvl > 10) && (lvl < 60))                   // compute discount added in 2.3.x
-            {
-                uint32 discount = (lvl < 28) ? (lvl - 10) : 18;
-                xp = (xp * (100 - discount)) / 100;         // apply discount
-                xp = (xp / 100) * 100;                      // floor to hundreds
-            }*/
 
             return xp;
         }
