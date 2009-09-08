@@ -435,8 +435,7 @@ inline bool NeedsComboPoints(SpellEntry const* spellInfo)
 
 inline SpellSchoolMask GetSpellSchoolMask(SpellEntry const* spellInfo)
 {
-    // TODO: there is no SchoolMask in spellEntry structur for 1.12, we need to fix it later
-    return SpellSchoolMask(0); //spellInfo->SchoolMask);
+    return SpellSchoolMask(spellInfo->School);
 }
 
 inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, int32 effect)
