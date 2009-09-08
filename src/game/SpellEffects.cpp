@@ -387,7 +387,7 @@ void Spell::SpellDamageSchoolDmg(uint32 effect_idx)
             case SPELLFAMILY_WARRIOR:
             {
                 // Bloodthirst
-                if(m_spellInfo->SpellFamilyFlags & 0x40000000000LL)
+                if(m_spellInfo->SpellFamilyFlags & 0x2000000LL)
                 {
                     damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
                 }

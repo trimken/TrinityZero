@@ -1067,8 +1067,8 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
             int32 damagePoint  = damageInfo.damage * 33 / 100;
             m_caster->CastCustomSpell(m_caster, 32220, &damagePoint, NULL, NULL, true);
         }
-        // Bloodthirst
-        else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARRIOR && m_spellInfo->SpellFamilyFlags & 0x40000000000LL)
+        // Bloodthirst                                                                            
+        else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARRIOR && m_spellInfo->SpellFamilyFlags & 0x2000000LL)
         {
             uint32 BTAura = 0;
             switch(m_spellInfo->Id)
@@ -1077,8 +1077,6 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
                 case 23892: BTAura = 23886; break;
                 case 23893: BTAura = 23887; break;
                 case 23894: BTAura = 23888; break;
-                case 25251: BTAura = 25252; break;
-                case 30335: BTAura = 30339; break;
                 default:
                     sLog.outError("Spell::EffectSchoolDMG: Spell %u not handled in BTAura",m_spellInfo->Id);
                     break;
