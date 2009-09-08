@@ -8029,8 +8029,10 @@ void Unit::ModifyAuraState(AuraState flag, bool apply)
                     if(itr->second->state == PLAYERSPELL_REMOVED) continue;
                     SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
                     if (!spellInfo || !IsPassiveSpell(itr->first)) continue;
-                    if (spellInfo->CasterAuraState == flag)
-                        CastSpell(this, itr->first, true, NULL);
+
+                    if(AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellInfo->Id))
+                        if (SpellCasterAuraStates->AuraState == flag)
+                            CastSpell(this, itr->first, true, NULL);
                 }
             }
         }
@@ -8044,20 +8046,21 @@ void Unit::ModifyAuraState(AuraState flag, bool apply)
             for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end();)
             {
                 SpellEntry const* spellProto = (*itr).second->GetSpellProto();
-                if (spellProto->CasterAuraState == flag)
-                {
-                    // exceptions (applied at state but not removed at state change)
-                    // Rampage
-                    if(spellProto->SpellIconID==2006 && spellProto->SpellFamilyName==SPELLFAMILY_WARRIOR && spellProto->SpellFamilyFlags==0x100000)
+                if(AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellProto->Id))
+                    if (SpellCasterAuraStates->AuraState == flag)
                     {
-                        ++itr;
-                        continue;
-                    }
+                        // exceptions (applied at state but not removed at state change)
+                        // Rampage
+                        if(spellProto->SpellIconID==2006 && spellProto->SpellFamilyName==SPELLFAMILY_WARRIOR && spellProto->SpellFamilyFlags==0x100000)
+                        {
+                            ++itr;
+                            continue;
+                        }
 
-                    RemoveAura(itr);
-                }
-                else
-                    ++itr;
+                        RemoveAura(itr);
+                    }
+                    else
+                        ++itr;
             }
         }
     }

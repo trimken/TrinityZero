@@ -1192,6 +1192,12 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading linked spells..." );
     spellmgr.LoadSpellLinked();
 
+    sLog.outString( "Loading target aurastates..." );
+    spellmgr.LoadTargetAuraStates();
+
+    sLog.outString( "Loading caster aurastates..." );
+    spellmgr.LoadCasterAuraStates();
+
     sLog.outString( "Loading player Create Info & Level Stats..." );
     objmgr.LoadPlayerInfo();
 

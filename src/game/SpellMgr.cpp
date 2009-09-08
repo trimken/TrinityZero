@@ -2361,6 +2361,54 @@ void SpellMgr::LoadSpellLinked()
     sLog.outString( ">> Loaded %u linked spells", count );
 }
 
+void SpellMgr::LoadCasterAuraStates()
+{
+    mSpellCasterAuraStates.clear();
+    uint32 count = 0;
+
+    //                                                0              1             2
+    QueryResult *result = WorldDatabase.Query("SELECT entry, casterAuraState, casterAuraStateNot FROM spell_caster_aurastate");
+    if( !result )
+    {
+        barGoLink bar( 1 );
+        bar.step();
+        sLog.outString();
+        sLog.outString( ">> Loaded %u caster's aura states", count );
+        return;
+    }
+
+    barGoLink bar( result->GetRowCount() );
+
+    do
+    {
+        Field *fields = result->Fetch();
+
+        bar.step();
+
+        int32 entry              = fields[0].GetUInt32();
+        int32 casterAuraState    = fields[1].GetUInt32();
+        int32 casterAuraStateNot = fields[2].GetUInt32();
+
+        SpellEntry const* spellInfo = sSpellStore.LookupEntry(entry);
+        if (!spellInfo)
+        {
+            sLog.outErrorDb("Spell %u listed in `spell_caster_aurastate` does not exist", entry);
+            continue;
+        }
+        mSpellCasterAuraStates[entry].AuraState    = casterAuraState;
+        mSpellCasterAuraStates[entry].AuraStateNot = casterAuraStateNot;
+
+        ++count;
+    }
+    while( result->NextRow() );
+
+    delete result;
+
+    sLog.outString();
+    sLog.outString( ">> Loaded %u caster's aurastates", count );
+
+}
+
 void SpellMgr::LoadTargetAuraStates()
 {
     mSpellTargetAuraStates.clear();

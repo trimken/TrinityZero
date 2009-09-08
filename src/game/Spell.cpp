@@ -3369,11 +3369,15 @@ uint8 Spell::CanCast(bool strict)
             return SPELL_FAILED_ONLY_STEALTHED;
     }
 
-    // caster state requirements
-    if(m_spellInfo->CasterAuraState && !m_caster->HasAuraState(AuraState(m_spellInfo->CasterAuraState)))
-        return SPELL_FAILED_CASTER_AURASTATE;
-//    if(m_spellInfo->CasterAuraStateNot && m_caster->HasAuraState(AuraState(m_spellInfo->CasterAuraStateNot)))
-//        return SPELL_FAILED_CASTER_AURASTATE;
+    AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(m_spellInfo->Id);
+    if(SpellCasterAuraStates)
+    {
+        // caster state requirements
+        if(SpellCasterAuraStates->AuraState && !m_caster->HasAuraState(AuraState(SpellCasterAuraStates->AuraState)))
+            return SPELL_FAILED_CASTER_AURASTATE;
+        if(SpellCasterAuraStates->AuraStateNot && m_caster->HasAuraState(AuraState(SpellCasterAuraStates->AuraStateNot)))
+            return SPELL_FAILED_CASTER_AURASTATE;
+    }
 
     // cancel autorepeat spells if cast start when moving
     // (not wand currently autorepeat cast delayed to moving stop anyway in spell update code)

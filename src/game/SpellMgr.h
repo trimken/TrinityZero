@@ -800,6 +800,16 @@ class SpellMgr
             return NULL;
         }
 
+        
+        AuraStates const *GetCasterAuraStates(uint32 spellId) const
+        {
+            SpellAuraStates::const_iterator itr = mSpellCasterAuraStates.find(spellId);
+            if(itr != mSpellCasterAuraStates.end())
+                return &itr->second;
+            return NULL;
+        }
+
+
 
         static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra, bool active);
 
@@ -1005,6 +1015,7 @@ class SpellMgr
         void LoadSpellCustomAttr();
         void LoadSpellLinked();
         void LoadTargetAuraStates();
+        void LoadCasterAuraStates();
 
     private:
         SpellScriptTarget  mSpellScriptTarget;
