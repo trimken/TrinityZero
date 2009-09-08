@@ -2180,13 +2180,21 @@ void Spell::EffectApplyAura(uint32 i)
     if(unitTarget->GetTypeId()==TYPEID_PLAYER ||( unitTarget->GetTypeId()==TYPEID_UNIT && ((Creature*)unitTarget)->isPet() ) )              // Negative buff should only be applied on players
     {
         uint32 spellId = 0;
-      /*  if(m_spellInfo->CasterAuraStateNot==AURA_STATE_WEAKENED_SOUL || m_spellInfo->TargetAuraStateNot==AURA_STATE_WEAKENED_SOUL)
+        AuraStates const *SpellCasterAuraState = spellmgr.GetCasterAuraStates(m_spellInfo->Id);
+        AuraStates const *SpellTargetAuraState = spellmgr.GetTargetAuraStates(m_spellInfo->Id);
+        uint32 casterAuraStateFlag = 0;
+        uint32 targetAuraStateFlag = 0;
+
+        if(SpellCasterAuraState)
+            casterAuraStateFlag = SpellCasterAuraState->AuraStateNot;
+        if(SpellTargetAuraState)
+            targetAuraStateFlag = SpellTargetAuraState->AuraStateNot;
+
+        if(casterAuraStateFlag == AURA_STATE_WEAKENED_SOUL || targetAuraStateFlag == AURA_STATE_WEAKENED_SOUL)
             spellId = 6788;                                 // Weakened Soul
-        else if(m_spellInfo->CasterAuraStateNot==AURA_STATE_FORBEARANCE || m_spellInfo->TargetAuraStateNot==AURA_STATE_FORBEARANCE)
+        else if(casterAuraStateFlag == AURA_STATE_FORBEARANCE || targetAuraStateFlag == AURA_STATE_FORBEARANCE)
             spellId = 25771;                                // Forbearance
-        else if(m_spellInfo->CasterAuraStateNot==AURA_STATE_HYPOTHERMIA)
-            spellId = 41425;                                // Hypothermia
-       */
+
         if (m_spellInfo->Mechanic == MECHANIC_BANDAGE) // Bandages
             spellId = 11196;                                // Recently Bandaged
         else if( (m_spellInfo->AttributesEx & 0x20) && (m_spellInfo->AttributesEx2 & 0x20000) )
