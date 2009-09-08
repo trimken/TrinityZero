@@ -2753,11 +2753,12 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool loading,
             (spell_id == 21178 && (m_form == FORM_BEAR || m_form == FORM_DIREBEAR) ) ||
             (spell_id == 33948 && m_form == FORM_FLIGHT) ||
             (spell_id == 40121 && m_form == FORM_FLIGHT_EPIC) )
-                                                            //Check CasterAuraStates
-
-            if(AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellInfo->Id))
-                if (!SpellCasterAuraStates->AuraState || HasAuraState(AuraState(SpellCasterAuraStates->AuraState)))
-                    CastSpell(this, spell_id, true);
+        {
+            //Check CasterAuraStates
+            AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spell_id);
+            if(!SpellCasterAuraStates || !SpellCasterAuraStates->AuraState || HasAuraState(AuraState(SpellCasterAuraStates->AuraState)))
+                CastSpell(this, spell_id, true);
+        }
     }
     else if( IsSpellHaveEffect(spellInfo,SPELL_EFFECT_SKILL_STEP) )
     {
