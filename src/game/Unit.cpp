@@ -8046,16 +8046,11 @@ void Unit::ModifyAuraState(AuraState flag, bool apply)
             for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end();)
             {
                 SpellEntry const* spellProto = (*itr).second->GetSpellProto();
-                if(AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellProto->Id))
-                {
-                    if (SpellCasterAuraStates->AuraState == flag)
-                        RemoveAura(itr);
-                    else
-                        ++itr;
-                }
+                AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellProto->Id)
+                if(SpellCasterAuraStates && SpellCasterAuraStates->AuraState == flag)
+                    RemoveAura(itr);
                 else
                     ++itr;
-
             }
         }
     }
