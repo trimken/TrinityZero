@@ -1198,6 +1198,9 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading caster aurastates..." );
     spellmgr.LoadCasterAuraStates();
 
+	sLog.outString( "Loading facing caster flags..." );
+    spellmgr.LoadFacingCasterFlags();
+
     sLog.outString( "Loading player Create Info & Level Stats..." );
     objmgr.LoadPlayerInfo();
 

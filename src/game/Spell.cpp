@@ -4442,7 +4442,7 @@ uint8 Spell::CheckRange(bool strict)
         else if(min_range && m_caster->IsWithinCombatRange(target, min_range)) // skip this check if min_range = 0
             return SPELL_FAILED_TOO_CLOSE;
 
-		//[TZERO] workaround for facing flag
+		/*[TZERO] workaround for facing flag
         if( (m_caster->GetTypeId() == TYPEID_PLAYER) && // is a player
 
             !m_caster->IsFriendlyTo(target) && !m_caster->HasInArc( M_PI, target ) &&
@@ -4458,10 +4458,11 @@ uint8 Spell::CheckRange(bool strict)
                         m_spellInfo->Category != 82))
 
                     return SPELL_FAILED_UNIT_NOT_INFRONT;
+        */
 
-//        if( m_caster->GetTypeId() == TYPEID_PLAYER && // leaving this in here incase we find out where FacingCasterFlags is later on.
-//            (m_spellInfo->FacingCasterFlags & SPELL_FACING_FLAG_INFRONT) && !m_caster->HasInArc( M_PI, target ) )
-//            return SPELL_FAILED_UNIT_NOT_INFRONT;
+        if( m_caster->GetTypeId() == TYPEID_PLAYER &&
+             ( spellmgr.GetSpellFacingFlag(m_spellInfo->Id) & SPELL_FACING_FLAG_INFRONT ) && !m_caster->HasInArc( M_PI, target ) )
+              return SPELL_FAILED_UNIT_NOT_INFRONT;
     }
 
     if(m_targets.m_targetMask == TARGET_FLAG_DEST_LOCATION && m_targets.m_destX != 0 && m_targets.m_destY != 0 && m_targets.m_destZ != 0)

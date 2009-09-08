@@ -2457,6 +2457,52 @@ void SpellMgr::LoadTargetAuraStates()
 
 }
 
+void SpellMgr::LoadFacingCasterFlags()
+{
+    mSpellFacingFlagMap.clear();
+    uint32 count = 0;
+
+    //                                                0              1
+    QueryResult *result = WorldDatabase.Query("SELECT entry, facingcasterflag FROM spell_facing");
+    if( !result )
+    {
+        barGoLink bar( 1 );
+        bar.step();
+        sLog.outString();
+        sLog.outString( ">> Loaded %u facing caster flags", count );
+        return;
+    }
+
+    barGoLink bar( result->GetRowCount() );
+
+    do
+    {
+        Field *fields = result->Fetch();
+
+        bar.step();
+
+        uint32 entry              = fields[0].GetUInt32();
+        uint32 FacingCasterFlags  = fields[1].GetUInt32();
+
+        SpellEntry const* spellInfo = sSpellStore.LookupEntry(entry);
+        if (!spellInfo)
+        {
+            sLog.outErrorDb("Spell %u listed in `spell_facing` does not exist", entry);
+            continue;
+        }
+        mSpellFacingFlagMap[entry]    = FacingCasterFlags;
+
+        ++count;
+    }
+    while( result->NextRow() );
+
+    delete result;
+
+    sLog.outString();
+    sLog.outString( ">> Loaded %u facing caster flags", count );
+
+}
+
 /// Some checks for spells, to prevent adding depricated/broken spells for trainers, spell book, etc
 bool SpellMgr::IsSpellValid(SpellEntry const* spellInfo, Player* pl, bool msg)
 {

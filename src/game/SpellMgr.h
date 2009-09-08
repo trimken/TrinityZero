@@ -738,6 +738,7 @@ struct AuraStates
 
 typedef std::map<uint32, AuraStates> SpellAuraStates;
 
+typedef std::map<uint32, uint32> SpellFacingFlagMap;
 
 class SpellMgr
 {
@@ -809,7 +810,13 @@ class SpellMgr
             return NULL;
         }
 
-
+		uint32 GetSpellFacingFlag(uint32 spellId) const
+		{
+            SpellFacingFlagMap::const_iterator itr =  mSpellFacingFlagMap.find(spellId);
+            if(itr != mSpellFacingFlagMap.end())
+                return itr->second;
+            return 0x0;
+		}
 
         static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra, bool active);
 
@@ -1016,6 +1023,7 @@ class SpellMgr
         void LoadSpellLinked();
         void LoadTargetAuraStates();
         void LoadCasterAuraStates();
+		void LoadFacingCasterFlags();
 
     private:
         SpellScriptTarget  mSpellScriptTarget;
@@ -1034,6 +1042,7 @@ class SpellMgr
         SpellLinkedMap      mSpellLinkedMap;
         SpellAuraStates     mSpellTargetAuraStates;
         SpellAuraStates     mSpellCasterAuraStates;
+		SpellFacingFlagMap  mSpellFacingFlagMap;
 
 };
 
