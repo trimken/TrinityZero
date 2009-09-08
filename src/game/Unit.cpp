@@ -8047,20 +8047,15 @@ void Unit::ModifyAuraState(AuraState flag, bool apply)
             {
                 SpellEntry const* spellProto = (*itr).second->GetSpellProto();
                 if(AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spellProto->Id))
+                {
                     if (SpellCasterAuraStates->AuraState == flag)
-                    {
-                        // exceptions (applied at state but not removed at state change)
-                        // Rampage
-                        if(spellProto->SpellIconID==2006 && spellProto->SpellFamilyName==SPELLFAMILY_WARRIOR && spellProto->SpellFamilyFlags==0x100000)
-                        {
-                            ++itr;
-                            continue;
-                        }
-
                         RemoveAura(itr);
-                    }
                     else
                         ++itr;
+                }
+                else
+                    ++itr;
+
             }
         }
     }
