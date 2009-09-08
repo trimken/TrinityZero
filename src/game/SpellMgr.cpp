@@ -2180,6 +2180,10 @@ void SpellMgr::LoadSpellCustomAttr()
                     break;
             }
 
+            // Paladin's heals - currently it has SPELL_EFFECT_SCRIPT_EFFECT instead heal
+            if(spellInfo->SpellFamilyName == SPELLFAMILY_PALADIN && spellInfo->SpellFamilyFlags & 0xC0000000LL)
+                spellInfo->Effect[0] = SPELL_EFFECT_HEAL;
+
             switch(spellInfo->Effect[j])
             {
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
