@@ -1649,7 +1649,8 @@ void SpellMgr::LoadSpellChains()
         entry.RangeIndex=SpellInfo->rangeIndex;
         entry.ProcFlags=SpellInfo->procFlags;
         entry.SpellFamilyFlags=SpellInfo->SpellFamilyFlags;
-        entry.TargetAuraState=SpellInfo->TargetAuraState;
+        if(AuraStates const *SpellTargetAuraStates = spellmgr.GetTargetAuraStates(SpellInfo->Id))
+            entry.TargetAuraState = SpellTargetAuraStates->AuraState;
         entry.SpellVisual=SpellInfo->SpellVisual;
         entry.ManaCost=SpellInfo->manaCost;
 
@@ -2358,6 +2359,54 @@ void SpellMgr::LoadSpellLinked()
 
     sLog.outString();
     sLog.outString( ">> Loaded %u linked spells", count );
+}
+
+void SpellMgr::LoadTargetAuraStates()
+{
+    mSpellTargetAuraStates.clear();
+    uint32 count = 0;
+
+    //                                                0              1             2
+    QueryResult *result = WorldDatabase.Query("SELECT entry, targetAuraState, targetAuraStateNot FROM spell_target_aurastate");
+    if( !result )
+    {
+        barGoLink bar( 1 );
+        bar.step();
+        sLog.outString();
+        sLog.outString( ">> Loaded %u target's aura states", count );
+        return;
+    }
+
+    barGoLink bar( result->GetRowCount() );
+
+    do
+    {
+        Field *fields = result->Fetch();
+
+        bar.step();
+
+        int32 entry              = fields[0].GetUInt32();
+        int32 targetAuraState    = fields[1].GetUInt32();
+        int32 targetAuraStateNot = fields[2].GetUInt32();
+
+        SpellEntry const* spellInfo = sSpellStore.LookupEntry(entry);
+        if (!spellInfo)
+        {
+            sLog.outErrorDb("Spell %u listed in `spell_target_aurastate` does not exist", entry);
+            continue;
+        }
+        mSpellTargetAuraStates[entry].AuraState    = targetAuraState;
+        mSpellTargetAuraStates[entry].AuraStateNot = targetAuraStateNot;
+
+        ++count;
+    }
+    while( result->NextRow() );
+
+    delete result;
+
+    sLog.outString();
+    sLog.outString( ">> Loaded %u target's aurastates", count );
+
 }
 
 /// Some checks for spells, to prevent adding depricated/broken spells for trainers, spell book, etc

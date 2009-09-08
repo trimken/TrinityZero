@@ -729,6 +729,16 @@ typedef std::vector<uint32> SpellCustomAttribute;
 
 typedef std::map<int32, std::vector<int32> > SpellLinkedMap;
 
+
+struct AuraStates
+{
+    uint32 AuraState;
+    uint32 AuraStateNot;
+};
+
+typedef std::map<uint32, AuraStates> SpellAuraStates;
+
+
 class SpellMgr
 {
     // Constructors
@@ -781,6 +791,15 @@ class SpellMgr
                 return &itr->second;
             return NULL;
         }
+
+        AuraStates const *GetTargetAuraStates(uint32 spellId) const
+        {
+            SpellAuraStates::const_iterator itr = mSpellTargetAuraStates.find(spellId);
+            if(itr != mSpellTargetAuraStates.end())
+                return &itr->second;
+            return NULL;
+        }
+
 
         static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra, bool active);
 
@@ -985,6 +1004,7 @@ class SpellMgr
         void LoadSpellPetAuras();
         void LoadSpellCustomAttr();
         void LoadSpellLinked();
+        void LoadTargetAuraStates();
 
     private:
         SpellScriptTarget  mSpellScriptTarget;
@@ -1001,6 +1021,9 @@ class SpellMgr
         SpellPetAuraMap     mSpellPetAuraMap;
         SpellCustomAttribute  mSpellCustomAttr;
         SpellLinkedMap      mSpellLinkedMap;
+        SpellAuraStates     mSpellTargetAuraStates;
+        SpellAuraStates     mSpellCasterAuraStates;
+
 };
 
 #define spellmgr SpellMgr::Instance()

@@ -404,29 +404,22 @@ void Spell::SpellDamageSchoolDmg(uint32 effect_idx)
             }
             case SPELLFAMILY_WARLOCK:
             {
-                // Incinerate Rank 1 & 2
-                if((m_spellInfo->SpellFamilyFlags & 0x00004000000000LL) && m_spellInfo->SpellIconID==2128)
-                {
-                    // Incinerate does more dmg (dmg*0.25) if the target is Immolated.
-                    if(unitTarget->HasAuraState(AURA_STATE_IMMOLATE))
-                        damage += int32(damage*0.25);
-                }
-
                 // Conflagrate - consumes immolate
-                if (m_spellInfo->TargetAuraState == AURA_STATE_IMMOLATE)
-                {
-                    // for caster applied auras only
-                    Unit::AuraList const &mPeriodic = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(Unit::AuraList::const_iterator i = mPeriodic.begin(); i != mPeriodic.end(); ++i)
+                if(AuraStates const *SpellTargetAuraStates = spellmgr.GetTargetAuraStates(m_spellInfo->Id))
+                    if (SpellTargetAuraStates->AuraState == AURA_STATE_IMMOLATE)
                     {
-                        if( (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && ((*i)->GetSpellProto()->SpellFamilyFlags & 4) &&
-                            (*i)->GetCasterGUID()==m_caster->GetGUID() )
+                        // for caster applied auras only
+                        Unit::AuraList const &mPeriodic = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+                        for(Unit::AuraList::const_iterator i = mPeriodic.begin(); i != mPeriodic.end(); ++i)
                         {
-                            unitTarget->RemoveAurasByCasterSpell((*i)->GetId(), m_caster->GetGUID());
-                            break;
+                            if( (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && ((*i)->GetSpellProto()->SpellFamilyFlags & 4) &&
+                                (*i)->GetCasterGUID()==m_caster->GetGUID() )
+                            {
+                                unitTarget->RemoveAurasByCasterSpell((*i)->GetId(), m_caster->GetGUID());
+                                break;
+                            }
                         }
                     }
-                }
                 break;
             }
             case SPELLFAMILY_DRUID:
@@ -2389,47 +2382,50 @@ void Spell::SpellDamageHeal(uint32 /*i*/)
             addhealth += damageAmount;
         }
         // Swiftmend - consumes Regrowth or Rejuvenation
-        else if (m_spellInfo->TargetAuraState == AURA_STATE_SWIFTMEND && unitTarget->HasAuraState(AURA_STATE_SWIFTMEND))
+        else if(AuraStates const *SpellTargetAuraStates = spellmgr.GetTargetAuraStates(m_spellInfo->Id))
         {
-            Unit::AuraList const& RejorRegr = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_HEAL);
-            // find most short by duration
-            Aura *targetAura = NULL;
-            for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
+            if(SpellTargetAuraStates->AuraState == AURA_STATE_SWIFTMEND && unitTarget->HasAuraState(AURA_STATE_SWIFTMEND))
             {
-                if((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID
-                    && ((*i)->GetSpellProto()->SpellFamilyFlags == 0x40 || (*i)->GetSpellProto()->SpellFamilyFlags == 0x10) )
+                Unit::AuraList const& RejorRegr = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_HEAL);
+                // find most short by duration
+                Aura *targetAura = NULL;
+                for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
                 {
-                    if(!targetAura || (*i)->GetAuraDuration() < targetAura->GetAuraDuration())
-                        targetAura = *i;
+                    if((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID
+                        && ((*i)->GetSpellProto()->SpellFamilyFlags == 0x40 || (*i)->GetSpellProto()->SpellFamilyFlags == 0x10) )
+                    {
+                        if(!targetAura || (*i)->GetAuraDuration() < targetAura->GetAuraDuration())
+                            targetAura = *i;
+                    }
                 }
-            }
 
-            if(!targetAura)
-            {
-                sLog.outError("Target(GUID:" I64FMTD ") has aurastate AURA_STATE_SWIFTMEND but no matching aura.", unitTarget->GetGUID());
-                return;
-            }
-
-            int32 tickheal = targetAura->GetModifierValuePerStack();
-            if(Unit* auraCaster = targetAura->GetCaster())
-                tickheal = auraCaster->SpellHealingBonus(targetAura->GetSpellProto(), tickheal, DOT, unitTarget);
-            //int32 tickheal = targetAura->GetSpellProto()->EffectBasePoints[idx] + 1;
-            //It is said that talent bonus should not be included
-            //int32 tickheal = targetAura->GetModifierValue();
-            int32 tickcount = 0;
-            if(targetAura->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID)
-            {
-                switch(targetAura->GetSpellProto()->SpellFamilyFlags)//TODO: proper spellfamily for 3.0.x
+                if(!targetAura)
                 {
-                    case 0x10:  tickcount = 4;  break; // Rejuvenation
-                    case 0x40:  tickcount = 6;  break; // Regrowth
+                    sLog.outError("Target(GUID:" I64FMTD ") has aurastate AURA_STATE_SWIFTMEND but no matching aura.", unitTarget->GetGUID());
+                    return;
                 }
-            }
-            addhealth += tickheal * tickcount;
-            unitTarget->RemoveAurasByCasterSpell(targetAura->GetId(), targetAura->GetCasterGUID());
 
-            //addhealth += tickheal * tickcount;
-            //addhealth = caster->SpellHealingBonus(m_spellInfo, addhealth,HEAL, unitTarget);
+                int32 tickheal = targetAura->GetModifierValuePerStack();
+                if(Unit* auraCaster = targetAura->GetCaster())
+                    tickheal = auraCaster->SpellHealingBonus(targetAura->GetSpellProto(), tickheal, DOT, unitTarget);
+                //int32 tickheal = targetAura->GetSpellProto()->EffectBasePoints[idx] + 1;
+                //It is said that talent bonus should not be included
+                //int32 tickheal = targetAura->GetModifierValue();
+                int32 tickcount = 0;
+                if(targetAura->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID)
+                {
+                    switch(targetAura->GetSpellProto()->SpellFamilyFlags)//TODO: proper spellfamily for 3.0.x
+                    {
+                        case 0x10:  tickcount = 4;  break; // Rejuvenation
+                        case 0x40:  tickcount = 6;  break; // Regrowth
+                    }
+                }
+                addhealth += tickheal * tickcount;
+                unitTarget->RemoveAurasByCasterSpell(targetAura->GetId(), targetAura->GetCasterGUID());
+
+                //addhealth += tickheal * tickcount;
+                //addhealth = caster->SpellHealingBonus(m_spellInfo, addhealth,HEAL, unitTarget);
+            }
         }
         else
             addhealth = caster->SpellHealingBonus(m_spellInfo, addhealth,HEAL, unitTarget);

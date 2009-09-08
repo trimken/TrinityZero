@@ -678,17 +678,19 @@ enum SpellEffects
     TOTAL_SPELL_EFFECTS                    = 154
 };
 
+
 // Spell aura states
+// _most_ of them aren't used in client in 1.12 but we can use them in core to detect if spell can be casted or not
 enum AuraState
 {   // (C) used in caster aura state     (T) used in target aura state
     // (c) used in caster aura state-not (t) used in target aura state-not
-    AURA_STATE_DEFENSE                      = 1,            // C   |
-    AURA_STATE_HEALTHLESS_20_PERCENT        = 2,            // CcT |
+    AURA_STATE_DEFENSE                      = 1,            // C   | REAL in 1.12
+    AURA_STATE_HEALTHLESS_20_PERCENT        = 2,            // CcT | REAL in 1.12
     AURA_STATE_BERSERKING                   = 3,            // C T |
     //AURA_STATE_UNKNOWN4                   = 4,            //  c t| some limitation to charge spells (?) and target test spells
-    AURA_STATE_JUDGEMENT                    = 5,            // C   |
+    AURA_STATE_JUDGEMENT                    = 5,            // C   | REAL in 1.12
     //AURA_STATE_UNKNOWN6                   = 6,            //     | not used
-    AURA_STATE_HUNTER_PARRY                 = 7,            // C   |
+    AURA_STATE_HUNTER_PARRY                 = 7,            // C   | REAL in 1.12
     AURA_STATE_ROGUE_ATTACK_FROM_STEALTH    = 7,            // C   | FIX ME: not implemented yet!
     //AURA_STATE_UNKNOWN7c                  = 7,            //  c  | random/focused bursts spells (?)
     //AURA_STATE_UNKNOWN8                   = 8,            //     | not used
