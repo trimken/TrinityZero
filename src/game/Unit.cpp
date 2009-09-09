@@ -1301,7 +1301,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 {
     damageInfo->attacker         = this;
     damageInfo->target           = pVictim;
-    damageInfo->School           = GetMeleeSchoolMask();
+    damageInfo->School           = SPELL_SCHOOL_NORMAL;
     damageInfo->attackType       = attackType;
     damageInfo->damage           = 0;
     damageInfo->cleanDamage      = 0;
@@ -1344,7 +1344,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     }
 
     // Physical Immune check
-    if(damageInfo->target->IsImmunedToDamage(SpellSchoolMask(damageInfo->School),true))
+    if(damageInfo->target->IsImmunedToDamage(GetSchoolMask(damageInfo->School),true))
     {
        damageInfo->HitInfo       |= HITINFO_NORMALSWING;
        damageInfo->TargetState    = VICTIMSTATE_IS_IMMUNE;
@@ -11614,7 +11614,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
 
 uint32 Unit::GetMeleeSchoolMask() const
 {
-    return 0; // Physical Damage
+    return GetSchoolMask(SPELL_SCHOOL_NORMAL); // Physical Damage
 }
 
 Player* Unit::GetSpellModOwner() const

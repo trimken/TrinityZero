@@ -435,7 +435,7 @@ inline bool NeedsComboPoints(SpellEntry const* spellInfo)
 
 inline SpellSchoolMask GetSpellSchoolMask(SpellEntry const* spellInfo)
 {
-    return SpellSchoolMask(spellInfo->School);
+    return GetSchoolMask(spellInfo->School);
 }
 
 inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, int32 effect)
