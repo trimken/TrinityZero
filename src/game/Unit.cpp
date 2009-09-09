@@ -1143,7 +1143,7 @@ void Unit::CastSpell(GameObject *go, uint32 spellId, bool triggered, Item *castI
 uint32 Unit::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool isTriggeredSpell, bool useSpellDamage)
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellID);
-    SpellNonMeleeDamage damageInfo(this, pVictim, spellInfo->Id, SpellSchoolMask(spellInfo->School));
+    SpellNonMeleeDamage damageInfo(this, pVictim, spellInfo->Id, GetSpellSchoolMask(spellInfo));
     damage = SpellDamageBonus(pVictim, spellInfo, damage, SPELL_DIRECT_DAMAGE);
     CalculateSpellDamageTaken(&damageInfo, damage, spellInfo);
     SendSpellNonMeleeDamageLog(&damageInfo);
@@ -1232,19 +1232,19 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
 
     if(damage > 0)
     {
-      CalcAbsorbResist(pVictim, SchoolMask, SPELL_DIRECT_DAMAGE, damage, &damageInfo->absorb, &damageInfo->resist);
+        CalcAbsorbResist(pVictim, SchoolMask, SPELL_DIRECT_DAMAGE, damage, &damageInfo->absorb, &damageInfo->resist);
 
-      if(GetFirstSchoolInMask(SchoolMask) == 0)
-      {
-          damage = CalcArmorReducedDamage(pVictim, damage);
-          damage-= damageInfo->absorb; 
-      }
-      else
-          damage-= damageInfo->absorb + damageInfo->resist;
+        if(GetFirstSchoolInMask(SchoolMask) == SPELL_SCHOOL_NORMAL)
+        {
+            damage = CalcArmorReducedDamage(pVictim, damage);
+            damage -= damageInfo->absorb; 
+        }
+        else
+            damage -= damageInfo->absorb + damageInfo->resist;
     }
     else
       damage = 0;
-    
+
     damageInfo->damage = damage;
 }
 
@@ -1472,28 +1472,23 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             break;
         }
         default:
-
             break;
     }
 
     if(int32(damageInfo->damage) > 0)
     {
         damageInfo->procVictim |= PROC_FLAG_TAKEN_ANY_DAMAGE;
-        // Calculate absorb & resists for school based physical attack (like additionnal physical melee damage)
-        if(damageInfo->School != 0)
+        // Calculate absorb & resists
+        CalcAbsorbResist(damageInfo->target, GetSchoolMask(damageInfo->School), DIRECT_DAMAGE, damageInfo->damage, &damageInfo->absorb, &damageInfo->resist);
+        damageInfo->damage-=damageInfo->absorb + damageInfo->resist;
+
+        if (damageInfo->absorb)
         {
-            CalcAbsorbResist(damageInfo->target, SpellSchoolMask(damageInfo->School), DIRECT_DAMAGE, damageInfo->damage, &damageInfo->absorb, &damageInfo->resist);
-            damageInfo->damage-=damageInfo->absorb + damageInfo->resist;
-
-          if (damageInfo->absorb)
-          {
-              damageInfo->HitInfo|=HITINFO_ABSORB;
-              damageInfo->procEx|=PROC_EX_ABSORB;
-          }
-          if (damageInfo->resist)
-              damageInfo->HitInfo|=HITINFO_RESIST;
+            damageInfo->HitInfo|=HITINFO_ABSORB;
+            damageInfo->procEx|=PROC_EX_ABSORB;
         }
-
+        if (damageInfo->resist)
+            damageInfo->HitInfo|=HITINFO_RESIST;
     }
     else // Umpossible get negative result but....
         damageInfo->damage = 0;
@@ -11496,7 +11491,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
             case SPELL_AURA_PROC_TRIGGER_DAMAGE:
             {
                 sLog.outDebug("ProcDamageAndSpell: doing %u damage from spell id %u (triggered by %s aura of spell %u)", auraModifier->m_amount, spellInfo->Id, (isVictim?"a victim's":"an attacker's"), triggeredByAura->GetId());
-                SpellNonMeleeDamage damageInfo(this, pTarget, spellInfo->Id, 0);//spellInfo->SchoolMask);
+                SpellNonMeleeDamage damageInfo(this, pTarget, spellInfo->Id, GetSpellSchoolMask(spellInfo));
                 uint32 damage = SpellDamageBonus(pTarget, spellInfo, auraModifier->m_amount, SPELL_DIRECT_DAMAGE);
                 CalculateSpellDamageTaken(&damageInfo, damage, spellInfo);
                 SendSpellNonMeleeDamageLog(&damageInfo);
