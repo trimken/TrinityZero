@@ -49,6 +49,7 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
+#include "ItemEnchantmentMgr.h"
 
 #define NULL_AURA_SLOT 0xFF
 
@@ -364,7 +365,7 @@ m_periodicTimer(0), m_PeriodicEventId(0), m_AuraDRGroup(DIMINISHING_NONE)
 
         if (!damage && castItem && castItem->GetItemSuffixFactor())
         {
-            ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(castItem->GetItemRandomPropertyId()));
+          /*  ItemRandomSuffix const *item_rand_suffix = iEnchMgr.GetItemRandomSuffix(abs(castItem->GetItemRandomPropertyId()));
             if(item_rand_suffix)
             {
                 for (int k=0; k<3; k++)
@@ -383,7 +384,8 @@ m_periodicTimer(0), m_PeriodicEventId(0), m_AuraDRGroup(DIMINISHING_NONE)
                     if(damage)
                         break;
                 }
-            }
+            } */
+			damage = damage;
         }
     }
 

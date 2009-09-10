@@ -29,6 +29,17 @@
 #include <vector>
 #include "Util.h"
 
+INSTANTIATE_SINGLETON_1( ItemEnchMgr );
+
+ItemEnchMgr::ItemEnchMgr()
+{
+}
+
+ItemEnchMgr::~ItemEnchMgr()
+{
+}
+
+
 struct EnchStoreItem
 {
     uint32  ench;
@@ -46,7 +57,7 @@ typedef UNORDERED_MAP<uint32, EnchStoreList> EnchantmentStore;
 
 static EnchantmentStore RandomItemEnch;
 
-void LoadRandomEnchantmentsTable()
+void ItemEnchMgr::LoadRandomEnchantmentsTable()
 {
     RandomItemEnch.clear();                                 // for reload case
 
@@ -88,7 +99,66 @@ void LoadRandomEnchantmentsTable()
     }
 }
 
-uint32 GetItemEnchantMod(uint32 entry)
+void ItemEnchMgr::LoadRandomPropPointsTable()
+{
+    mRandomPropertiesPoints.clear();                                 // for reload case
+
+    RandomPropertiesPoints row;
+	uint32 itemlevel, count=0;
+    //                                                    0             1                          2                       3                    4                      5                                                     
+    QueryResult *result = WorldDatabase.Query("SELECT itemlevel, EpicPropertiesPoints_1, EpicPropertiesPoints_2, EpicPropertiesPoints_3, EpicPropertiesPoints_4, EpicPropertiesPoints_5,"
+	//      6                        7                      8                       9                      10	
+	"RarePropertiesPoints_1, RarePropertiesPoints_2, RarePropertiesPoints_3, RarePropertiesPoints_4 , RarePropertiesPoints_5,"
+    //      11                           12                           13                            14                         15                 
+	"UncommonPropertiesPoints_1 , UncommonPropertiesPoints_2 , UncommonPropertiesPoints_3 , UncommonPropertiesPoints_4 , UncommonPropertiesPoints_5   FROM item_random_proppoints");
+
+    if (result)
+    {
+        barGoLink bar(result->GetRowCount());
+
+        do
+        {
+            Field *fields = result->Fetch();
+            bar.step();
+
+            itemlevel                        = fields[0].GetUInt32();
+            row.EpicPropertiesPoints[0]      = fields[1].GetUInt32();
+			row.EpicPropertiesPoints[1]      = fields[2].GetUInt32();
+			row.EpicPropertiesPoints[2]      = fields[3].GetUInt32();
+			row.EpicPropertiesPoints[3]      = fields[4].GetUInt32();
+			row.EpicPropertiesPoints[4]      = fields[5].GetUInt32();
+			row.RarePropertiesPoints[0]      = fields[6].GetUInt32();
+			row.RarePropertiesPoints[1]      = fields[7].GetUInt32();
+			row.RarePropertiesPoints[2]      = fields[8].GetUInt32();
+			row.RarePropertiesPoints[3]      = fields[9].GetUInt32();
+			row.RarePropertiesPoints[4]      = fields[10].GetUInt32();
+			row.UncommonPropertiesPoints[0]  = fields[11].GetUInt32();
+			row.UncommonPropertiesPoints[1]  = fields[12].GetUInt32();
+			row.UncommonPropertiesPoints[2]  = fields[13].GetUInt32();
+			row.UncommonPropertiesPoints[3]  = fields[14].GetUInt32();
+			row.UncommonPropertiesPoints[4]  = fields[15].GetUInt32();
+
+            ++count;
+
+			mRandomPropertiesPoints[itemlevel] = row;
+
+        } while (result->NextRow());
+
+        delete result;
+
+        sLog.outString();
+        sLog.outString( ">> Loaded %u Item Random Properties Points definitions", count );
+    }
+    else
+    {
+        sLog.outString();
+        sLog.outErrorDb( ">> Loaded 0 Item Random Properties Points definitions. DB table `item_random_proppoints` is empty.");
+    }
+}
+
+
+
+uint32 ItemEnchMgr::GetItemEnchantMod(uint32 entry)
 {
     if (!entry) return 0;
 
@@ -96,7 +166,7 @@ uint32 GetItemEnchantMod(uint32 entry)
 
     if (tab == RandomItemEnch.end())
     {
-        sLog.outErrorDb("Item RandomProperty / RandomSuffix id #%u used in `item_template` but it doesn't have records in `item_enchantment_template` table.",entry);
+        sLog.outErrorDb("Item RandomProperty id #%u used in `item_template` but it doesn't have records in `item_enchantment_template` table.",entry);
         return 0;
     }
 
@@ -124,16 +194,14 @@ uint32 GetItemEnchantMod(uint32 entry)
     return 0;
 }
 
-uint32 GenerateEnchSuffixFactor(uint32 item_id)
+uint32 ItemEnchMgr::GenerateEnchSuffixFactor(uint32 item_id)
 {
     ItemPrototype const *itemProto = objmgr.GetItemPrototype(item_id);
 
     if(!itemProto)
         return 0;
-    if(!itemProto->RandomSuffix)
-        return 0;
 
-    RandomPropertiesPointsEntry const *randomProperty = sRandomPropertiesPointsStore.LookupEntry(itemProto->ItemLevel);
+    RandomPropertiesPoints const *randomProperty = GetRandomPropPoints(itemProto->ItemLevel);
     if(!randomProperty)
         return 0;
 

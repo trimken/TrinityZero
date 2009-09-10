@@ -974,7 +974,7 @@ bool ChatHandler::HandleReloadPageTextsCommand(const char*)
 bool ChatHandler::HandleReloadItemEnchantementsCommand(const char*)
 {
     sLog.outString( "Re-Loading Item Random Enchantments Table..." );
-    LoadRandomEnchantmentsTable();
+    iEnchMgr.LoadRandomEnchantmentsTable();
     SendGlobalGMSysMessage("DB table `item_enchantment_template` reloaded.");
     return true;
 }

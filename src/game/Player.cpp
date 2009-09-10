@@ -9150,18 +9150,6 @@ uint8 Player::CanEquipItem( uint8 slot, uint16 &dest, Item *pItem, bool swap, bo
                     return EQUIP_ERR_ITEM_UNIQUE_EQUIPABLE;
             }
 
-            // check unique-equipped on gems
-            for(uint32 enchant_slot = SOCK_ENCHANTMENT_SLOT; enchant_slot < SOCK_ENCHANTMENT_SLOT+3; ++enchant_slot)
-            {
-                uint32 enchant_id = pItem->GetEnchantmentId(EnchantmentSlot(enchant_slot));
-                if(!enchant_id)
-                    continue;
-                SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-                if(!enchantEntry)
-                    continue;
-
-            }
-
             // check unique-equipped special item classes
             if (pProto->Class == ITEM_CLASS_QUIVER)
             {
@@ -9954,16 +9942,8 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
                 // remove held enchantments
                 if ( slot == EQUIPMENT_SLOT_MAINHAND )
                 {
-                    if (pItem->GetItemSuffixFactor())
-                    {
-                        pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_3);
-                        pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_4);
-                    }
-                    else
-                    {
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_0);
                         pItem->ClearEnchantment(PROP_ENCHANTMENT_SLOT_1);
-                    }
                 }
             }
 
@@ -11019,77 +10999,20 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 else if (item->GetSlot() == EQUIPMENT_SLOT_RANGED)
                     HandleStatModifier(UNIT_MOD_DAMAGE_RANGED, TOTAL_VALUE, float(enchant_amount), apply);
                 break;
-            /* case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
-             [TZERO] to rewrite [?]
+            case ITEM_ENCHANTMENT_TYPE_EQUIP_SPELL:
                if(enchant_spell_id)
                 {
                     if(apply)
-                    {
-                        int32 basepoints = 0;
-                        // Random Property Exist - try found basepoints for spell (basepoints depends from item suffix factor)
-                        if (item->GetItemRandomPropertyId())
-                        {
-                            ItemRandomSuffixEntry const *item_rand = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
-                            if (item_rand)
-                            {
-                                // Search enchant_amount
-                                for (int k=0; k<3; k++)
-                                {
-                                    if(item_rand->enchant_id[k] == enchant_id)
-                                    {
-                                        basepoints = int32((item_rand->prefix[k]*item->GetItemSuffixFactor()) / 10000 );
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        // Cast custom spell vs all equal basepoints getted from enchant_amount
-                        if (basepoints)
-                            CastCustomSpell(this,enchant_spell_id,&basepoints,&basepoints,&basepoints,true,item);
-                        else
-                            CastSpell(this,enchant_spell_id,true,item);
-                    }
+                        CastSpell(this,enchant_spell_id,true,item);
                     else
                         RemoveAurasDueToItemSpell(item,enchant_spell_id);
                 }
                 break;
             case ITEM_ENCHANTMENT_TYPE_RESISTANCE:
-                if (!enchant_amount)
-                {
-                    ItemRandomSuffixEntry const *item_rand = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
-                    if(item_rand)
-                    {
-                        for (int k=0; k<3; k++)
-                        {
-                            if(item_rand->enchant_id[k] == enchant_id)
-                            {
-                                enchant_amount = uint32((item_rand->prefix[k]*item->GetItemSuffixFactor()) / 10000 );
-                                break;
-                            }
-                        }
-                    }
-                }
-
                 HandleStatModifier(UnitMods(UNIT_MOD_RESISTANCE_START + enchant_spell_id), TOTAL_VALUE, float(enchant_amount), apply);
                 break;
             case ITEM_ENCHANTMENT_TYPE_STAT:
             {
-                if (!enchant_amount)
-                {
-                    ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
-                    if(item_rand_suffix)
-                    {
-                        for (int k=0; k<3; k++)
-                        {
-                            if(item_rand_suffix->enchant_id[k] == enchant_id)
-                            {
-                                enchant_amount = uint32((item_rand_suffix->prefix[k]*item->GetItemSuffixFactor()) / 10000 );
-                                break;
-                            }
-                        }
-                    }
-                }
-
                 sLog.outDebug("Adding %u to stat nb %u",enchant_amount,enchant_spell_id);
                 switch (enchant_spell_id)
                 {
@@ -11123,7 +11046,6 @@ void Player::ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool a
                 }
                 break;
             }
-            */
             case ITEM_ENCHANTMENT_TYPE_TOTEM:               // Shaman Rockbiter Weapon
             {
                 if(getClass() == CLASS_SHAMAN)

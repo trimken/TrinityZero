@@ -419,7 +419,6 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
         data << pProto->Material;
         data << pProto->Sheath;
         data << pProto->RandomProperty;
-       // data << pProto->RandomSuffix;
         data << pProto->Block;
         data << pProto->ItemSet;
         data << pProto->MaxDurability;

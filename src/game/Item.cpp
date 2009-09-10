@@ -518,46 +518,18 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
 {
     ItemPrototype const *itemProto = sItemStorage.LookupEntry<ItemPrototype>(item_id);
 
-    if(!itemProto)
+    if(!itemProto && !itemProto->RandomProperty)
         return 0;
 
-    // item must have one from this field values not null if it can have random enchantments
-    if((!itemProto->RandomProperty) && (!itemProto->RandomSuffix))
-        return 0;
-
-    // item can have not null only one from field values
-    if((itemProto->RandomProperty) && (itemProto->RandomSuffix))
+    uint32 randomPropId = iEnchMgr.GetItemEnchantMod(itemProto->RandomProperty);
+    ItemRandomPropertiesEntry const *random_id = sItemRandomPropertiesStore.LookupEntry(randomPropId);
+    if(!random_id)
     {
-        sLog.outErrorDb("Item template %u have RandomProperty==%u and RandomSuffix==%u, but must have one from field =0",itemProto->ItemId,itemProto->RandomProperty,itemProto->RandomSuffix);
-        return 0;
-    }
+       sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in 'ItemRandomProperties.dbc'",randomPropId);
+	   return 0;
+	}
 
-    // RandomProperty case
-    if(itemProto->RandomProperty)
-    {
-        uint32 randomPropId = GetItemEnchantMod(itemProto->RandomProperty);
-        ItemRandomPropertiesEntry const *random_id = sItemRandomPropertiesStore.LookupEntry(randomPropId);
-        if(!random_id)
-        {
-            sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in 'ItemRandomProperties.dbc'",randomPropId);
-            return 0;
-        }
-
-        return random_id->ID;
-    }
-    // RandomSuffix case
-    else
-    {
-        uint32 randomPropId = GetItemEnchantMod(itemProto->RandomSuffix);
-        ItemRandomSuffixEntry const *random_id = sItemRandomSuffixStore.LookupEntry(randomPropId);
-        if(!random_id)
-        {
-            sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in sItemRandomSuffixStore.",randomPropId);
-            return 0;
-        }
-
-        return -int32(random_id->ID);
-    }
+    return random_id->ID;
 }
 
 void Item::SetItemRandomProperties(int32 randomPropId)
@@ -575,32 +547,15 @@ void Item::SetItemRandomProperties(int32 randomPropId)
                 SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID,item_rand->ID);
                 SetState(ITEM_CHANGED);
             }
-            for(uint32 i = PROP_ENCHANTMENT_SLOT_2; i < PROP_ENCHANTMENT_SLOT_2 + 3; ++i)
-                SetEnchantment(EnchantmentSlot(i),item_rand->enchant_id[i - PROP_ENCHANTMENT_SLOT_2],0,0);
-        }
-    }
-    else
-    {
-        ItemRandomSuffixEntry const *item_rand = sItemRandomSuffixStore.LookupEntry(-randomPropId);
-        if(item_rand)
-        {
-            if( GetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID) != -int32(item_rand->ID) ||
-                !GetItemSuffixFactor())
-            {
-                SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID,-int32(item_rand->ID));
-                UpdateItemSuffixFactor();
-                SetState(ITEM_CHANGED);
-            }
-
-            for(uint32 i = PROP_ENCHANTMENT_SLOT_0; i < PROP_ENCHANTMENT_SLOT_0 + 3; ++i)
-                SetEnchantment(EnchantmentSlot(i),item_rand->enchant_id[i - PROP_ENCHANTMENT_SLOT_0],0,0);
+            //[TZERO] for(uint32 i = PROP_ENCHANTMENT_SLOT_2; i < PROP_ENCHANTMENT_SLOT_2 + 3; ++i)
+                SetEnchantment(PROP_ENCHANTMENT_SLOT_1,item_rand->ID,0,0);
         }
     }
 }
 
 bool Item::UpdateItemSuffixFactor()
 {
-    uint32 suffixFactor = GenerateEnchSuffixFactor(GetEntry());
+    uint32 suffixFactor = iEnchMgr.GenerateEnchSuffixFactor(GetEntry());
     if(GetItemSuffixFactor()==suffixFactor)
         return false;
     SetUInt32Value(ITEM_FIELD_PROPERTY_SEED,suffixFactor);

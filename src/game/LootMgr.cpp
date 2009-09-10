@@ -304,7 +304,7 @@ LootItem::LootItem(LootStoreItem const& li)
     needs_quest = li.needs_quest;
 
     count       = urand(li.mincountOrRef, li.maxcount);     // constructor called for mincountOrRef > 0 only
-    randomSuffix = GenerateEnchSuffixFactor(itemid);
+    randomSuffix = iEnchMgr.GenerateEnchSuffixFactor(itemid);
     randomPropertyId = Item::GenerateItemRandomPropertyId(itemid);
     is_looted = 0;
     is_blocked = 0;

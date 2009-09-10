@@ -1102,8 +1102,11 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading NPC Texts..." );
     objmgr.LoadGossipText();
 
+	sLog.outString( "Loading Item Random Properties Points Table..." );
+    iEnchMgr.LoadRandomPropPointsTable();
+
     sLog.outString( "Loading Item Random Enchantments Table..." );
-    LoadRandomEnchantmentsTable();
+    iEnchMgr.LoadRandomEnchantmentsTable();
 
     sLog.outString( "Loading Items..." );                   // must be after LoadRandomEnchantmentsTable and LoadPageTexts
     objmgr.LoadItemPrototypes();

@@ -18,8 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
  
-
-// correct for 1.12
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssxixxxx";
 const char AreaTriggerEntryfmt[]="niffffffff";                                       // new
 const char AuctionHouseEntryfmt[]="niiixxxxxxxxx";                                   // new
@@ -62,9 +60,4 @@ const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffii";
 const char WorldMapAreaEntryfmt[]="xinxffff";
 const char WorldSafeLocsEntryfmt[]="nifffxxxxxxxxx";
-// endof correct for 1.12
-
-// [TZERO] these must be replaced with sql tables
-const char ItemRandomSuffixfmt[]="nxxxxxxxxxxxxxxxxxxiiiiii";
-const char RandomPropertiesPointsfmt[]="niiiiiiiiiiiiiii";
 
