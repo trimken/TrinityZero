@@ -467,7 +467,7 @@ enum UnitFlags
     UNIT_FLAG_SKINNABLE      = 0x04000000,
     UNIT_FLAG_SHEATHE        = 0x40000000,
 
-	// [TZERO] TBC enumerations [?]
+    // [TZERO] TBC enumerations [?]
     UNIT_FLAG_UNKNOWN7         = 0x00000001,
     UNIT_FLAG_NON_ATTACKABLE   = 0x00000002,                // not attackable
     UNIT_FLAG_UNKNOWN9         = 0x00000040,
@@ -633,22 +633,22 @@ struct CalcDamageInfo
 
 // Spell damage info structure based on structure sending in SMSG_SPELLNONMELEEDAMAGELOG opcode
 struct SpellNonMeleeDamage{
- SpellNonMeleeDamage(Unit *_attacker, Unit *_target, uint32 _SpellID, uint32 _schoolMask) :
-    attacker(_attacker), target(_target), SpellID(_SpellID), damage(0), schoolMask(_schoolMask),
+ SpellNonMeleeDamage(Unit *_attacker, Unit *_target, uint32 _SpellID, uint32 _school) :
+    attacker(_attacker), target(_target), SpellID(_SpellID), damage(0), school(_school),
     absorb(0), resist(0), phusicalLog(false), unused(false), blocked(0), HitInfo(0), cleanDamage(0) {}
- Unit   *target;
- Unit   *attacker;
- uint32 SpellID;
- uint32 damage;
- uint32 schoolMask;
- uint32 absorb;
- uint32 resist;
- bool   phusicalLog;
- bool   unused;
- uint32 blocked;
- uint32 HitInfo;
- // Used for help
- uint32 cleanDamage;
+    Unit   *target;
+    Unit   *attacker;
+    uint32 SpellID;
+    uint32 damage;
+    uint32 school;
+    uint32 absorb;
+    uint32 resist;
+    bool   phusicalLog;
+    bool   unused;
+    uint32 blocked;
+    uint32 HitInfo;
+    // Used for help
+    uint32 cleanDamage;
 };
 
 uint32 createProcExtendMask(SpellNonMeleeDamage *damageInfo, SpellMissInfo missCondition);
