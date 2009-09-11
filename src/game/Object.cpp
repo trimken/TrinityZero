@@ -378,6 +378,32 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
     *data << (uint8)updateMask->GetBlockCount();
     data->append(updateMask->GetMask(), updateMask->GetLength());
 
+    bool IsActivateToQuest = false;
+    if (updatetype == UPDATETYPE_CREATE_OBJECT || updatetype == UPDATETYPE_CREATE_OBJECT2)
+    {
+        if (isType(TYPEMASK_GAMEOBJECT) && !((GameObject*)this)->IsTransport())
+        {
+            if ( ((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
+            {
+                IsActivateToQuest = true;
+                updateMask->SetBit(GAMEOBJECT_FLAGS);
+            }
+            if (GetUInt32Value(GAMEOBJECT_ARTKIT))
+                updateMask->SetBit(GAMEOBJECT_ARTKIT);
+        }
+    }
+    else                                                    //case UPDATETYPE_VALUES
+    {
+        if (isType(TYPEMASK_GAMEOBJECT) && !((GameObject*)this)->IsTransport())
+        {
+            if ( ((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
+            {
+                IsActivateToQuest = true;
+            }
+            updateMask->SetBit(GAMEOBJECT_FLAGS);
+        }
+    }
+
     // 2 specialized loops for speed optimization in non-unit case
     if(isType(TYPEMASK_UNIT))                                   // unit (creature/player) case
     {
@@ -433,6 +459,25 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
                     // send in current format (float as float, uint32 as uint32)
                     *data << m_uint32Values[ index ];
                 }
+            }
+        }
+    }
+    else if(isType(TYPEMASK_GAMEOBJECT))                    // gameobject case
+    {
+        for( uint16 index = 0; index < m_valuesCount; index ++ )
+        {
+            if( updateMask->GetBit( index ) )
+            {
+                // send in current format (float as float, uint32 as uint32)
+                if ( index == GAMEOBJECT_FLAGS )
+                {
+                    if(IsActivateToQuest)
+                        *data << (m_uint32Values[ index ] & ~GO_FLAG_INTERACT_COND);
+                    else 
+                        *data << m_uint32Values[ index ];
+                }
+                else
+                    *data << m_uint32Values[ index ];       // other cases
             }
         }
     }
