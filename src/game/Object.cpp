@@ -141,11 +141,12 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
 {
     if(!target) return;
 
+    uint8  updatetype = UPDATETYPE_CREATE_OBJECT;
+
     ByteBuffer buf(500);
-    buf << uint8( UPDATETYPE_CREATE_OBJECT );
-    buf << uint8( 0xFF );
-    buf << GetGUID() ;
-    buf << m_objectTypeId;
+    buf << (uint8)updatetype;
+    buf << (uint8)0xFF << GetGUID() ;
+    buf << (uint8)m_objectTypeId;
 
     switch(m_objectTypeId)
     {
@@ -195,7 +196,7 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
     UpdateMask updateMask;
     updateMask.SetCount( m_valuesCount );
     _SetCreateBits( &updateMask, target );
-    _BuildValuesUpdate( &buf, &updateMask );
+    _BuildValuesUpdate(updatetype, &buf, &updateMask, target );
     data->AddUpdateBlock(buf);
 }
 
@@ -224,18 +225,19 @@ void Object::SendUpdateToPlayer(Player* player)
 
 void Object::BuildValuesUpdateBlockForPlayer(UpdateData *data, Player *target) const
 {
+    if(!target)
+        return;
+
     ByteBuffer buf(500);
 
-    buf << (uint8) UPDATETYPE_VALUES;
-    //buf.append(GetPackGUID());    //client crashes when using this. but not have crash in debug mode
-    buf << (uint8) 0xFF;
-    buf << GetGUID();
+    buf << (uint8)UPDATETYPE_VALUES;
+    buf << (uint8)0xFF << GetGUID();
 
     UpdateMask updateMask;
     updateMask.SetCount( m_valuesCount );
 
     _SetUpdateBits( &updateMask, target );
-    _BuildValuesUpdate(&buf, &updateMask);
+    _BuildValuesUpdate(UPDATETYPE_VALUES, &buf, &updateMask, target);
 
     data->AddUpdateBlock(buf);
 }
@@ -369,12 +371,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2 
 }
 
 
-void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask) const
+void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *updateMask, Player *target) const
 {
     WPAssert(updateMask && updateMask->GetCount() == m_valuesCount);
 
     *data << (uint8)updateMask->GetBlockCount();
-    data->append( updateMask->GetMask(), updateMask->GetLength() );
+    data->append(updateMask->GetMask(), updateMask->GetLength());
 
     // 2 specialized loops for speed optimization in non-unit case
     if(isType(TYPEMASK_UNIT))                                   // unit (creature/player) case
@@ -393,6 +395,14 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask) const
                 {
                     // convert from float to uint32 and send
                     *data << uint32(m_floatValues[ index ]);
+                }
+                // hide lootable animation for unallowed players
+                else if(index == UNIT_DYNAMIC_FLAGS && GetTypeId() == TYPEID_UNIT)
+                {
+                    if(!target->isAllowedToLoot((Creature*)this))
+                        *data << (m_uint32Values[ index ] & ~UNIT_DYNFLAG_LOOTABLE);
+                    else
+                        *data << (m_uint32Values[ index ] & ~UNIT_DYNFLAG_OTHER_TAGGER);
                 }
                 else
                 {
