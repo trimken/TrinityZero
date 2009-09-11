@@ -396,6 +396,30 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
                     // convert from float to uint32 and send
                     *data << uint32(m_floatValues[ index ]);
                 }
+                // use modelid_a if not gm, _h if gm for CREATURE_FLAG_EXTRA_TRIGGER creatures
+                else if(index == UNIT_FIELD_DISPLAYID && GetTypeId() == TYPEID_UNIT)
+                {
+                    const CreatureInfo* cinfo = ((Creature*)this)->GetCreatureInfo();
+                    if(cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
+                    {
+                        if(target->isGameMaster())
+                        {
+                            if(cinfo->Modelid_A2)
+                                *data << cinfo->Modelid_A1;
+                            else
+                                *data << 17519; // world invisible trigger's model
+                        }
+                        else
+                        {
+                            if(cinfo->Modelid_A2)
+                                *data << cinfo->Modelid_A2;
+                            else
+                                *data << 11686; // world invisible trigger's model
+                        }
+                    }
+                    else
+                        *data << m_uint32Values[ index ];
+                }
                 // hide lootable animation for unallowed players
                 else if(index == UNIT_DYNAMIC_FLAGS && GetTypeId() == TYPEID_UNIT)
                 {
