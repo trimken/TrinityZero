@@ -2344,18 +2344,13 @@ void Spell::EffectPowerBurn(uint32 i)
     if(damage < 0)
         return;
 
-    int32 curPower = int32(unitTarget->GetPower(powertype));
+    unitTarget->ModifyPower(powertype, -damage);
 
-    unitTarget->ModifyPower(powertype,-(int32)curPower);
     float multiplier = m_spellInfo->EffectMultipleValue[i];
-
     if(Player *modOwner = m_caster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_MULTIPLE_VALUE, multiplier);
 
-    int32 new_damage = int32(curPower*multiplier);
-    //m_damage+=new_damage; should not apply spell bonus
-    //TODO: no log
-    //unitTarget->ModifyHealth(-new_damage);
+    int32 new_damage = int32(damage*multiplier);
     if(m_originalCaster)
         m_originalCaster->DealDamage(unitTarget, new_damage);
 }
