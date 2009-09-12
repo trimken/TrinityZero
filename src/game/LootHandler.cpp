@@ -378,26 +378,6 @@ void WorldSession::DoLootRelease( uint64 lguid )
             corpse->RemoveFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
         }
     }
-    else if (IS_ITEM_GUID(lguid))
-    {
-        Item *pItem = player->GetItemByGuid(lguid );
-        if(!pItem)
-            return;
-        if( (pItem->GetProto()->BagFamily & BAG_FAMILY_MASK_MINING_SUPP) &&
-            pItem->GetProto()->Class == ITEM_CLASS_TRADE_GOODS &&
-            pItem->GetCount() >= 5)
-        {
-            pItem->m_lootGenerated = false;
-            pItem->loot.clear();
-
-            uint32 count = 5;
-            player->DestroyItemCount(pItem, count, true);
-        }
-        else
-            // FIXME: item don't must be deleted in case not fully looted state. But this pre-request implement loot saving in DB at item save. Or checting possible.
-            player->DestroyItem( pItem->GetBagSlot(),pItem->GetSlot(), true);
-        return;                                             // item can be looted only single player
-    }
     else
     {
         Creature* pCreature = ObjectAccessor::GetCreature(*player, lguid);

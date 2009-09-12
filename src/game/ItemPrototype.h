@@ -104,30 +104,19 @@ enum ITEM_FLAGS
     ITEM_FLAGS_MILLABLE                       = 0x20000000
 };
 
-enum BAG_FAMILY_MASK
+enum BAG_FAMILY
 {
-
     BAG_FAMILY_NONE                             = 0,
-    BAG_FAMILY_MASK_ARROWS                           = 1,
-    BAG_FAMILY_MASK_BULLETS                          = 2,
-    BAG_FAMILY_MASK_SOUL_SHARDS                      = 3,
-    BAG_FAMILY_MASK_LEATHERWORKING_SUPP       = 0x00000008,
-    BAG_FAMILY_MASK_INSCRIPTION_SUPP          = 0x00000010,
-    BAG_FAMILY_MASK_HERBS                            = 6,
-    BAG_FAMILY_MASK_ENCHANTING_SUPP                  = 7,
-    BAG_FAMILY_MASK_ENGINEERING_SUPP                 = 8,
-    BAG_FAMILY_MASK_KEYS                             = 9,
-    BAG_FAMILY_MASK_GEMS                             = 10,
-    //BAG_FAMILY_UNK3                           = 11,
-    BAG_FAMILY_MASK_MINING_SUPP                      = 12,
-
-    // [TZERO] tbc enumerations [?]
-    BAG_FAMILY_MASK_SOULBOUND_EQUIPMENT       = 0x00000800,
-    BAG_FAMILY_MASK_VANITY_PETS               = 0x00001000,
-    BAG_FAMILY_MASK_CURRENCY_TOKENS           = 0x00002000,
-    BAG_FAMILY_MASK_QUEST_ITEMS               = 0x00004000
+    BAG_FAMILY_ARROWS                           = 1,
+    BAG_FAMILY_BULLETS                          = 2,
+    BAG_FAMILY_SOUL_SHARDS                      = 3,
+    BAG_FAMILY_UNKNOWN1                         = 4,
+    BAG_FAMILY_UNKNOWN2                         = 5,
+    BAG_FAMILY_HERBS                            = 6,
+    BAG_FAMILY_ENCHANTING_SUPP                  = 7,
+    BAG_FAMILY_ENGINEERING_SUPP                 = 8,
+    BAG_FAMILY_KEYS                             = 9,
 };
-
 
 enum InventoryType
 {

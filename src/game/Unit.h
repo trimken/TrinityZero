@@ -239,7 +239,7 @@ enum HitInfo
     HITINFO_CRUSHING           = 0x8000,
     HITINFO_NOACTION           = 0x10000,
     HITINFO_SWINGNOHITSOUND    = 0x80000,
-	//[TZERO] tbc enumerations [?]
+    //[TZERO] tbc enumerations [?]
     HITINFO_UNK1                = 0x00000001,               // req correct packet structure
     HITINFO_UNK2                = 0x00000100,               // wotlk?
     HITINFO_UNK3                = 0x00002000,               // wotlk?

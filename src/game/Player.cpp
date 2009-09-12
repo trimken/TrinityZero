@@ -8322,7 +8322,7 @@ uint8 Player::_CanStoreItem_InSpecificSlot( uint8 bag, uint8 slot, ItemPosCountV
         if( bag == INVENTORY_SLOT_BAG_0 )
         {
             // keyring case
-            if(slot >= KEYRING_SLOT_START && slot < KEYRING_SLOT_START+GetMaxKeyringSize() && !(pProto->BagFamily & BAG_FAMILY_MASK_KEYS))
+            if(slot >= KEYRING_SLOT_START && slot < KEYRING_SLOT_START+GetMaxKeyringSize() && !(pProto->BagFamily == BAG_FAMILY_KEYS))
                 return EQUIP_ERR_ITEM_DOESNT_GO_INTO_BAG;
 
             // prevent cheating
@@ -8635,7 +8635,7 @@ uint8 Player::_CanStoreItem( uint8 bag, uint8 slot, ItemPosCountVec &dest, uint3
         if( bag == INVENTORY_SLOT_BAG_0 )                   // inventory
         {
             // search free slot - keyring case
-            if(pProto->BagFamily & BAG_FAMILY_MASK_KEYS)
+            if(pProto->BagFamily == BAG_FAMILY_KEYS)
             {
                 uint32 keyringSize = GetMaxKeyringSize();
                 res = _CanStoreItem_InInventorySlots(KEYRING_SLOT_START,KEYRING_SLOT_START+keyringSize,dest,pProto,count,false,pItem,bag,slot);
@@ -8782,7 +8782,7 @@ uint8 Player::_CanStoreItem( uint8 bag, uint8 slot, ItemPosCountVec &dest, uint3
     // search free slot - special bag case
     if( pProto->BagFamily )
     {
-        if(pProto->BagFamily & BAG_FAMILY_MASK_KEYS)
+        if(pProto->BagFamily == BAG_FAMILY_KEYS)
         {
             uint32 keyringSize = GetMaxKeyringSize();
             res = _CanStoreItem_InInventorySlots(KEYRING_SLOT_START,KEYRING_SLOT_START+keyringSize,dest,pProto,count,false,pItem,bag,slot);
@@ -8993,7 +8993,7 @@ uint8 Player::CanStoreItems( Item **pItems,int count) const
         if( pProto->BagFamily )
         {
             bool b_found = false;
-            if(pProto->BagFamily & BAG_FAMILY_MASK_KEYS)
+            if(pProto->BagFamily & BAG_FAMILY_KEYS)
             {
                 uint32 keyringSize = GetMaxKeyringSize();
                 for(uint32 t = KEYRING_SLOT_START; t < KEYRING_SLOT_START+keyringSize; ++t)
