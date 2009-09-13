@@ -6085,10 +6085,18 @@ void Player::UpdateArea(uint32 newArea)
 
     AreaTableEntry const* area = GetAreaEntryByAreaID(newArea);
 
-    // remove ffa flag only if not ffapvp realm
-    // removal in sanctuaries and capitals is handled in zone update
-    if(HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) && !sWorld.IsFFAPvPRealm())
-        RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
+    if(area && (area->flags & AREA_FLAG_ARENA))
+    {
+        if(!isGameMaster())
+            SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
+    }
+    else
+    {
+        // remove ffa flag only if not ffapvp realm
+        // removal in sanctuaries and capitals is handled in zone update
+        if(HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) && !sWorld.IsFFAPvPRealm())
+            RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP);
+    }
 
     UpdateAreaDependentAuras(newArea);
 }
