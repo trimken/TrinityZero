@@ -385,26 +385,18 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
         {
             if ( ((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
             {
-                IsActivateToQuest = true;
-                updateMask->SetBit(GAMEOBJECT_FLAGS);
+                if(GetUInt32Value(GAMEOBJECT_FLAGS))
+                {
+                    IsActivateToQuest = true;
+                    updateMask->SetBit(GAMEOBJECT_FLAGS);
+                }
             }
             if (GetUInt32Value(GAMEOBJECT_ARTKIT))
                 updateMask->SetBit(GAMEOBJECT_ARTKIT);
         }
     }
-    else                                                    //case UPDATETYPE_VALUES
-    {
-        if (isType(TYPEMASK_GAMEOBJECT) && !((GameObject*)this)->IsTransport())
-        {
-            if ( ((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
-            {
-                IsActivateToQuest = true;
-            }
-            updateMask->SetBit(GAMEOBJECT_FLAGS);
-        }
-    }
 
-    // 2 specialized loops for speed optimization in non-unit case
+    // 3 specialized loops for speed optimization in non-unit/non-go case
     if(isType(TYPEMASK_UNIT))                                   // unit (creature/player) case
     {
         for( uint16 index = 0; index < m_valuesCount; index ++ )
