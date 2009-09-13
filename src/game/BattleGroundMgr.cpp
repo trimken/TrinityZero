@@ -76,11 +76,10 @@ void BattleGroundQueue::EligibleGroups::Init(BattleGroundQueue::QueuedGroupsList
     {
         next = itr;
         ++next;
-        if( (*itr)->BgTypeId == BgTypeId &&     // bg type must match
-            (*itr)->IsInvitedToBGInstanceGUID == 0 && // leave out already invited groups
-            (*itr)->Team == side &&             // match side
-            (*itr)->Players.size() <= MaxPlayers &&   // the group must fit in the bg
-            ( (*itr)->Players.size() == MaxPlayers ) &&   // if rated, then pass only if the player count is exact NEEDS TESTING! (but now this should never happen)
+        if( (*itr)->BgTypeId == BgTypeId &&                         // bg type must match
+            (*itr)->IsInvitedToBGInstanceGUID == 0 &&               // leave out already invited groups
+            (*itr)->Team == side &&                                 // match side
+            (*itr)->Players.size() <= MaxPlayers &&                 // the group must fit in the bg
             ( !DisregardTime || (*itr)->JoinTime <= DisregardTime ) // pass if disregard time is greater than join time
           )
         {
@@ -456,6 +455,9 @@ should be called after removeplayer functions in some cases
 */
 void BattleGroundQueue::Update(uint32 bgTypeId, uint32 queue_id)
 {
+    if(bgTypeId >= 3)
+        sLog.outError("BattleGroundQueue::Update()dingdongzonk");
+
     if (queue_id >= MAX_BATTLEGROUND_QUEUES)
     {
         //this is error, that caused crashes (not in , but now it shouldn't)
@@ -516,12 +518,6 @@ void BattleGroundQueue::Update(uint32 bgTypeId, uint32 queue_id)
     uint32 MaxPlayersPerTeam = bg_template->GetMaxPlayersPerTeam();
 
     uint32 discardTime = 0;
-    // if max rating difference is set and the time past since server startup is greater than the rating discard time
-    // (after what time the ratings aren't taken into account when making teams) then
-    // the discard time is current_time - time_to_discard, teams that joined after that, will have their ratings taken into account
-    // else leave the discard time on 0, this way all ratings will be discarded
-    if(sBattleGroundMgr.GetMaxRatingDifference() && getMSTime() >= sBattleGroundMgr.GetRatingDiscardTimer())
-        discardTime = getMSTime() - sBattleGroundMgr.GetRatingDiscardTimer();
 
     // try to build the selection pools
     bool bAllyOK = BuildSelectionPool(bgTypeId, queue_id, MinPlayersPerTeam, MaxPlayersPerTeam, NORMAL_ALLIANCE, discardTime);
@@ -728,70 +724,24 @@ void BattleGroundMgr::Update(time_t diff)
 
 void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGround *bg, uint32 team, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2)
 {
-    // [TRINITY ROLLBACK] this procedure must be rewritten 
     // we can be in 3 queues in same time...
     if(StatusID == 0)
     {
-        data->Initialize(SMSG_BATTLEFIELD_STATUS, 4*3);
+        data->Initialize(SMSG_BATTLEFIELD_STATUS, 4 + 4);
         *data << uint32(QueueSlot);                         // queue id (0...2)
-        *data << uint64(0);
+        *data << uint32(0);
         return;
     }
 
-    data->Initialize(SMSG_BATTLEFIELD_STATUS, (5*4+1));
-    *data << uint32(QueueSlot);                             // queue id (0...2) - player can be in 3 queues in time
-    // uint64 in client
-    // *data << uint64( uint64(arenatype ? arenatype : bg->GetArenaType()) | (uint64(0x0D) << 8) | (uint64(bg->GetTypeID()) << 16) | (uint64(0x1F90) << 48) );
-    *data << uint32(0);                                     // unknown
-    // alliance/horde for BG and skirmish/rated for Arenas
-/*    *data << uint8(arenatype ? arenatype : bg->GetArenaType());                     // team type (0=BG, 2=2x2, 3=3x3, 5=5x5), for arenas    // NOT PROPER VALUE IF ARENA ISN'T RUNNING YET!!!!
-    switch(bg->GetTypeID())                                 // value depends on bg id
-    {
-        case BATTLEGROUND_AV:
-            *data << uint8(1);
-            break;
-        case BATTLEGROUND_WS:
-            *data << uint8(2);
-            break;
-        case BATTLEGROUND_AB:
-            *data << uint8(3);
-            break;
-        case BATTLEGROUND_NA:
-            *data << uint8(4);
-            break;
-        case BATTLEGROUND_BE:
-            *data << uint8(5);
-            break;
-        case BATTLEGROUND_AA:
-            *data << uint8(6);
-            break;
-        case BATTLEGROUND_EY:
-            *data << uint8(7);
-            break;
-        case BATTLEGROUND_RL:
-            *data << uint8(8);
-            break;
-        default:                                            // unknown
-            *data << uint8(0);
-            break;
-    }
-
-    if(bg->isArena() && (StatusID == STATUS_WAIT_QUEUE))
-        *data << uint32(BATTLEGROUND_AA);                   // all arenas   I don't think so.
-    else
-    *data << uint32(bg->GetTypeID());                   // BG id from DBC
-
-    *data << uint16(0x1F90);                                // unk value 8080
-    *data << uint32(bg->GetInstanceID());                   // instance id
-
-    if(bg->isBattleGround())
-        *data << uint8(bg->GetTeamIndexByTeamId(team));     // team
-    else
-        *data << uint8(israted?israted:bg->isRated());                      // is rated battle
-*/
-    *data << uint32(StatusID);                              // status
+    data->Initialize(SMSG_BATTLEFIELD_STATUS, 6*4 + 1);
+    *data << uint32(QueueSlot);                               // Unknown 1
+    *data << uint32(bg->GetMapId());                          // MapID
+    *data << uint8(0);                                        // Unknown
+    *data << uint32(bg->GetInstanceID());                     // Instance ID
+    *data << uint32(StatusID);                                // Status ID
     switch(StatusID)
     {
+        case STATUS_IN_PROGRESS:
         case STATUS_WAIT_QUEUE:                             // status_in_queue
             *data << uint32(Time1);                         // average wait time, milliseconds
             *data << uint32(Time2);                         // time in queue, updated every minute?
@@ -800,12 +750,12 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
             *data << uint32(bg->GetMapId());                // map id
             *data << uint32(Time1);                         // time to remove from queue, milliseconds
             break;
-        case STATUS_IN_PROGRESS:                            // status_in_progress
-            *data << uint32(bg->GetMapId());                // map id
+       /* case STATUS_IN_PROGRESS:                            // status_in_progress
+            //*data << uint32(bg->GetMapId());                // map id
             *data << uint32(Time1);                         // 0 at bg start, 120000 after bg end, time to bg auto leave, milliseconds
             *data << uint32(Time2);                         // time from bg start, milliseconds
-            *data << uint8(0x1);                            // unk sometimes 0x0!
-            break;
+            //*data << uint8(0x1);                            // unk sometimes 0x0!
+            break;*/
         default:
             sLog.outError("Unknown BG status!");
             break;
@@ -1032,7 +982,7 @@ uint32 BattleGroundMgr::CreateBattleGround(uint32 bgTypeId, uint32 MinPlayersPer
 
     //add BattleGround instance to FreeSlotQueue (.back() will return the template!)
     if (bgTypeId < MAX_BATTLEGROUND_TYPES ) // anti-crash
-     bg->AddToBGFreeSlotQueue();
+        bg->AddToBGFreeSlotQueue();
 
     // do NOT add to update list, since this is a template battleground!
 
@@ -1144,24 +1094,23 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, uint64 guid
         PlayerLevel = plr->getLevel();
 
     data->Initialize(SMSG_BATTLEFIELD_LIST);
-    *data << uint64(guid);                                  // battlemaster guid
-    *data << uint32(bgTypeId);                              // battleground id
+    *data << uint64(guid);                              // battlemaster guid
+    *data << uint32(bgTypeId);                          // battleground id
+    *data << uint8(0x00);                               // unk
 
-        *data << uint8(0x00);                               // unk
+    size_t count_pos = data->wpos();
+    uint32 count = 0;
+    *data << uint32(0x00);                              // number of bg instances
 
-        size_t count_pos = data->wpos();
-        uint32 count = 0;
-        *data << uint32(0x00);                              // number of bg instances
-
-        for(std::map<uint32, BattleGround*>::iterator itr = m_BattleGrounds.begin(); itr != m_BattleGrounds.end(); ++itr)
+    for(std::map<uint32, BattleGround*>::iterator itr = m_BattleGrounds.begin(); itr != m_BattleGrounds.end(); ++itr)
+    {
+        if(itr->second->GetTypeID() == bgTypeId && (PlayerLevel >= itr->second->GetMinLevel()) && (PlayerLevel <= itr->second->GetMaxLevel()))
         {
-            if(itr->second->GetTypeID() == bgTypeId && (PlayerLevel >= itr->second->GetMinLevel()) && (PlayerLevel <= itr->second->GetMaxLevel()))
-            {
-                *data << uint32(itr->second->GetInstanceID());
-                ++count;
-            }
+            *data << uint32(itr->second->GetInstanceID());
+            ++count;
         }
-        data->put<uint32>( count_pos , count);
+    }
+    data->put<uint32>( count_pos , count);
 }
 
 void BattleGroundMgr::SendToBattleGround(Player *pl, uint32 instanceId)
@@ -1202,16 +1151,32 @@ void BattleGroundMgr::RemoveBattleGround(uint32 instanceID)
         m_BattleGrounds.erase(itr);
 }
 
+uint32 BattleGroundMgr::GetBGTypeIdByMap(uint32 mapId)
+{
+    switch(mapId)
+    {
+    case 489:
+        return BATTLEGROUND_WS;
+    case 529:
+        return BATTLEGROUND_AB;
+    case 30:
+        return BATTLEGROUND_AV;
+    default:
+        return 0;
+    }
+}
+
+
 uint32 BattleGroundMgr::BGQueueTypeId(uint32 bgTypeId) const
 {
     switch(bgTypeId)
     {
+    case BATTLEGROUND_AV:
+        return BATTLEGROUND_QUEUE_AV;
     case BATTLEGROUND_WS:
         return BATTLEGROUND_QUEUE_WS;
     case BATTLEGROUND_AB:
         return BATTLEGROUND_QUEUE_AB;
-    case BATTLEGROUND_AV:
-        return BATTLEGROUND_QUEUE_AV;
     default:
         return 0;
     }

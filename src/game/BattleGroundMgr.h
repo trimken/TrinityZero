@@ -32,11 +32,11 @@ typedef std::map<uint32, BattleGround*> BattleGroundSet;
 //typedef std::map<uint32, BattleGroundQueue*> BattleGroundQueueSet;
 typedef std::deque<BattleGround*> BGFreeSlotQueueType;
 
-#define MAX_BATTLEGROUND_QUEUES 5                           // for level ranges 10-19, 20-29, 30-39, 40-49, 50-59
+#define MAX_BATTLEGROUND_QUEUES 6                           // for level ranges 10-19, 20-29, 30-39, 40-49, 50-59, 60
 
 #define MAX_BATTLEGROUND_TYPES 4                            // each BG type will be in array
 
-#define MAX_BATTLEGROUND_QUEUE_TYPES 8
+#define MAX_BATTLEGROUND_QUEUE_TYPES 4
 
 struct GroupQueueInfo;                                      // type predefinition
 struct PlayerQueueInfo                                      // stores information for players in queue
@@ -52,7 +52,6 @@ struct GroupQueueInfo                                       // stores informatio
     std::map<uint64, PlayerQueueInfo*> Players;             // player queue info map
     uint32  Team;                                           // Player team (ALLIANCE/HORDE)
     uint32  BgTypeId;                                       // battleground type id
-    bool    IsRated;                                        // rated
     uint32  JoinTime;                                       // time when group was added
     uint32  IsInvitedToBGInstanceGUID;                      // was invited to certain BG
 };
@@ -212,6 +211,8 @@ class BattleGroundMgr
         BGFreeSlotQueueType BGFreeSlotQueue[MAX_BATTLEGROUND_TYPES];
 
         void SendAreaSpiritHealerQueryOpcode(Player *pl, BattleGround *bg, uint64 guid);
+
+        uint32 GetBGTypeIdByMap(uint32 mapId);
 
         uint32 BGQueueTypeId(uint32 bgTypeId) const;
         uint32 BGTemplateId(uint32 bgQueueTypeId) const;
