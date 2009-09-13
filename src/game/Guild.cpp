@@ -240,7 +240,7 @@ bool Guild::LoadRanksFromDB(uint32 GuildId)
 
         std::string rankName = fields[0].GetCppString();
         uint32 rankRights    = fields[1].GetUInt32();
-        uint32 rankRID       = fields[3].GetUInt32();
+        uint32 rankRID       = fields[2].GetUInt32();
 
         if(rankRID != m_ranks.size()+1)                     // guild_rank.rid always store rank+1
             broken_ranks =  true;
