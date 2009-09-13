@@ -1230,17 +1230,13 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
         break;
     }
 
+    if(damageInfo->school == SPELL_SCHOOL_NORMAL)
+        damage = CalcArmorReducedDamage(pVictim, damage);
+
     if(damage > 0)
     {
         CalcAbsorbResist(pVictim, SchoolMask, SPELL_DIRECT_DAMAGE, damage, &damageInfo->absorb, &damageInfo->resist);
-
-        if(GetFirstSchoolInMask(SchoolMask) == SPELL_SCHOOL_NORMAL)
-        {
-            damage = CalcArmorReducedDamage(pVictim, damage);
-            damage -= damageInfo->absorb; 
-        }
-        else
-            damage -= damageInfo->absorb + damageInfo->resist;
+        damage -= damageInfo->absorb + damageInfo->resist;
     }
     else
       damage = 0;
