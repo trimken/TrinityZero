@@ -66,13 +66,11 @@ enum LoginResult
     LOGIN_LOCKED_ENFORCED   = 0x1C,
 };
 
-//multirealm supported versions:
-//1.12.1 build 5875
-//1.12.2 build 6005
-//2.4.3 build 8606
-//3.1.3 build 9947
+// we need to stick to 1 version or half of the stuff will work for someone
+// others will not and opposite
+// will only support 1.12.1 client (build 5875) and 1.12.2 client (build 6005)..
 
-#define EXPECTED_TRINITY_CLIENT_BUILD        {9947, 8606, 5875, 6005, 0}
+#define EXPECTED_TRINITY_CLIENT_BUILD        {5875,6005,0}
 
 #endif
 
