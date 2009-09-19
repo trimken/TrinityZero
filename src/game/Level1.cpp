@@ -2010,30 +2010,6 @@ bool ChatHandler::HandleModifyBitCommand(const char* args)
     return true;
 }
 
-bool ChatHandler::HandleModifyHonorCommand (const char* args)
-{
- /* [TZERO] to replace ?
-  if (!*args)
-        return false;
-
-    Player *target = getSelectedPlayer();
-    if(!target)
-    {
-        SendSysMessage(LANG_PLAYER_NOT_FOUND);
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    int32 amount = (uint32)atoi(args);
-
-    target->ModifyHonorPoints(amount);
-
-    PSendSysMessage(LANG_COMMAND_MODIFY_HONOR, target->GetName(), target->GetHonorPoints());
-
-    return true; */
-    return false;
-}
-
 bool ChatHandler::HandleTeleCommand(const char * args)
 {
     if(!*args)

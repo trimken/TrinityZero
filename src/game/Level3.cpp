@@ -4828,12 +4828,14 @@ bool ChatHandler::HandleResetHonorCommand (const char * args)
         return true;
     }
 
-/* [TZERO]
-    player->SetUInt32Value(PLAYER_FIELD_KILLS, 0);
-    player->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, 0);
-    player->SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, 0);
-    player->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
-    player->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0); */
+    player->SetStoredHonor(0);
+	player->SetHonorStoredKills(0,true);
+	player->SetHonorStoredKills(0,false);
+	player->SetHonorLastWeekStanding(0);
+	player->m_pending_dishonorableKills = 0;
+	player->m_pending_honorableKills = 0;
+	player->m_pending_honor = 0;
+	CharacterDatabase.PExecute("DELETE FROM character_kill WHERE guid = '%u'",player->GetGUIDLow());
 
     return true;
 }

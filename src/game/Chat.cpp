@@ -308,6 +308,7 @@ ChatCommand * ChatHandler::getCommandTable()
     {
         { "add",            SEC_GAMEMASTER,     false, &ChatHandler::HandleAddHonorCommand,            "", NULL },
         { "addkill",        SEC_GAMEMASTER,     false, &ChatHandler::HandleHonorAddKillCommand,        "", NULL },
+		{ "show",           SEC_GAMEMASTER,     false, &ChatHandler::HandleShowHonor,                  "", NULL },
         { "update",         SEC_GAMEMASTER,     false, &ChatHandler::HandleUpdateHonorFieldsCommand,   "", NULL },
         { NULL,             0,                  false, NULL,                                           "", NULL }
     };

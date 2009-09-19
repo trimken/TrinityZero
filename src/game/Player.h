@@ -1717,14 +1717,23 @@ class TRINITY_DLL_SPEC Player : public Unit
         uint32 GetHonorHighestRank() const { return m_highest_rank; }
         void SetHonorHighestRank(uint32 hr) { m_highest_rank = hr; }
         //Acessors of rating
-        float GetHonorRating() const { return m_rating; }
-        void SetHonorRating(float rating) { m_rating = rating; }
+        float GetStoredHonor() const { return m_stored_honor; }
+        void SetStoredHonor(float rating) { m_stored_honor = rating; }
+		//Acessors of lifetime
+		uint32 GetHonorStoredKills(bool honorable) const { return honorable? m_stored_honorableKills : m_stored_dishonorableKills; }
+        void SetHonorStoredKills(uint32 kills,bool honorable) { if (honorable) m_stored_honorableKills = kills; else m_stored_dishonorableKills = kills; }
         //Acessors of last week standing
         int32 GetHonorLastWeekStanding() const { return m_standing; }
         void SetHonorLastWeekStanding(int32 standing){ m_standing = standing; }
 
         float m_total_honor_points;
-        float m_rating;
+        float m_stored_honor;
+		float m_pending_honor;
+		uint32 m_pending_honorableKills;
+		uint32 m_pending_dishonorableKills;
+		uint32 m_storingDate;
+		uint32 m_stored_honorableKills;
+		uint32 m_stored_dishonorableKills;
         uint32 m_highest_rank;
         int32 m_standing;
 
