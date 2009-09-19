@@ -40,7 +40,6 @@
 #include "BattleGroundMgr.h"
 #include "BattleGround.h"
 #include "Guild.h"
-#include "Spell.h"
 
 void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
 {
@@ -152,45 +151,29 @@ void WorldSession::SendTrainerList( uint64 guid, const std::string& strTitle )
         return;
     }
 
-	TrainerSpellList Tspells;
-	TrainerSpellList::const_iterator itr;
-
-	for (itr = trainer_spells->spellList.begin(); itr != trainer_spells->spellList.end();itr++)
-    {
-        if(!(*itr)->spell  || _player->HasSpell((*itr)->spell))
-            continue;
-
-		const SpellEntry *spell = sSpellStore.LookupEntry((*itr)->spell);
-
-        if(spell && sSpellStore.LookupEntry(spell->EffectTriggerSpell[0]))
-            Tspells.push_back(*itr);
-    }
-
-    WorldPacket data( SMSG_TRAINER_LIST, 8+4+4+Tspells.size()*38 + strTitle.size()+1);
+    WorldPacket data( SMSG_TRAINER_LIST, 8+4+4+trainer_spells->spellList.size()*38 + strTitle.size()+1);
     data << guid;
     data << uint32(trainer_spells->trainerType);
 
     size_t count_pos = data.wpos();
-    data << uint32(Tspells.size());
+    data << uint32(trainer_spells->spellList.size());
 
     // reputation discount
     float fDiscountMod = _player->GetReputationPriceDiscount(unit);
 
     uint32 count = 0;
-    for(TrainerSpellList::const_iterator itr = Tspells.begin(); itr != Tspells.end(); ++itr)
+    for(TrainerSpellList::const_iterator itr = trainer_spells->spellList.begin(); itr != trainer_spells->spellList.end(); ++itr)
     {
         TrainerSpell const* tSpell = *itr;
 
-		uint32 triggerSpell = sSpellStore.LookupEntry(tSpell->spell)->EffectTriggerSpell[0];
-
-        if(!_player->IsSpellFitByClassAndRace(triggerSpell))
+        if(!_player->IsSpellFitByClassAndRace(tSpell->spell))
             continue;
 
         ++count;
 
-        bool primary_prof_first_rank = spellmgr.IsPrimaryProfessionFirstRankSpell(triggerSpell);
+        bool primary_prof_first_rank = spellmgr.IsPrimaryProfessionFirstRankSpell(tSpell->spell);
 
-        SpellChainNode const* chain_node = spellmgr.GetSpellChainNode(triggerSpell);
+        SpellChainNode const* chain_node = spellmgr.GetSpellChainNode(tSpell->spell);
         uint32 req_spell = spellmgr.GetSpellRequired(tSpell->spell);
 
         data << uint32(tSpell->spell);
@@ -251,9 +234,6 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
     if(_player->GetTrainerSpellState(trainer_spell) != TRAINER_SPELL_GREEN)
         return;
 
-	SpellEntry const *proto = sSpellStore.LookupEntry(trainer_spell->spell);
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(proto->EffectTriggerSpell[0]);
-
     // apply reputation discount
     uint32 nSpellCost = uint32(floor(trainer_spell->spellcost * _player->GetReputationPriceDiscount(unit)));
 
@@ -261,28 +241,22 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
     if(_player->GetMoney() < nSpellCost )
         return;
 
-    WorldPacket data( SMSG_TRAINER_BUY_SUCCEEDED, 12 );
-    data << guid << spellId;
-    SendPacket( &data );
+    WorldPacket data(SMSG_PLAY_SPELL_VISUAL, 12);           // visual effect on trainer
+    data << uint64(guid) << uint32(0xB3);
+    SendPacket(&data);
+
+    data.Initialize(SMSG_PLAY_SPELL_IMPACT, 12);            // visual effect on player
+    data << uint64(_player->GetGUID()) << uint32(0x016A);
+    SendPacket(&data);
 
     _player->ModifyMoney( -int32(nSpellCost) );
 
-   /* if(spellInfo->powerType == POWER_FOCUS)
-    {
-        _player->learnSpell(spellId);
-        return;
-    } */
+    // learn explicitly to prevent lost money at lags, learning spell will be only show spell animation
+    _player->learnSpell(trainer_spell->spell);
 
-    Spell *spell;
-    if(proto->SpellVisual == 222)
-        spell = new Spell(_player, proto, false, NULL);
-    else
-        spell = new Spell(unit, proto, false, NULL);
-
-    SpellCastTargets targets;
-    targets.setUnitTarget( _player );
-
-    spell->prepare(&targets);
+    data.Initialize(SMSG_TRAINER_BUY_SUCCEEDED, 12);
+    data << uint64(guid) << uint32(spellId);
+    SendPacket(&data);
 }
 
 void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )

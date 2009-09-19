@@ -321,47 +321,7 @@ enum TrinityStrings
     LANG_CREATURE_NOT_FOLLOW_YOU_NOW    = 342,
     LANG_CREATURE_NON_TAMEABLE          = 343,
     LANG_YOU_ALREADY_HAVE_PET           = 344,
-	// alliance ranks
-    LANG_ALI_PRIVATE                    = 345,
-    LANG_ALI_CORPORAL                   = 346,
-    LANG_ALI_SERGEANT                   = 347,               
-    LANG_ALI_MASTER_SERGEANT            = 348,        
-    LANG_ALI_SERGEANT_MAJOR             = 349,         
-    LANG_ALI_KNIGHT                     = 350,                 
-    LANG_ALI_KNIGHT_LIEUTENANT          = 351,      
-    LANG_ALI_KNIGHT_CAPTAIN             = 352,         
-    LANG_ALI_KNIGHT_CHAMPION            = 353,        
-    LANG_ALI_LIEUTENANT_COMMANDER       = 354,    
-    LANG_ALI_COMMANDER                  = 355,              
-    LANG_ALI_MARSHAL                    = 356,                
-    LANG_ALI_FIELD_MARSHAL              = 357,          
-    LANG_ALI_GRAND_MARSHAL              = 358,                     
-
-// horde ranks
-    LANG_HRD_SCOUT                      = 359,                  
-    LANG_HRD_GRUNT                      = 360,                  
-    LANG_HRD_SERGEANT                   = 361,               
-    LANG_HRD_SENIOR_SERGEANT            = 362,        
-    LANG_HRD_FIRST_SERGEANT             = 363,        
-    LANG_HRD_STONE_GUARD                = 364,             
-    LANG_HRD_BLOOD_GUARD                = 365,            
-    LANG_HRD_LEGIONNARE                 = 366,             
-    LANG_HRD_CENTURION                  = 367,              
-    LANG_HRD_CHAMPION                   = 368,               
-    LANG_HRD_LIEUTENANT_GENERAL         = 369,     
-    LANG_HRD_GENERAL                    = 370,                
-    LANG_HRD_WARLORD                    = 371,                
-    LANG_HRD_HIGH_WARLORD               = 372,
-
-    LANG_GAME_MASTER                    = 373,             
-    LANG_NO_RANK                        = 374,                    
-    LANG_RANK                           = 375,                       
-    LANG_HONOR_TODAY                    = 376,                
-    LANG_HONOR_YESTERDAY                = 377,           
-    LANG_HONOR_THIS_WEEK                = 378,            
-    LANG_HONOR_LAST_WEEK                = 379,            
-    LANG_HONOR_LIFE                     = 380,                 
-    // Room for more level 2              381-399 not used
+    // Room for more level 2              345-399 not used
 
     // level 3 chat
     LANG_SCRIPTS_RELOADED               = 400,

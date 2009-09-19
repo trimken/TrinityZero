@@ -35,20 +35,14 @@ namespace Trinity
 
     namespace Honor
     {
-        //TODO: Fix this formula, for now the weekly rating is how many honor player gain all life time
-        inline float CalculeRating(Player *plr)
-        {
-            return plr->GetTotalHonor()+plr->GetStoredHonor();
-        }
-
-		//TODO: Implement this function
+        //TODO: Implement this function
         // NOTE: DO NOT IMPLEMENT A FUNCTION THAT USES A QUERY, SAVE THE DATA
         inline int32 CalculeStanding(Player *plr)
         {
             uint64 guid = 0;
             int standing = 0;
 
-            float m_rating = CalculeRating(plr);
+            float m_rating = plr->GetHonorRating();
             QueryResult *result = CharacterDatabase.PQuery("SELECT count(*) as cnt FROM `characters` WHERE `honor_rating` >= '%f'", m_rating );
             if(result)
             {
@@ -57,6 +51,11 @@ namespace Trinity
                 delete result;
             }
             return standing;
+        }
+        //TODO: Fix this formula, for now the weekly rating is how many honor player gain all life time
+        inline float CalculeRating(Player *plr)
+        {
+            return plr->GetTotalHonor();
         }
 
         inline float DishonorableKillPoints(int level)

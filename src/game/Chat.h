@@ -293,7 +293,6 @@ class ChatHandler
         bool HandleServerShutDownCommand(const char* args);
         bool HandleServerShutDownCancelCommand(const char* args);
 
-		bool HandleShowHonor(const char* args);
         bool HandleAddHonorCommand(const char* args);
         bool HandleHonorAddKillCommand(const char* args);
         bool HandleUpdateHonorFieldsCommand(const char* args);

@@ -304,12 +304,6 @@ Player::Player (WorldSession *session): Unit()
     duel = NULL;
 
     m_total_honor_points = 0;
-	m_pending_honor = 0;
-	m_pending_honorableKills = 0;
-	m_pending_dishonorableKills = 0;
-	m_storingDate = 0;
-	m_stored_honorableKills = 0;
-    m_stored_dishonorableKills = 0;
 
     m_GuildIdInvited = 0;
 
@@ -572,7 +566,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
     SetUInt32Value( PLAYER_GUILD_TIMESTAMP, 0 );
 
-    m_stored_honor = 0;
+    m_rating = 0;
     m_highest_rank = 0;
     m_standing = 0;
 
@@ -2384,7 +2378,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetByteValue(UNIT_FIELD_BYTES_1, 2, 0x00);              // one form stealth modified bytes
 
     // restore if need some important flags
-    //SetUInt32Value(PLAYER_FIELD_BYTES2, 0 );                // flags empty by default
+    SetUInt32Value(PLAYER_FIELD_BYTES2, 0 );                // flags empty by default
 
     if(reapplyMods)                                         //reapply stats values only on .reset stats (level) command
         _ApplyAllStatBonuses();
@@ -2678,9 +2672,9 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool loading,
                         {
                             if(!loading)                    // not send spell (re-/over-)learn packets at loading
                             {
-                                WorldPacket data(SMSG_SUPERCEDED_SPELL, (8));
-                                data << uint32(itr->first);
-                                data << uint32(spell_id);
+                                WorldPacket data(SMSG_SUPERCEDED_SPELL, (4));
+                                data << uint16(itr->first);
+                                data << uint16(spell_id);
                                 GetSession()->SendPacket( &data );
                             }
 
@@ -2693,9 +2687,9 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool loading,
                         {
                             if(!loading)                    // not send spell (re-/over-)learn packets at loading
                             {
-                                WorldPacket data(SMSG_SUPERCEDED_SPELL, (8));
-                                data << uint32(spell_id);
-                                data << uint32(itr->first);
+                                WorldPacket data(SMSG_SUPERCEDED_SPELL, (4));
+                                data << uint16(spell_id);
+                                data << uint16(itr->first);
                                 GetSession()->SendPacket( &data );
                             }
 
@@ -3455,24 +3449,19 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
     if (!trainer_spell->spell)
         return TRAINER_SPELL_RED;
 
-	// exist, already checked at loading
-    SpellEntry const* spell = sSpellStore.LookupEntry(trainer_spell->spell);
-	SpellEntry const* TriggerSpell = sSpellStore.LookupEntry(spell->EffectTriggerSpell[0]);
-
     // known spell
-    if(HasSpell(TriggerSpell->Id))
+    if(HasSpell(trainer_spell->spell))
         return TRAINER_SPELL_GRAY;
 
     // check race/class requirement
-    if(!IsSpellFitByClassAndRace(TriggerSpell->Id))
+    if(!IsSpellFitByClassAndRace(trainer_spell->spell))
         return TRAINER_SPELL_RED;
 
     // check level requirement
-	uint32 spellLevel = trainer_spell->reqlevel ? trainer_spell->reqlevel : TriggerSpell->spellLevel;
-    if(getLevel() < spellLevel)
+    if(getLevel() < trainer_spell->reqlevel)
         return TRAINER_SPELL_RED;
 
-    if(SpellChainNode const* spell_chain = spellmgr.GetSpellChainNode(TriggerSpell->Id))
+    if(SpellChainNode const* spell_chain = spellmgr.GetSpellChainNode(trainer_spell->spell))
     {
         // check prev.rank requirement
         if(spell_chain->prev && !HasSpell(spell_chain->prev))
@@ -3489,6 +3478,9 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
     // check skill requirement
     if(trainer_spell->reqskill && GetBaseSkillValue(trainer_spell->reqskill) < trainer_spell->reqskillvalue)
         return TRAINER_SPELL_RED;
+
+    // exist, already checked at loading
+    SpellEntry const* spell = sSpellStore.LookupEntry(trainer_spell->spell);
 
     // secondary prof. or not prof. spell
     uint32 skill = spell->EffectMiscValue[1];
@@ -3640,7 +3632,6 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     CharacterDatabase.PExecute("DELETE FROM mail_items WHERE receiver = '%u'",guid);
     CharacterDatabase.PExecute("DELETE FROM character_pet WHERE owner = '%u'",guid);
     CharacterDatabase.PExecute("DELETE FROM character_pet_declinedname WHERE owner = '%u'",guid);
-	CharacterDatabase.PExecute("DELETE FROM character_kill WHERE `guid` = '%u'",guid);
     CharacterDatabase.CommitTransaction();
 
     //LoginDatabase.PExecute("UPDATE realmcharacters SET numchars = numchars - 1 WHERE acctid = %d AND realmid = %d", accountId, realmID);
@@ -5788,19 +5779,16 @@ void Player::UpdateHonor(void)
     uint32 LastWeekBegin = 0;
     uint32 LastWeekEnd = 0;
 
-	uint32 lastweek_honorableKills = 0;
-    uint32 lastweek_dishonorableKills = 0;
+    uint32 lifetime_honorableKills = 0;
+    uint32 lifetime_dishonorableKills = 0;
     uint32 today_honorableKills = 0;
     uint32 today_dishonorableKills = 0;
-    m_pending_honorableKills = 0;
-	m_pending_dishonorableKills = 0;
-	m_pending_honor = 0;
 
     uint32 yesterdayKills = 0;
     uint32 thisWeekKills = 0;
     uint32 lastWeekKills = 0;
 
-    float lastWeekTotalHonor = 0;
+    float total_honor = 0;
     float yesterdayHonor = 0;
     float thisWeekHonor = 0;
     float lastWeekHonor = 0;
@@ -5815,7 +5803,6 @@ void Player::UpdateHonor(void)
     ThisWeekEnd   = ThisWeekBegin + 7;
     LastWeekBegin = ThisWeekBegin - 7;
     LastWeekEnd   = LastWeekBegin + 7;
-	m_storingDate = LastWeekBegin;
 
     sLog.outDetail("PLAYER: UpdateHonor");
 
@@ -5830,6 +5817,9 @@ void Player::UpdateHonor(void)
 
             if(fields[0].GetUInt32() == HONORABLE_KILL)
             {
+                lifetime_honorableKills++;
+                //total_honor += fields[1].GetFloat();
+
                 if( date == today)
                 {
                     today_honorableKills++;
@@ -5849,32 +5839,29 @@ void Player::UpdateHonor(void)
                     lastWeekKills++;
                     lastWeekHonor += fields[1].GetFloat();
                 }
-				
-				if(date < m_storingDate)
-				{
-					m_pending_honor += fields[1].GetFloat();
-				    m_pending_honorableKills++;
-				}
+
+                //All honor points until last week
+                if( date < LastWeekEnd )
+                {
+                    total_honor += fields[1].GetFloat();
+                }
 
             }
             else if(fields[0].GetUInt32() == DISHONORABLE_KILL)
             {
+                lifetime_dishonorableKills++;
+                //total_honor -= fields[1].GetFloat();
+
                 if( date == today)
                 {
                     today_dishonorableKills++;
                 }
 
-				if( (date >= LastWeekBegin) && (date < LastWeekEnd) )
-				{
-					lastWeekTotalHonor -= fields[1].GetFloat();
-					lastweek_dishonorableKills++;
-				}
-				
-				if( date < m_storingDate)
-				{
-					m_pending_honor -= fields[1].GetFloat();
-				    m_pending_dishonorableKills++;
-				}
+                //All honor points until last week
+                if( date < LastWeekEnd )
+                {
+                    total_honor -= fields[1].GetFloat();
+                }
             }
         }
         while( result->NextRow() );
@@ -5882,35 +5869,31 @@ void Player::UpdateHonor(void)
         delete result;
     }
 
-	lastWeekTotalHonor += lastWeekHonor;
-
-	uint32 total_dishonorableKills = m_pending_dishonorableKills + lastweek_dishonorableKills + today_dishonorableKills + GetHonorStoredKills(false);
-	uint32 total_honorableKills = m_pending_honorableKills + lastweek_honorableKills + today_honorableKills + GetHonorStoredKills(true);
-
     //Store Total Honor points...
-	SetTotalHonor(lastWeekTotalHonor+m_pending_honor+GetStoredHonor());
+    SetTotalHonor(total_honor);
 
     //RIGHEST RANK
     //If the new rank is highest then the old one, then m_highest_rank is updated
-    uint32 new_honor_rank = CalculateHonorRank(GetTotalHonor());
+    uint32 new_honor_rank = CalculateHonorRank(total_honor);
     if( new_honor_rank > GetHonorHighestRank() )
     {
         SetHonorHighestRank( new_honor_rank );
     }
 
     //RATING
-    SetStoredHonor( Trinity::Honor::CalculeRating(this) );
+    SetHonorRating( Trinity::Honor::CalculeRating(this) );
 
     //STANDING
     SetHonorLastWeekStanding( Trinity::Honor::CalculeStanding(this) );
 
+    //TODO Fix next rank bar... it is not working fine! For while it be set with the total honor points...
     //NEXT RANK BAR
     //PLAYER_FIELD_HONOR_BAR
-    SetUInt32Value(PLAYER_FIELD_BYTES2, (uint32)GetTotalHonor());
+    SetUInt32Value(PLAYER_FIELD_BYTES2, (uint32)( (total_honor < 0) ? 0: total_honor) );
 
     //RANK (Patent)
-    if( CalculateHonorRank(GetTotalHonor()) )
-        SetUInt32Value(PLAYER_BYTES_3, (( CalculateHonorRank(GetTotalHonor()) << 24) + 0x04000000) + (m_drunk & 0xFFFE) + getGender());
+    if( CalculateHonorRank(total_honor) )
+        SetUInt32Value(PLAYER_BYTES_3, (( CalculateHonorRank(total_honor) << 24) + 0x04000000) + (m_drunk & 0xFFFE) + getGender());
     else
         SetUInt32Value(PLAYER_BYTES_3, (m_drunk & 0xFFFE) + getGender());
 
@@ -5928,9 +5911,9 @@ void Player::UpdateHonor(void)
     SetUInt32Value(PLAYER_FIELD_LAST_WEEK_RANK, GetHonorLastWeekStanding());
 
     //LIFE TIME
-    SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, total_dishonorableKills);
-    SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, total_honorableKills);
-	SetUInt32Value(PLAYER_FIELD_SESSION_KILLS, (GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS) << 16) + GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS) );
+    SetUInt32Value(PLAYER_FIELD_SESSION_KILLS, (lifetime_dishonorableKills << 16) + lifetime_honorableKills );
+    SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, lifetime_dishonorableKills);
+    SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, lifetime_honorableKills);
     //TODO: Into what field we need to set it? Fix it!
     SetUInt32Value(PLAYER_FIELD_PVP_MEDALS/*???*/, (GetHonorHighestRank() != 0 ? ((GetHonorHighestRank() << 24) + 0x040F0001) : 0) );
 }
@@ -5946,7 +5929,7 @@ uint32 Player::GetHonorRank() const
 uint32 Player::CalculateHonorRank(float honor_points) const
 {
     uint32 rank = 0;
-    // you can modify this formula on negative values to show old dishonored ranks too
+
     if(honor_points <=    0.00)
         rank = 0;
     else if(honor_points <  2000.00)
@@ -13037,10 +13020,6 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
         return false;
     }
 
-	//Store original values before modifying temporarily the data field
-	SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS),true);
-	SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS),false);
-
     // overwrite possible wrong/corrupted guid
     SetUInt64Value(OBJECT_FIELD_GUID, MAKE_NEW_GUID(guid, 0, HIGHGUID_PLAYER));
 
@@ -13091,7 +13070,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     m_highest_rank = fields[32].GetUInt32();
     m_standing = fields[33].GetUInt32();
-    m_stored_honor = fields[34].GetFloat();
+    m_rating = fields[34].GetFloat();
 
     _LoadBoundInstances(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES));
 
@@ -14466,15 +14445,9 @@ void Player::SaveToDB()
 
     bool inworld = IsInWorld();
 
-	SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, GetHonorStoredKills(false)+m_pending_honorableKills);
-    SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, GetHonorStoredKills(true)+m_pending_dishonorableKills);
-	m_stored_honor += m_pending_honor;
-    m_pending_honor = 0;
-
     CharacterDatabase.BeginTransaction();
 
-	CharacterDatabase.PExecute("DELETE FROM characters WHERE guid = '%u'",GetGUIDLow());
-    CharacterDatabase.PExecute("DELETE FROM character_kill WHERE date < '%u'",m_storingDate);
+    CharacterDatabase.PExecute("DELETE FROM characters WHERE guid = '%u'",GetGUIDLow());
 
     std::string sql_name = m_name;
     CharacterDatabase.escape_string(sql_name);
@@ -14590,7 +14563,7 @@ void Player::SaveToDB()
     ss << m_standing;
 
     ss << ", ";
-    ss << m_stored_honor;
+    ss << m_rating;
 
     ss << ", '";
     ss << GetSession()->GetLatency();
