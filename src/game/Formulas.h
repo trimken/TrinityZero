@@ -219,13 +219,10 @@ namespace Trinity
             {
                 xp = (155 + mxp(lvl) * (1344 - 70 - ((69 - lvl) * (7 + (69 - lvl) * 8 - 1)/2)));
             }
-            else if (lvl < 70)
+            else
             {
-                xp = (155 + mxp(lvl) * (1344 - ((69-lvl) * (7 + (69 - lvl) * 8 - 1)/2)));
-            }else
-            {
-                // level higher than 70 is not supported
-                xp = (uint32)(779700 * (pow(sWorld.getRate(RATE_XP_PAST_70), (int32)lvl - 69)));
+                // level higher than 60 is not supported
+                xp = (uint32)(779700 * (pow(sWorld.getRate(RATE_XP_PAST_60), (int32)lvl - 59)));
                 return ((xp < 0x7fffffff) ? xp : 0x7fffffff);
             }
 
