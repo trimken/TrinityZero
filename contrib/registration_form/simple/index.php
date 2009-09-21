@@ -6,23 +6,25 @@ $r_db = "realmd";
 // IP (and port).
 $ip = "127.0.0.1:3306";
 // Username.
-$user = "trinity";
+$user = "USER";
 // Password.
-$pass = "trinity";
+$pass = "PASSWORD";
 // Site title.
-$title = "Registration Form";
-$title2 = "Some Server";
+$title = "Create Account";
+$title2 = "Trinity Zero";
 // End config.
 
 $page = '<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<link rel="stylesheet" type="text/css" href="stylesheet/mall.css">
 <head>
-<title>' . $title . '</title>
+<title>' . $title2 . '</title>
 </head>
-<body style="background-color:black;color:yellow;font-family:verdana;">
+<body>
 <form method="post" action="' . $_SERVER["SCRIPT_NAME"] . '">
 <p style="text-align:center;">
+<br /><br /><br /><br /><br /><br /><br />
 <strong>' . $title2 . ' - ' . $title . '</strong>
 <br /><br /><br />
 Username:
@@ -31,8 +33,13 @@ Password:
 <br /><input name="password" type="password" maxlength="12" /><br />
 Email:
 <br /><input name="email" type="text" maxlength="50" />
-<br /><input name="tbc" type="checkbox" checked="checked" /> TBC<br /><br /><br />
-<button type="submit">Submit</button>
+<br /><br />
+<button type="submit">Submit</button><br /><br /><br />
+<strong> - How to Connect - </strong><br /><br />
+1. Use client version 1.12.1 (5875)<br />
+2. Set realmlist 127.0.0.1<br />
+3. Create Account<br />
+4. Start Wow.exe, log in and enjoy!<br />
 </p>
 </form>
 </body>
@@ -52,14 +59,14 @@ if (!$con) {
 };
 
 if (!empty($_POST)) {
-        if ((empty($_POST["username"]))||(empty($_POST["password"]))||(empty($_POST["email"]))||(empty($_POST["tbc"])) ) {
+        if ((empty($_POST["username"]))||(empty($_POST["password"]))||(empty($_POST["email"])) ) {
                 error_s("You did not enter all the required information.");
 				exit();
         } else {
                 $username = strtoupper($_POST["username"]);
                 $password = strtoupper($_POST["password"]);
                 $email = strtoupper($_POST["email"]);
-                if (strlen($username) < 5) {
+                if (strlen($username) < 3) {
                         error_s("Username too short.");
                         exit();
                 };
@@ -67,7 +74,7 @@ if (!empty($_POST)) {
                         error_s("Username too long.");
                         exit();
                 };
-                if (strlen($password) < 8) {
+                if (strlen($password) < 3) {
                         error_s("Password too short.");
                         exit();
                 };
@@ -133,7 +140,7 @@ if (!empty($_POST)) {
                 };
 				unset($qry);
                 $sha_pass_hash = sha1(strtoupper($username) . ":" . strtoupper($password));
-                $register_sql = "insert into " . mysql_real_escape_string($r_db) . ".account (username, sha_pass_hash, email, expansion) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "','" . $tbc . "')";
+                $register_sql = "insert into " . mysql_real_escape_string($r_db) . ".account (username, sha_pass_hash, email) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "')";
                 $qry = @mysql_query($register_sql, $con);
 				if (!$qry) {
 					error_s("Error creating account: " . mysql_error());
