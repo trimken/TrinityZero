@@ -2799,6 +2799,7 @@ void Spell::SendSpellStart()
     data << uint16(castFlags);
     data << uint32(m_timer);
 
+	data << m_targets.m_targetMask;
     m_targets.write(&data);
 
     if( castFlags & CAST_FLAG_AMMO )
