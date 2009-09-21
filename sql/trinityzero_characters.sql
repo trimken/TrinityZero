@@ -1,6 +1,6 @@
 -- MySQL dump 10.11
 --
--- Host: localhost    Database: characters_clean
+-- Host: localhost    Database: characters_trinity_clean
 -- ------------------------------------------------------
 -- Server version	5.0.45-community-nt
 
@@ -621,7 +621,7 @@ CREATE TABLE `characters` (
   `taxi_path` text,
   `honor_highest_rank` int(11) unsigned NOT NULL default '0',
   `honor_standing` int(11) unsigned NOT NULL default '0',
-  `honor_rating` float unsigned NOT NULL default '0',
+  `honor_rating` float NOT NULL default '0',
   `latency` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`guid`),
   KEY `idx_account` (`account`),
@@ -1205,4 +1205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-09-07 11:23:50
+-- Dump completed on 2009-09-21  6:55:55
