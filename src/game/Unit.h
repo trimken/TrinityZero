@@ -651,6 +651,23 @@ struct SpellNonMeleeDamage{
     uint32 cleanDamage;
 };
 
+// Periodic spell damage info structure based on structure sending in SMSG_PERIODICAURALOG opcode
+struct PeriodicAura{
+ PeriodicAura(Unit *_attacker, Unit *_target, uint32 _SpellID, uint32 _school) :
+    attacker(_attacker), target(_target), SpellID(_SpellID), damage(0), school(_school),
+    absorb(0), resist(0), isFromAura(1) {}
+    
+	Unit   *target;
+    Unit   *attacker;
+    uint32 SpellID;
+	uint32 isFromAura;
+	uint32 auraType;
+    uint32 damage;
+    uint32 school;
+    uint32 absorb;
+    uint32 resist;
+};
+
 uint32 createProcExtendMask(SpellNonMeleeDamage *damageInfo, SpellMissInfo missCondition);
 
 struct UnitActionBarEntry
@@ -1043,6 +1060,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void SendAttackStateUpdate(CalcDamageInfo *damageInfo);
         void SendAttackStateUpdate(uint32 HitInfo, Unit *target, uint8 SwingType, SpellSchoolMask damageSchoolMask, uint32 Damage, uint32 AbsorbDamage, uint32 Resist, VictimState TargetState, uint32 BlockedAmount);
         void SendSpellNonMeleeDamageLog(SpellNonMeleeDamage *log);
+		void SendPeriodicAuraLog(PeriodicAura *log);
         void SendSpellNonMeleeDamageLog(Unit *target,uint32 SpellID,uint32 Damage, SpellSchoolMask damageSchoolMask,uint32 AbsorbedDamage, uint32 Resist,bool PhysicalDamage, uint32 Blocked, bool CriticalHit = false);
         void SendSpellMiss(Unit *target, uint32 spellID, SpellMissInfo missInfo);
 

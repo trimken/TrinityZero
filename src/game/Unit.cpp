@@ -1686,9 +1686,9 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
         return;
 
     // Magic damage, check for resists
-    if ( (schoolMask & SPELL_SCHOOL_MASK_NORMAL) == 0)
+	if ( schoolMask != SPELL_SCHOOL_MASK_NORMAL && schoolMask != SPELL_SCHOOL_MASK_NONE)// && (GetEffectMechanic(m_spellInfo, pVictim->) != MECHANIC_BLEED))
     {
-        // Get base victim resistance for school
+		// Get base victim resistance for school
         float tmpvalue2 = (float)pVictim->GetResistance(GetFirstSchoolInMask(schoolMask));
         // Ignore resistance by self SPELL_AURA_MOD_TARGET_RESISTANCE aura
         tmpvalue2 += (float)GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_TARGET_RESISTANCE, schoolMask);
@@ -1730,6 +1730,8 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
     {
         next = i; ++next;
 
+		// check damage school mask
+		//[TZERO]Not working correctly, needs rewrite?
         if (((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
             continue;
 
@@ -1813,6 +1815,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
         next = i; ++next;
 
         // check damage school mask
+		//[TZERO]Not working correctly, needs rewrite?
         if(((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
             continue;
 
@@ -1852,6 +1855,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
             next = i; ++next;
 
             // check damage school mask
+			//[TZERO]Not working correctly, needs rewrite?
             if(((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
                 continue;
 
@@ -4636,6 +4640,20 @@ void Unit::SendSpellNonMeleeDamageLog(Unit *target,uint32 SpellID,uint32 Damage,
     data << uint32(CriticalHit ? 0x27 : 0x25);              // hitType, flags: 0x2 - SPELL_HIT_TYPE_CRIT, 0x10 - replace caster?
     data << uint8(0);                                       // isDebug?
     SendMessageToSet( &data, true );
+}
+void Unit::SendPeriodicAuraLog(PeriodicAura *log)
+{
+	WorldPacket data(SMSG_PERIODICAURALOG, (21+16));		// we guess size
+    data.append(log->target->GetPackGUID());
+	data.append(log->attacker->GetPackGUID());				//data.appendPackGUID(log->attacker->GetGUID());			
+    data << uint32(log->SpellID);							//Spell ID
+	data << uint32(log->isFromAura);						//isFromAura?
+	data << uint32(log->auraType);							//Aura Type
+    data << uint32(log->damage);							//Damage Amount / Power value for SPELL_AURA_PERIODIC_MANA_LEECH
+    data << uint32(log->school);							//[TZERO] Spell School / drain value for SPELL_AURA_PERIODIC_MANA_LEECH
+    data << uint32(log->absorb);                            //Absorbed Damage / multiplier value for SPELL_AURA_PERIODIC_MANA_LEECH
+    data << uint32(log->resist);							//Resisted Damage	
+	SendMessageToSet( &data, true );
 }
 
 void Unit::ProcDamageAndSpell(Unit *pVictim, uint32 procAttacker, uint32 procVictim, uint32 procExtra, uint32 amount, WeaponAttackType attType, SpellEntry const *procSpell)
