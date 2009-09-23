@@ -102,11 +102,6 @@ if (!empty($_POST)) {
                         error_s("Email was in an incorrect format.");
                         exit();
                 };
-                if ($_POST['tbc'] != "on") {
-                        $tbc = "0";
-                } else {
-                        $tbc = "1";
-                };
                 $username = mysql_real_escape_string($username);
                 $password = mysql_real_escape_string($password);
                 $email = mysql_real_escape_string($email);
