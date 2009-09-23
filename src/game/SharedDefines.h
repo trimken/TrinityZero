@@ -1628,8 +1628,7 @@ enum QuestTypes
     QUEST_TYPE_DUNGEON             = 81,
     QUEST_TYPE_WORLD_EVENT         = 82, // tbc ?
     QUEST_TYPE_LEGENDARY           = 83, // tbc ?
-    QUEST_TYPE_ESCORT              = 84,
-    QUEST_TYPE_HEROIC              = 85, // tbc ?
+    QUEST_TYPE_ESCORT              = 84, // tbc ?
 };
 
 // values based at QuestSort.dbc

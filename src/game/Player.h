@@ -843,7 +843,7 @@ class TRINITY_DLL_SPEC PlayerTaxi
         PlayerTaxi();
         ~PlayerTaxi() {}
         // Nodes
-        void InitTaxiNodesForLevel(uint32 race, uint32 level);
+        void InitTaxiNodes(uint32 race, uint32 level);
         void LoadTaxiMask(const char* data);
         void SaveTaxiMask(const char* data);
 
@@ -961,7 +961,7 @@ class TRINITY_DLL_SPEC Player : public Unit
         PlayerSocial *GetSocial() { return m_social; }
 
         PlayerTaxi m_taxi;
-        void InitTaxiNodesForLevel() { m_taxi.InitTaxiNodesForLevel(getRace(),getLevel()); }
+        void InitTaxiNodes() { m_taxi.InitTaxiNodes(getRace(),getLevel()); }
         bool ActivateTaxiPathTo(std::vector<uint32> const& nodes, uint32 mount_id = 0 , Creature* npc = NULL);
                                                             // mount_id can be used in scripting calls
         bool isAcceptWhispers() const { return m_ExtraFlags & PLAYER_EXTRA_ACCEPT_WHISPERS; }

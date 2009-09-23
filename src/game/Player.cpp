@@ -131,7 +131,7 @@ PlayerTaxi::PlayerTaxi()
     memset(m_taximask, 0, sizeof(m_taximask));
 }
 
-void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 level)
+void PlayerTaxi::InitTaxiNodes(uint32 race, uint32 level)
 {
     memset(m_taximask, 0, sizeof(m_taximask));
     // capital and taxi hub masks
@@ -641,7 +641,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
 
     // base stats and related field values
     InitStatsForLevel();
-    InitTaxiNodesForLevel();
+    InitTaxiNodes();
     InitTalentForLevel();
     InitPrimaryProffesions();                               // to max set before any spell added
 
@@ -2198,7 +2198,6 @@ void Player::GiveLevel(uint32 level)
     SetCreateMana(classInfo.basemana);
 
     InitTalentForLevel();
-    InitTaxiNodesForLevel();
 
     UpdateAllStats();
 
@@ -13255,7 +13254,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     if( HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM) )
         SetUInt32Value(PLAYER_FLAGS, 0 | old_safe_flags);
 
-    m_taxi.LoadTaxiMask( fields[11].GetString() );          // must be before InitTaxiNodesForLevel
+    m_taxi.LoadTaxiMask( fields[11].GetString() );
 
     uint32 extraflags = fields[25].GetUInt32();
 
@@ -13326,7 +13325,6 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     // reset stats before loading any modifiers
     InitStatsForLevel();
-    InitTaxiNodesForLevel();
 
     // apply original stats mods before spell loading or item equipment that call before equip _RemoveStatsMods()
 

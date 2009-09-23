@@ -696,7 +696,7 @@ class TRINITY_DLL_SPEC Creature : public Unit
         CreatureGroup *m_formation;
 
         GridReference<Creature> m_gridRef;
-        CreatureInfo const* m_creatureInfo;                 // in heroic mode can different from ObjMgr::GetCreatureTemplate(GetEntry())
+        CreatureInfo const* m_creatureInfo;
 };
 
 class AssistDelayEvent : public BasicEvent
