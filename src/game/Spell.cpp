@@ -2223,7 +2223,7 @@ void Spell::cast(bool skipCheck)
 {
     SetExecutedCurrently(true);
 
-    uint8 castResult = 0;
+    SpellCastResult castResult = SPELL_CAST_OK;
 
     // update pointers base at GUIDs to prevent access to non-existed already object
     UpdatePointers();
@@ -2242,7 +2242,7 @@ void Spell::cast(bool skipCheck)
     if(!m_IsTriggeredSpell)
     {
         castResult = CheckPower();
-        if(castResult != 0)
+        if(castResult != SPELL_CAST_OK)
         {
             SendCastResult(castResult);
             finish(false);
@@ -2254,8 +2254,7 @@ void Spell::cast(bool skipCheck)
     // triggered cast called from Spell::prepare where it was already checked
     if(!skipCheck)
     {
-        castResult = CanCast(false);
-        if(castResult != 0)
+        if(CanCast(false))
         {
             SendCastResult(castResult);
             finish(false);
@@ -3515,8 +3514,11 @@ uint8 Spell::CanCast(bool strict)
 
     // always (except passive spells) check items (focus object can be required for any type casts)
     if(!IsPassiveSpell(m_spellInfo->Id))
-        if(uint8 castResult = CheckItems())
+    {
+        SpellCastResult castResult = CheckItems();
+        if(castResult != SPELL_CAST_OK)
             return castResult;
+    }
 
     /*//ImpliciteTargetA-B = 38, If fact there is 0 Spell with  ImpliciteTargetB=38
     if(m_UniqueTargetInfo.empty())                          // skip second canCast apply (for delayed spells for example)
@@ -3654,14 +3656,23 @@ uint8 Spell::CanCast(bool strict)
     }*/
 
     if(!m_IsTriggeredSpell)
-    {
-        if(uint8 castResult = CheckRange(strict))
+    {	
+		SpellCastResult castResult = CheckRange(strict);
+		if(castResult != SPELL_CAST_OK)
             return castResult;
-
-        if(uint8 castResult = CheckPower())
+	}
+ 
+	{
+        SpellCastResult castResult = CheckPower();
+		if(castResult != SPELL_CAST_OK)
             return castResult;
+	}
 
-        if(uint8 castResult = CheckCasterAuras())
+	if(!m_IsTriggeredSpell)    // triggered spell not affected by stun/etc
+	{
+
+        SpellCastResult castResult = CheckCasterAuras();
+	    if(castResult != SPELL_CAST_OK)
             return castResult;
     }
 
@@ -4471,7 +4482,7 @@ SpellCastResult Spell::CheckRange(bool strict)
             return SPELL_FAILED_TOO_CLOSE;
     }
 
-    return SPELL_CAST_OK;                                               // ok
+    return SPELL_CAST_OK;
 }
 
 int32 Spell::CalculatePowerCost()
@@ -4550,7 +4561,7 @@ SpellCastResult Spell::CheckPower()
     {
         if(m_caster->GetHealth() <= m_powerCost)
             return SPELL_FAILED_CASTER_AURASTATE;
-        return SPELL_CAST_OK;
+		return SPELL_CAST_OK;
     }
     // Check valid power type
     if( m_spellInfo->powerType >= MAX_POWERS )
@@ -5259,7 +5270,7 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
                         m_Spell->cancel();
                     }
                     // Check if target of channeled spell still in range
-                    else if (m_Spell->CheckRange(false))
+                    else if (m_Spell->CheckRange(false) != SPELL_CAST_OK)
                         m_Spell->cancel();
                     else
                     {
