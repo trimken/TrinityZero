@@ -2598,24 +2598,6 @@ bool IsSpellAllowedInLocation(SpellEntry const *spellInfo,uint32 map_id,uint32 z
                 if(spellInfo->Id==45373)                    // Bloodberry Elixir
                     return zone_id==4075;
             }
-            if(mask & ELIXIR_UNSTABLE_MASK)
-            {
-                // in the Blade's Edge Mountains Plateaus and Gruul's Lair.
-                return zone_id ==3522 || map_id==565;
-            }
-            if(mask & ELIXIR_SHATTRATH_MASK)
-            {
-                // in Tempest Keep, Serpentshrine Cavern, Caverns of Time: Mount Hyjal, Black Temple, Sunwell Plateau
-                if(zone_id ==3607 || map_id==534 || map_id==564 || zone_id==4075)
-                    return true;
-
-                MapEntry const* mapEntry = sMapStore.LookupEntry(map_id);
-                if(!mapEntry)
-                    return false;
-
-                return mapEntry->multimap_id==206;
-            }
-
             // elixirs not have another limitations
             return true;
         }

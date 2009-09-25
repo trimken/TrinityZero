@@ -36,7 +36,7 @@ class Spell;
 
 extern SQLStorage sSpellThreatStore;
 
-enum SpellFailedReason
+enum SpellCastResult
 {
     SPELL_FAILED_AFFECTING_COMBAT               = 0x00,
     SPELL_FAILED_ALREADY_AT_FULL_HEALTH         = 0x01,

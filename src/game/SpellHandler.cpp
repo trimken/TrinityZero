@@ -132,7 +132,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
             Spell *spell = new Spell(pUser, spellInfo, false);
             spell->m_CastItem = pItem;
-            //[TZERO]spell->m_cast_count = cast_count;               //set count of casts
             spell->m_currentBasePoints[0] = learning_spell_id;
             spell->prepare(&targets);
             return;
@@ -162,7 +161,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
             Spell *spell = new Spell(pUser, spellInfo, (count > 0));
             spell->m_CastItem = pItem;
-            //[TZERO]spell->m_cast_count = cast_count;               //set count of casts
             spell->prepare(&targets);
 
             ++count;
@@ -318,7 +316,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     }
 
     Spell *spell = new Spell(_player, spellInfo, false);
-    spell->m_cast_count = 1;                       // set count of casts [[TZERO] ] must be checked
     spell->prepare(&targets);
 }
 

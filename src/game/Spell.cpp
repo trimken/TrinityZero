@@ -362,7 +362,6 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
     itemTarget = NULL;
     gameObjTarget = NULL;
     focusObject = NULL;
-    m_cast_count = 0;
     m_triggeredByAuraSpell  = NULL;
 
     //Auto Shot & Shoot
@@ -2087,7 +2086,7 @@ void Spell::prepare(SpellCastTargets * targets, Aura* triggeredByAura)
     m_caster->m_Events.AddEvent(Event, m_caster->m_Events.CalculateTime(1));
 
     //Prevent casting at cast another spell (ServerSide check)
-    if(m_caster->IsNonMeleeSpellCasted(false, true) && m_cast_count)
+    if(m_caster->IsNonMeleeSpellCasted(false, true , true))
     {
         SendCastResult(SPELL_FAILED_SPELL_IN_PROGRESS);
         finish(false);
@@ -3388,9 +3387,7 @@ uint8 Spell::CanCast(bool strict)
             return SPELL_FAILED_MOVING;
     }
 
-    Unit *target = m_targets.getUnitTarget();
-
-    if(target)
+    if(Unit *target = m_targets.getUnitTarget())
     {
         AuraStates const *SpellTargetAuraStates = spellmgr.GetTargetAuraStates(m_spellInfo->Id);
         // target state requirements
@@ -3688,7 +3685,7 @@ uint8 Spell::CanCast(bool strict)
                 {
                     // spell different for friends and enemies
                     // hart version required facing
-                    if(m_targets.getUnitTarget() && !m_caster->IsFriendlyTo(m_targets.getUnitTarget()) && !m_caster->HasInArc( M_PI, target ))
+                    if(m_targets.getUnitTarget() && !m_caster->IsFriendlyTo(m_targets.getUnitTarget()) && !m_caster->HasInArc( M_PI, m_targets.getUnitTarget() ))
                         return SPELL_FAILED_UNIT_NOT_INFRONT;
                 }
                 else if (m_spellInfo->Id == 19938)          // Awaken Peon
