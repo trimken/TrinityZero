@@ -3360,7 +3360,8 @@ uint8 Spell::CanCast(bool strict)
     if( strict && !m_IsTriggeredSpell)
     {
         // Cannot be used in this stance/form
-        if(uint8 shapeError = GetErrorAtShapeshiftedCast(m_spellInfo, m_caster->m_form))
+		SpellCastResult shapeError = GetErrorAtShapeshiftedCast(m_spellInfo, m_caster->m_form);
+        if( shapeError != SPELL_CAST_OK )
             return shapeError;
 
         if ((m_spellInfo->Attributes & SPELL_ATTR_ONLY_STEALTHED) && !(m_caster->HasStealthAura()))

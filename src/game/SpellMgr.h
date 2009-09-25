@@ -187,6 +187,8 @@ enum SpellCastResult
     SPELL_FAILED_MIN_SKILL                      = 0x90,
     SPELL_FAILED_UNKNOWN                        = 0x91,
 
+	SPELL_CAST_OK                               = 0x00,
+
 	//[TZERO] tbc enum?
 
     SPELL_FAILED_NOT_ON_SHAPESHIFT              = 0x97,
@@ -421,7 +423,7 @@ inline bool isSpellBreakStealth(SpellEntry const* spellInfo)
     return !(spellInfo->AttributesEx & SPELL_ATTR_EX_NOT_BREAK_STEALTH);
 }
 
-uint8 GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 form);
+SpellCastResult GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 form);
 
 inline bool IsChanneledSpell(SpellEntry const* spellInfo)
 {

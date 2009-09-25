@@ -22,6 +22,7 @@
 #define __SPELL_H
 
 #include "GridDefines.h"
+#include "SpellMgr.h"
 
 class Unit;
 class Player;
