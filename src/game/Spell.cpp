@@ -2752,7 +2752,7 @@ void Spell::SendCastResult(SpellCastResult result)
     WorldPacket data(SMSG_CAST_FAILED, (4+2));
     data << uint32(m_spellInfo->Id);
 
-    if(result != 0)
+    if(result != SPELL_CAST_OK)
     {
 		data << uint8(2); // status = fail
         data << uint8(result);                              // problem
