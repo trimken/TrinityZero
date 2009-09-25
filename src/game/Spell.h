@@ -346,8 +346,8 @@ class Spell
         void TakeReagents();
         void TakeCastItem();
         void TriggerSpell();
-        uint8 CanCast(bool strict);
-        int16 PetCanCast(Unit* target);
+        SpellCastResult CheckCast(bool strict);
+        SpellCastResult CheckPetCast(Unit* target);
         bool CanAutoCast(Unit* target);
 
         // handlers
@@ -385,7 +385,7 @@ class Spell
         void CheckSrc() { if(!m_targets.HasSrc()) m_targets.setSrc(m_caster); }
         void CheckDst() { if(!m_targets.HasDst()) m_targets.setDestination(m_caster); }
 
-        void SendCastResult(uint8 result);
+        void SendCastResult(SpellCastResult result);
         void SendSpellStart();
         void SendSpellGo();
         void SendSpellCooldown();

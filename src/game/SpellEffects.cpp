@@ -2855,7 +2855,7 @@ void Spell::EffectOpenLock(uint32 /*i*/)
         if( goInfo->type == GAMEOBJECT_TYPE_BUTTON && goInfo->button.noDamageImmune ||
             goInfo->type == GAMEOBJECT_TYPE_GOOBER && goInfo->goober.losOK )
         {
-            //isAllowUseBattleGroundObject() already called in CanCast()
+            //isAllowUseBattleGroundObject() already called in CheckCast()
             // in battleground check
             if(BattleGround *bg = player->GetBattleGround())
             {

@@ -2123,8 +2123,8 @@ void Spell::prepare(SpellCastTargets * targets, Aura* triggeredByAura)
     // Fill cost data
     m_powerCost = CalculatePowerCost();
 
-    uint8 result = CanCast(true);
-    if(result != 0 && !IsAutoRepeat())                      //always cast autorepeat dummy for triggering
+    SpellCastResult result = CheckCast(true);
+    if(result != SPELL_CAST_OK && !IsAutoRepeat())                      //always cast autorepeat dummy for triggering
     {
         if(triggeredByAura)
         {
@@ -2139,7 +2139,7 @@ void Spell::prepare(SpellCastTargets * targets, Aura* triggeredByAura)
     // Prepare data for triggers
     prepareDataForTriggerSystem();
 
-    // calculate cast time (calculated after first CanCast check to prevent charge counting for first CanCast fail)
+    // calculate cast time (calculated after first CheckCast check to prevent charge counting for first CheckCast fail)
     m_casttime = GetSpellCastTime(m_spellInfo, this);
 
     // set timer base at cast time
@@ -2254,7 +2254,8 @@ void Spell::cast(bool skipCheck)
     // triggered cast called from Spell::prepare where it was already checked
     if(!skipCheck)
     {
-        if(CanCast(false))
+        castResult = CheckCast(false);
+        if(castResult != SPELL_CAST_OK)
         {
             SendCastResult(castResult);
             finish(false);
@@ -2740,7 +2741,7 @@ void Spell::finish(bool ok)
         m_caster->AttackStop();
 }
 
-void Spell::SendCastResult(uint8 result)
+void Spell::SendCastResult(SpellCastResult result)
 {
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
@@ -3337,7 +3338,7 @@ void Spell::TriggerSpell()
     }
 }
 
-uint8 Spell::CanCast(bool strict)
+SpellCastResult Spell::CheckCast(bool strict)
 {
     // check cooldowns to prevent cheating
     if(m_caster->GetTypeId()==TYPEID_PLAYER && ((Player*)m_caster)->HasSpellCooldown(m_spellInfo->Id))
@@ -3521,7 +3522,7 @@ uint8 Spell::CanCast(bool strict)
     }
 
     /*//ImpliciteTargetA-B = 38, If fact there is 0 Spell with  ImpliciteTargetB=38
-    if(m_UniqueTargetInfo.empty())                          // skip second canCast apply (for delayed spells for example)
+    if(m_UniqueTargetInfo.empty())                          // skip second CheckCast apply (for delayed spells for example)
     {
         for(uint8 j = 0; j < 3; j++)
         {
@@ -4216,7 +4217,7 @@ uint8 Spell::CanCast(bool strict)
     return SPELL_CAST_OK;
 }
 
-int16 Spell::PetCanCast(Unit* target)
+SpellCastResult Spell::CheckPetCast(Unit* target)
 {
     if(!m_caster->isAlive())
         return SPELL_FAILED_CASTER_DEAD;
@@ -4264,11 +4265,7 @@ int16 Spell::PetCanCast(Unit* target)
             return SPELL_FAILED_NOT_READY;
     }
 
-    uint16 result = CanCast(true);
-    if(result != 0)
-        return result;
-    else
-        return -1;                                          //this allows to check spell fail 0, in combat
+    return CheckCast(true);
 }
 
 SpellCastResult Spell::CheckCasterAuras() const
@@ -4302,7 +4299,7 @@ SpellCastResult Spell::CheckCasterAuras() const
     }
 
     //Check whether the cast should be prevented by any state you might have.
-    SpellCastResult prevented_reason = SPELL_CAST_OK;
+    SpellCastResult  prevented_reason = SPELL_CAST_OK;
     // Have to check if there is a stun aura. Otherwise will have problems with ghost aura apply while logging out
 //    if(!(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_USABLE_WHILE_STUNNED) && m_caster->HasAuraType(SPELL_AURA_MOD_STUN))
   //      prevented_reason = SPELL_FAILED_STUNNED;
@@ -4394,9 +4391,9 @@ bool Spell::CanAutoCast(Unit* target)
         }
     }
 
-    int16 result = PetCanCast(target);
+    SpellCastResult result = CheckPetCast(target);
 
-    if(result == -1 || result == SPELL_FAILED_UNIT_NOT_INFRONT)
+    if(result == SPELL_CAST_OK || result == SPELL_FAILED_UNIT_NOT_INFRONT)
     {
         FillTargetMap();
         //check if among target units, our WANTED target is as well (->only self cast spells return false)
