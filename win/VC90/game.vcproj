@@ -1455,10 +1455,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\VoiceChatHandler.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\WaypointManager.cpp"
 				>
 			</File>
@@ -1553,7 +1549,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

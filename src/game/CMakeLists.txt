@@ -216,7 +216,6 @@ SET(game_STAT_SRCS
    UpdateData.h
    UpdateFields.h
    UpdateMask.h
-   VoiceChatHandler.cpp
    WaypointManager.cpp
    WaypointManager.h
    WaypointMovementGenerator.cpp

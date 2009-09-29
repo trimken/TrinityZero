@@ -585,10 +585,6 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleRequestPetInfoOpcode(WorldPacket& recv_data);
 
         void HandleCancelTempItemEnchantmentOpcode(WorldPacket& recv_data);
-
-        void HandleChannelEnableVoiceOpcode(WorldPacket & recv_data);
-        void HandleVoiceSettingsOpcode(WorldPacket& recv_data);
-        void HandleChannelVoiceChatQuery(WorldPacket& recv_data);
         void HandleSetTaxiBenchmarkOpcode(WorldPacket& recv_data);
 
     private:
