@@ -1815,19 +1815,7 @@ enum SkillType
     SKILL_RACIAL_TROLL             = 733,
     SKILL_RACIAL_GNOME             = 753,
     SKILL_RACIAL_HUMAN             = 754,
-    SKILL_JEWELCRAFTING            = 755,
-    SKILL_RACIAL_BLOODELF          = 756,
-    SKILL_PET_EVENT_RC             = 758,
-    SKILL_LANG_DRAENEI             = 759,
-    SKILL_RACIAL_DRAENEI           = 760,
-    SKILL_PET_FELGUARD             = 761,
     SKILL_RIDING                   = 762,
-    SKILL_PET_DRAGONHAWK           = 763,
-    SKILL_PET_NETHER_RAY           = 764,
-    SKILL_PET_SPOREBAT             = 765,
-    SKILL_PET_WARP_STALKER         = 766,
-    SKILL_PET_RAVAGER              = 767,
-    SKILL_PET_SERPENT              = 768,
     SKILL_INTERNAL                 = 769
 };
 
