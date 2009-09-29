@@ -103,25 +103,13 @@ bool AddonHandler::BuildAddonPacket(WorldPacket *Source, WorldPacket *Target)
 
             //sLog.outDebug("ADDON: Name:%s CRC:%x Unknown1 :%x Unknown2 :%x", AddonNames.c_str(), crc, unk7, unk6);
 
-            *Target << (uint8)2;
-
-            uint8 unk1 = 1;
-            *Target << (uint8)unk1;
-            if (unk1)
+            if (crc == 0x1c776d01LL)                        //If addon is Standard addon CRC
+                *Target << (uint8)2 << (uint8)1 << (uint32)0 << (uint16)0;
+            else                                            //if client hasn't this addon
             {
-                uint8 unk2 = crc != 0x1c776d01LL;           //If addon is Standard addon CRC
-                *Target << (uint8)unk2;
-                if (unk2)
-                    Target->append(tdata, sizeof(tdata));
-
-                *Target << (uint32)0;
-            }
-
-            uint8 unk3 = 0;
-            *Target << (uint8)unk3;
-            if (unk3)
-            {
-                // String, 256
+                *Target << (uint8)2 << (uint8)1;
+                Target->append(tdata, sizeof(tdata));
+                *Target << (uint32)0 << (uint8)0;
             }
         }
     }
