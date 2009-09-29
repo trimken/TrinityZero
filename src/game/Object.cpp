@@ -1312,7 +1312,6 @@ void WorldObject::BuildTeleportAckMsg(WorldPacket *data, float x, float y, float
     data->append(GetPackGUID());
     *data << uint32(0);                                     // this value increments every time
     *data << uint32(((Unit*)this)->GetUnitMovementFlags()); // movement flags
-    //*data << uint8(0);                                      // 2.3.0
     *data << getMSTime();                                   // time
     *data << x;
     *data << y;

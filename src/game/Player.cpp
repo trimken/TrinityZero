@@ -1756,6 +1756,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         else
             return false;
     }
+	GetSession()->HandleMoveWorldportAckOpcode();
     return true;
 }
 
@@ -7358,9 +7359,9 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
             break;
     }
 
-    WorldPacket data(SMSG_INIT_WORLD_STATES, (4+4+4+2+(NumberOfFields*8)));
+    WorldPacket data(SMSG_INIT_WORLD_STATES, (4+2+(NumberOfFields*8)));
     data << uint32(mapid);                                  // mapid
-    data << uint32(zoneid);                                 // zone id
+    //data << uint32(zoneid);                                 // zone id
     data << uint16(NumberOfFields);                         // count of uint64 blocks
     data << uint32(0x8d8) << uint32(0x0);                   // 1
     data << uint32(0x8d7) << uint32(0x0);                   // 2
@@ -7368,12 +7369,6 @@ void Player::SendInitWorldStates(bool forceZone, uint32 forceZoneId)
     data << uint32(0x8d5) << uint32(0x0);                   // 4
     data << uint32(0x8d4) << uint32(0x0);                   // 5
     data << uint32(0x8d3) << uint32(0x0);                   // 6
- /*   if(mapid == 530)                                        // Outland
-    {
-        data << uint32(0x9bf) << uint32(0x0);               // 7
-        data << uint32(0x9bd) << uint32(0xF);               // 8
-        data << uint32(0x9bb) << uint32(0xF);               // 9
-    } */
     switch(zoneid)
     {
         case 1:

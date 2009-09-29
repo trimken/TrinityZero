@@ -183,10 +183,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     /* extract packet */
     MovementInfo movementInfo;
     uint32 MovementFlags;
-    uint32 unk1, unk2;
 
     recv_data >> MovementFlags;
-    //recv_data >> movementInfo.unk1;
     recv_data >> movementInfo.time;
     recv_data >> movementInfo.x;
     recv_data >> movementInfo.y;
@@ -196,8 +194,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     if(MovementFlags & MOVEMENTFLAG_ONTRANSPORT)
     {
         // recheck
-        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+4+4);
-        //[TZERO]recv_data >> movementInfo.unk1;
+        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+8+4+4+4+4);
         recv_data >> movementInfo.t_guid;
         recv_data >> movementInfo.t_x;
         recv_data >> movementInfo.t_y;
@@ -209,14 +206,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     if(MovementFlags & MOVEMENTFLAG_JUMPING)
     {
         // recheck
-        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4);
-
-        //[TZERO]recv_data >> movementInfo.j_unk;           // constant, but different when jumping in water and on land?
-        recv_data >> unk1; // Jump duration
-        recv_data >> unk2; // ?
+        CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4);       
+        recv_data >> movementInfo.j_unk; // Jump duration  // constant, but different when jumping in water and on land?
         recv_data >> movementInfo.j_sinAngle;               // sin of angle between orientation0 and players orientation
         recv_data >> movementInfo.j_cosAngle;               // cos of angle between orientation0 and players orientation
-        //[TZERO]recv_data >> movementInfo.j_xyspeed;       // speed of xy movement
+        recv_data >> movementInfo.j_xyspeed;       // speed of xy movement
     }
 
     if(MovementFlags & MOVEMENTFLAG_SWIMMING)
