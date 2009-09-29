@@ -6,12 +6,12 @@ $r_db = "realmd";
 // IP (and port).
 $ip = "127.0.0.1:3306";
 // Username.
-$user = "trinity";
+$user = "root";
 // Password.
-$pass = "trinity";
+$pass = "PASSWORD";
 // Site title.
-$title = "Registration Form";
-$title2 = "Some Server";
+$title = "Create Account";
+$title2 = "Trinity Zero";
 // End config.
 
 

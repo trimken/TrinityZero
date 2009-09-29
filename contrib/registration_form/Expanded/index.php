@@ -5,6 +5,7 @@ include("db.conf.php");
 $page = '<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<link rel="stylesheet" type="text/css" href="stylesheet/mall.css">
 <head>
 <style type="text/css">
 
@@ -27,9 +28,9 @@ z-index: 101;
 visibility: hidden;
 }
 </style>
-<title>' . $title . '</title>
+<title>' . $title2 . '</title>
 </head>
-<body style="background-color:black;color:yellow;font-family:verdana;">
+<body>
 <script type="text/javascript">
 var offsetfromcursorX=12 //Customize x offset of tooltip
 var offsetfromcursorY=10 //Customize y offset of tooltip
@@ -115,28 +116,25 @@ tipobj.style.width=\'\'
 document.onmousemove=positiontip
 </script>
 <form method="post" action="' . $_SERVER["SCRIPT_NAME"] . '">
-<p style="text-align:center;">
-<strong>' . $title2 . ' - ' . $title . '</strong>
-<br /><br /><br />
+<p style="text-align:center;"><br /><br /><br /><br /><br /><br /><br />
+<strong>' . $title2 . ' - ' . $title . '</strong><br />
+<a href="wowstatus.php"><u><h3>-Realm Status-</u></h3></a>
+<br />
 Username:
-<br /><input name="username" type="text" maxlength="14" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'username must be 5 - 14 chars long\', 300)"; onMouseout="hidettip()"><br />
+<br /><input name="username" type="text" maxlength="14" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Username must be 3 - 14 chars long\', 300)"; onMouseout="hidettip()"><br />
 Password:
-<br /><input name="password" type="password" maxlength="12" onkeyup="runPassword(this.value, \'mypassword\');" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Password must be 6 - 12 chars long\', 300)"; onMouseout="hidettip()">
-<div style="width: 100px;text-align:center;"> 
+<br /><input name="password" type="password" maxlength="12" onkeyup="runPassword(this.value, \'mypassword\');" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Password must be 3 - 12 chars long\', 300)"; onMouseout="hidettip()">
+<center><div style="width: 100px;text-align:center;"> 
 				<div id="mypassword_text" style="font-size: 10px;"></div>
-				<div id="mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 1px solid white;"></div> 
-			</div></p>
-<br />
+				<div id="mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 0px solid white;"></div> 
+			</div></p></center
 <p style="text-align:center;">Email:
-<br /><input name="email" type="text" maxlength="50" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Email must be 15 - 50 chars long\', 300)"; onMouseout="hidettip()"><br />
-<INPUT TYPE=RADIO NAME="expansion" VALUE="0"         >Original - 
-<INPUT TYPE=RADIO NAME="expansion" VALUE="1" CHECKED >TBC - 
-<INPUT TYPE=RADIO NAME="expansion" VALUE="2"         >WOTLK<br />
+<br /><input name="email" type="text" maxlength="50" /><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Email must be 15 - 50 chars long\', 300)"; onMouseout="hidettip()"><br /><br />
 <img src="inc/OOP5.php" style="border: 1px dashed silver;"><br />
-<span style="font-size:9px;"><a href="">New question</a></span><br />
-<input type="text" style="width:160px;" name="AnimCaptcha"><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Are you a bot? are you? thats it...im getting my junior torturer kit, dont go anywhere i\'ll be right back.\', 300)"; onMouseout="hidettip()"><br />
+<span style="font-size:10px"><a href="">New question</a></span><br />
+<input type="text" style="width:160px;" name="AnimCaptcha"><img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Write the correct answer\', 300)"; onMouseout="hidettip()"><br />
 <br />
-<img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Yes everything must be filled. quit whining.\', 300)"; onMouseout="hidettip()"><button type="submit">Submit</button>
+<img src="inc/help.gif" HEIGHT="20" WIDTH="20" alt="help" onMouseover="ttip(\'Everything must be filled.\', 300)"; onMouseout="hidettip()"><button type="submit">Submit</button>
 </p>
 </form>
 <script type="text/javascript" src="inc/pwd_strength.js"></script>
@@ -157,14 +155,14 @@ if (!$con) {
 };
 
 if (!empty($_POST)) {
-        if ((empty($_POST["username"]))||(empty($_POST["password"]))||(empty($_POST["email"]))||(empty($_POST["expansion"])) ) {
+        if ((empty($_POST["username"]))||(empty($_POST["password"]))||(empty($_POST["email"])) ) {
                 error_s("You did not enter all the required information.");
 				exit();
         } else {
                 $username = strtoupper($_POST["username"]);
                 $password = strtoupper($_POST["password"]);
                 $email = strtoupper($_POST["email"]);
-                if (strlen($username) < 5) {
+                if (strlen($username) < 3) {
                         error_s("Username too short.");
                         exit();
                 };
@@ -172,7 +170,7 @@ if (!empty($_POST)) {
                         error_s("Username too long.");
                         exit();
                 };
-                if (strlen($password) < 6) {
+                if (strlen($password) < 3) {
                         error_s("Password too short.");
                         exit();
                 };
@@ -233,7 +231,7 @@ if (!empty($_POST)) {
                 };
 				unset($qry);
                 $sha_pass_hash = sha1(strtoupper($username) . ":" . strtoupper($password));
-                $register_sql = "insert into " . mysql_real_escape_string($r_db) . ".account (username, sha_pass_hash, email, expansion) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "','" . $expansion . "')";
+                $register_sql = "insert into " . mysql_real_escape_string($r_db) . ".account (username, sha_pass_hash, email) values (upper('" . $username . "'),'" . $sha_pass_hash . "','" . $email . "')";
 		if (isset($_POST['AnimCaptcha']))
             {
               if (is_numeric($_POST['AnimCaptcha']))
@@ -264,6 +262,6 @@ if (!empty($_POST)) {
         echo($page);
 };
 
-echo '<center><a href="http://www.trinitycore.org">Trinity Powered</a></center>';
+echo '<center><a href="http://udw.altervista.org/home/index.php">UDW Powered</a></center>';
 
 ?>
