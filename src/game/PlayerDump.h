@@ -31,7 +31,7 @@ enum DumpTableType
     DTT_CHAR_TABLE,     //                                  // character_action, character_aura, character_homebind,
                                                             // character_queststatus, character_reputation,
                                                             // character_spell, character_spell_cooldown, character_ticket,
-                                                            // character_tutorial
+                                                            // character_tutorial , character_kill
 
     DTT_INVENTORY,      //    -> item guids collection      // character_inventory
 
