@@ -41,7 +41,7 @@ namespace Trinity
             return plr->GetTotalHonor()+plr->GetStoredHonor();
         }
 
-		//TODO: Implement this function
+        //TODO: Implement this function
         // NOTE: DO NOT IMPLEMENT A FUNCTION THAT USES A QUERY, SAVE THE DATA
         inline int32 CalculeStanding(Player *plr)
         {

@@ -45,7 +45,7 @@ enum SpellCastResult
     SPELL_FAILED_ALREADY_HAVE_CHARM             = 0x04,
     SPELL_FAILED_ALREADY_HAVE_SUMMON            = 0x05,
     SPELL_FAILED_ALREADY_OPEN                   = 0x06,
-	SPELL_FAILED_MORE_POWERFUL_SPELL_ACTIVE     = 0x07,
+    SPELL_FAILED_MORE_POWERFUL_SPELL_ACTIVE     = 0x07,
     // SPELL_FAILED_AURA_BOUNCED                   = 0x08,
     SPELL_FAILED_BAD_IMPLICIT_TARGETS           = 0x09,
     SPELL_FAILED_BAD_TARGETS                    = 0x0A,
@@ -71,17 +71,17 @@ enum SpellCastResult
     SPELL_FAILED_FLEEING                        = 0x1E,
     SPELL_FAILED_FOOD_LOWLEVEL                  = 0x0F,
     SPELL_FAILED_HIGHLEVEL                      = 0x20,
-	//33
+    //33
     SPELL_FAILED_IMMUNE                         = 0x22,
     SPELL_FAILED_INTERRUPTED                    = 0x23,
     SPELL_FAILED_INTERRUPTED_COMBAT             = 0x24,
     SPELL_FAILED_ITEM_ALREADY_ENCHANTED         = 0x25,
     SPELL_FAILED_ITEM_GONE                      = 0x26,
-	SPELL_FAILED_ENCHANT_NOT_EXISTING_ITEM      = 0x27,
+    SPELL_FAILED_ENCHANT_NOT_EXISTING_ITEM      = 0x27,
     SPELL_FAILED_ITEM_NOT_READY                 = 0x28,
     SPELL_FAILED_LEVEL_REQUIREMENT              = 0x29,
     SPELL_FAILED_LINE_OF_SIGHT                  = 0x2A,
-	//
+    //
     SPELL_FAILED_LOWLEVEL                       = 0x2B,
     SPELL_FAILED_LOW_CASTLEVEL                  = 0x2C, // skill not high enough
     SPELL_FAILED_MAINHAND_EMPTY                 = 0x2D,
@@ -153,7 +153,7 @@ enum SpellCastResult
     //SPELL_FAILED_TARGET_NOT_DEAD                = 0x6F,
     SPELL_FAILED_TARGET_NOT_IN_PARTY            = 0x6F,
     SPELL_FAILED_TARGET_NOT_LOOTED              = 0x70,
-	SPELL_FAILED_TARGET_NOT_PLAYER              = 0x71,
+    SPELL_FAILED_TARGET_NOT_PLAYER              = 0x71,
     SPELL_FAILED_TARGET_NO_POCKETS              = 0x72,
     SPELL_FAILED_TARGET_NO_WEAPONS              = 0x73,
     SPELL_FAILED_TARGET_UNSKINNABLE             = 0x74,
@@ -176,7 +176,7 @@ enum SpellCastResult
     SPELL_FAILED_TARGET_FREEFORALL              = 0x85,
     SPELL_FAILED_NO_EDIBLE_CORPSES              = 0x86,
     SPELL_FAILED_ONLY_BATTLEGROUNDS             = 0x87,
-	SPELL_FAILED_TARGET_NOT_GHOST               = 0x88,
+    SPELL_FAILED_TARGET_NOT_GHOST               = 0x88,
     SPELL_FAILED_TOO_MANY_SKILLS                = 0x89,
     SPELL_FAILED_CANT_USE_NEW_ITEM              = 0x8A,
     SPELL_FAILED_WRONG_WEATHER                  = 0x8B,
@@ -187,9 +187,9 @@ enum SpellCastResult
     SPELL_FAILED_MIN_SKILL                      = 0x90,
     SPELL_FAILED_UNKNOWN                        = 0x91,
 
-	SPELL_CAST_OK                               = 0xFF,      // custom value, don't must be send to client
+    SPELL_CAST_OK                               = 0xFF,      // custom value, don't must be send to client
 
-	//[TZERO] tbc enum?
+    //[TZERO] tbc enum?
 
     SPELL_FAILED_NOT_ON_SHAPESHIFT              = 0x97,
     SPELL_FAILED_NOT_ON_STEALTHED               = 0x98,
@@ -811,13 +811,13 @@ class SpellMgr
             return NULL;
         }
 
-		uint32 GetSpellFacingFlag(uint32 spellId) const
-		{
+        uint32 GetSpellFacingFlag(uint32 spellId) const
+        {
             SpellFacingFlagMap::const_iterator itr =  mSpellFacingFlagMap.find(spellId);
             if(itr != mSpellFacingFlagMap.end())
                 return itr->second;
             return 0x0;
-		}
+        }
 
         static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra, bool active);
 
@@ -1024,7 +1024,7 @@ class SpellMgr
         void LoadSpellLinked();
         void LoadTargetAuraStates();
         void LoadCasterAuraStates();
-		void LoadFacingCasterFlags();
+        void LoadFacingCasterFlags();
 
     private:
         SpellScriptTarget  mSpellScriptTarget;
@@ -1043,7 +1043,7 @@ class SpellMgr
         SpellLinkedMap      mSpellLinkedMap;
         SpellAuraStates     mSpellTargetAuraStates;
         SpellAuraStates     mSpellCasterAuraStates;
-		SpellFacingFlagMap  mSpellFacingFlagMap;
+        SpellFacingFlagMap  mSpellFacingFlagMap;
 
 };
 

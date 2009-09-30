@@ -33,8 +33,10 @@
 //       table opcodeTable in source when Opcode.h included but WorldSession.h not included
 #include "WorldSession.h"
 
+class WorldSession;
+
 /// List of Opcodes
-enum Opcodes
+enum OpcodesList
 {
     MSG_NULL_ACTION                                 = 0x000,
     CMSG_BOOTME                                     = 0x001,
@@ -1061,9 +1063,6 @@ enum Opcodes
     SMSG_SUMMON_CANCEL                              = 0x423
 };
 
-// Don't forget to change this value and add opcode name to Opcodes.cpp when you add new opcode!
-#define NUM_MSG_TYPES 0x424
-
 /// Player state
 enum SessionStatus
 {
@@ -1073,24 +1072,41 @@ enum SessionStatus
     STATUS_NEVER                                            ///< Opcode not accepted from client (deprecated or server side only)
 };
 
-class WorldPacket;
-
-struct OpcodeHandler
+struct OpcodeStruct
 {
     char const* name;
     SessionStatus status;
     void (WorldSession::*handler)(WorldPacket& recvPacket);
 };
 
-extern OpcodeHandler opcodeTable[NUM_MSG_TYPES];
+typedef std::map< uint16, OpcodeStruct> OpcodeMap;
 
-/// Lookup opcode name for human understandable logging
-inline const char* LookupOpcodeName(uint16 id)
+class Opcodes
 {
-    if (id >= NUM_MSG_TYPES)
-        return "Received unknown opcode, it's more than max!";
-    return opcodeTable[id].name;
-}
+    public:
+        Opcodes();
+        ~Opcodes();
+    public:
+        void BuildOpcodeList();
+        void StoreOpcode(uint16 Opcode,char const* name, SessionStatus status, void (WorldSession::*handler)(WorldPacket& recvPacket)) 
+        { mOpcodeMap[Opcode].name = name; mOpcodeMap[Opcode].status = status ; mOpcodeMap[Opcode].handler = handler; };
+
+        /// Lookup opcode name for human understandable logging
+        inline OpcodeStruct const* LookupOpcode(uint16 id)
+        {
+            OpcodeMap::iterator itr = mOpcodeMap.find(id);
+            if (itr != mOpcodeMap.end())
+                return &mOpcodeMap[id];
+            return NULL;
+        }
+
+        OpcodeMap mOpcodeMap;
+
+};
+
+
+
+#define opCodes Trinity::Singleton<Opcodes>::Instance()
 #endif
 /// @}
 

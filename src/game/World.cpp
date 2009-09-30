@@ -1102,7 +1102,7 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading NPC Texts..." );
     objmgr.LoadGossipText();
 
-	sLog.outString( "Loading Item Random Properties Points Table..." );
+    sLog.outString( "Loading Item Random Properties Points Table..." );
     iEnchMgr.LoadRandomPropPointsTable();
 
     sLog.outString( "Loading Item Random Enchantments Table..." );
@@ -1201,7 +1201,7 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading caster aurastates..." );
     spellmgr.LoadCasterAuraStates();
 
-	sLog.outString( "Loading facing caster flags..." );
+    sLog.outString( "Loading facing caster flags..." );
     spellmgr.LoadFacingCasterFlags();
 
     sLog.outString( "Loading player Create Info & Level Stats..." );

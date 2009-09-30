@@ -114,7 +114,7 @@ class Transport : protected GameObject
 
     private:
         void TeleportTransport(uint32 newMapid, float x, float y, float z);
-		void UpdateForMap(Map const* map);
+        void UpdateForMap(Map const* map);
         WayPointMap::iterator GetNextWayPoint();
 };
 #endif

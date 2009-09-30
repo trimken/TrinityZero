@@ -152,15 +152,15 @@ void WorldSession::SendTrainerList( uint64 guid, const std::string& strTitle )
         return;
     }
 
-	TrainerSpellList Tspells;
-	TrainerSpellList::const_iterator itr;
+    TrainerSpellList Tspells;
+    TrainerSpellList::const_iterator itr;
 
-	for (itr = trainer_spells->spellList.begin(); itr != trainer_spells->spellList.end();itr++)
+    for (itr = trainer_spells->spellList.begin(); itr != trainer_spells->spellList.end();itr++)
     {
         if(!(*itr)->spell  || _player->HasSpell((*itr)->spell))
             continue;
 
-		const SpellEntry *spell = sSpellStore.LookupEntry((*itr)->spell);
+        const SpellEntry *spell = sSpellStore.LookupEntry((*itr)->spell);
 
         if(spell && sSpellStore.LookupEntry(spell->EffectTriggerSpell[0]))
             Tspells.push_back(*itr);
@@ -181,7 +181,7 @@ void WorldSession::SendTrainerList( uint64 guid, const std::string& strTitle )
     {
         TrainerSpell const* tSpell = *itr;
 
-		uint32 triggerSpell = sSpellStore.LookupEntry(tSpell->spell)->EffectTriggerSpell[0];
+        uint32 triggerSpell = sSpellStore.LookupEntry(tSpell->spell)->EffectTriggerSpell[0];
 
         if(!_player->IsSpellFitByClassAndRace(triggerSpell))
             continue;
@@ -212,7 +212,7 @@ void WorldSession::SendTrainerList( uint64 guid, const std::string& strTitle )
     data.put<uint32>(count_pos,count);
     SendPacket( &data );
 
-	Tspells.clear();
+    Tspells.clear();
 }
 
 void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
@@ -253,7 +253,7 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
     if(_player->GetTrainerSpellState(trainer_spell) != TRAINER_SPELL_GREEN)
         return;
 
-	SpellEntry const *proto = sSpellStore.LookupEntry(trainer_spell->spell);
+    SpellEntry const *proto = sSpellStore.LookupEntry(trainer_spell->spell);
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(proto->EffectTriggerSpell[0]);
 
     // apply reputation discount

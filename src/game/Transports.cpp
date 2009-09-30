@@ -181,7 +181,7 @@ bool Transport::Create(uint32 guidlow, uint32 mapid, float x, float y, float z, 
     if(dynflags)
         SetUInt32Value(GAMEOBJECT_DYN_FLAGS, dynflags);
 
-	SetName(goinfo->name);
+    SetName(goinfo->name);
 
     return true;
 }

@@ -385,7 +385,7 @@ m_periodicTimer(0), m_PeriodicEventId(0), m_AuraDRGroup(DIMINISHING_NONE)
                         break;
                 }
             } */
-			damage = damage;
+            damage = damage;
         }
     }
 
@@ -5280,8 +5280,8 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_DAMAGE:
         case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
         {
-			// Fill base damage struct periodicInfo
-			PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            // Fill base damage struct periodicInfo
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
 
             if(!periodicInfo.attacker)
                 return;
@@ -5346,7 +5346,7 @@ void Aura::PeriodicTick()
 
             if(m_modifier.m_auraname == SPELL_AURA_PERIODIC_DAMAGE)
             {
-				//Add bonuses and fill periodicInfo struct
+                //Add bonuses and fill periodicInfo struct
                 periodicInfo.damage = periodicInfo.attacker->SpellDamageBonus(m_target,GetSpellProto(),amount,DOT);
 
                 // Calculate armor mitigation if it is a physical spell
@@ -5377,7 +5377,7 @@ void Aura::PeriodicTick()
 
             periodicInfo.damage *= GetStackAmount();
 
-			//Calculate absorb and resist values, fill in periodicInfo struct
+            //Calculate absorb and resist values, fill in periodicInfo struct
             periodicInfo.attacker->CalcAbsorbResist(m_target, GetSchoolMask(periodicInfo.school), DOT, periodicInfo.damage, &periodicInfo.absorb, &periodicInfo.resist);
 
             sLog.outDetail("PeriodicTick: %u (TypeId: %u) attacked %u (TypeId: %u) for %u dmg inflicted by %u abs is %u",
@@ -5389,15 +5389,15 @@ void Aura::PeriodicTick()
             // Set trigger flag
             uint32 procAttacker = PROC_FLAG_ON_DO_PERIODIC;//   | PROC_FLAG_SUCCESSFUL_HARMFUL_SPELL_HIT;
             uint32 procVictim   = PROC_FLAG_ON_TAKE_PERIODIC;// | PROC_FLAG_TAKEN_HARMFUL_SPELL_HIT;
-			
+            
             periodicInfo.damage = (periodicInfo.damage <= periodicInfo.absorb + periodicInfo.resist) ? 0 : (periodicInfo.damage - periodicInfo.absorb - periodicInfo.resist);
 
-			periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
+            periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
 
-			//Send periodicInfo log to client
-			periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
+            //Send periodicInfo log to client
+            periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
 
-			if (periodicInfo.damage)
+            if (periodicInfo.damage)
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
 
             periodicInfo.attacker->ProcDamageAndSpell(target, procAttacker, procVictim, SPELL_MISS_NONE, periodicInfo.damage, BASE_ATTACK, spellProto);
@@ -5407,8 +5407,8 @@ void Aura::PeriodicTick()
         }
         case SPELL_AURA_PERIODIC_LEECH:
         {
-			//Fill base damage struct periodicInfo 
-			PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            //Fill base damage struct periodicInfo 
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
 
             if(!periodicInfo.attacker)
                 return;
@@ -5426,7 +5426,7 @@ void Aura::PeriodicTick()
 
             CleanDamage cleanDamage =  CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL );
 
-			//Add bonuses and fill periodicInfo struct
+            //Add bonuses and fill periodicInfo struct
             periodicInfo.damage = GetModifierValuePerStack() > 0 ? GetModifierValuePerStack() : 0;
             periodicInfo.damage = periodicInfo.attacker->SpellDamageBonus(m_target, GetSpellProto(), periodicInfo.damage, DOT);
 
@@ -5511,18 +5511,18 @@ void Aura::PeriodicTick()
 
             periodicInfo.damage = (periodicInfo.damage <= periodicInfo.absorb + periodicInfo.resist) ? 0 : (periodicInfo.damage - periodicInfo.absorb - periodicInfo.resist);
 
-			periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
+            periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
 
-			//Send periodicInfo log to client
-			periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
+            //Send periodicInfo log to client
+            periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
 
-			if (periodicInfo.damage)
+            if (periodicInfo.damage)
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
             
-			periodicInfo.attacker->ProcDamageAndSpell(target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, periodicInfo.damage, BASE_ATTACK, spellProto);
+            periodicInfo.attacker->ProcDamageAndSpell(target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, periodicInfo.damage, BASE_ATTACK, spellProto);
             
-			//using new_damage to determine healing effect value
-			int32 new_damage = periodicInfo.attacker->DealDamage(target, periodicInfo.damage, &cleanDamage, DOT, GetSpellSchoolMask(spellProto), spellProto, false);
+            //using new_damage to determine healing effect value
+            int32 new_damage = periodicInfo.attacker->DealDamage(target, periodicInfo.damage, &cleanDamage, DOT, GetSpellSchoolMask(spellProto), spellProto, false);
 
             if (!target->isAlive() && periodicInfo.attacker->IsNonMeleeSpellCasted(false))
             {
@@ -5548,8 +5548,8 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_HEAL:
         case SPELL_AURA_OBS_MOD_HEALTH:
         {
-			//Fill base damage struct periodicInfo 
-			PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            //Fill base damage struct periodicInfo 
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
 
             if(!periodicInfo.attacker)
                 return;
@@ -5571,9 +5571,9 @@ void Aura::PeriodicTick()
             sLog.outDetail("PeriodicTick: %u (TypeId: %u) heal of %u (TypeId: %u) for %u health inflicted by %u",
                 GUID_LOPART(GetCasterGUID()), GuidHigh2TypeId(GUID_HIPART(GetCasterGUID())), m_target->GetGUIDLow(), m_target->GetTypeId(), periodicInfo.damage, GetId());
 
-			//Send periodicInfo log to client
-			periodicInfo.auraType = m_modifier.m_auraname;
-			periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
+            //Send periodicInfo log to client
+            periodicInfo.auraType = m_modifier.m_auraname;
+            periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
 
             periodicInfo.damage = m_target->ModifyHealth(periodicInfo.damage);
 
@@ -5612,12 +5612,12 @@ void Aura::PeriodicTick()
                 }
                 else
                 {
-					//Set target to caster and auraType to damage
-					periodicInfo.target = periodicInfo.attacker;
-					periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
+                    //Set target to caster and auraType to damage
+                    periodicInfo.target = periodicInfo.attacker;
+                    periodicInfo.auraType = SPELL_AURA_PERIODIC_DAMAGE;
 
-					//Send periodicInfo log to client
-					periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
+                    //Send periodicInfo log to client
+                    periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
 
                     CleanDamage cleanDamage =  CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL );
                     periodicInfo.attacker->DealDamage(periodicInfo.attacker, periodicInfo.damage, &cleanDamage, NODAMAGE, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), true);
@@ -5633,9 +5633,9 @@ void Aura::PeriodicTick()
         }
         case SPELL_AURA_PERIODIC_MANA_LEECH:
         {
-			//Fill base damage struct periodicInfo 
-			PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
-			periodicInfo.auraType = m_modifier.m_auraname;
+            //Fill base damage struct periodicInfo 
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            periodicInfo.auraType = m_modifier.m_auraname;
 
             if(!periodicInfo.attacker)
                 return;
@@ -5652,9 +5652,9 @@ void Aura::PeriodicTick()
                 return;
 
             // ignore non positive values (can be result apply spellmods to aura damage
-			//[TZERO] Mana drain spells are not affected by spell power
+            //[TZERO] Mana drain spells are not affected by spell power
             //uint32 pdamage = GetModifierValue() > 0 ? GetModifierValue() : 0;
-			periodicInfo.damage = GetModifierValuePerStack() > 0 ? GetModifierValuePerStack() : 0;
+            periodicInfo.damage = GetModifierValuePerStack() > 0 ? GetModifierValuePerStack() : 0;
 
             sLog.outDetail("PeriodicTick: %u (TypeId: %u) power leech of %u (TypeId: %u) for %u dmg inflicted by %u",
                 GUID_LOPART(GetCasterGUID()), GuidHigh2TypeId(GUID_HIPART(GetCasterGUID())), m_target->GetGUIDLow(), m_target->GetTypeId(), periodicInfo.damage, GetId());
@@ -5668,12 +5668,12 @@ void Aura::PeriodicTick()
             if(m_target->getPowerType() != power)
                 break;
 
-			//Need signed int for -operator
+            //Need signed int for -operator
             int32 drain_amount = m_target->GetPower(power) > periodicInfo.damage ? periodicInfo.damage : m_target->GetPower(power);
 
             m_target->ModifyPower(power, -drain_amount);
 
-			//[TZERO]Mana drain spells are not affected by spell power
+            //[TZERO]Mana drain spells are not affected by spell power
             /*float gain_multiplier = 0;
 
             if(pCaster->GetMaxPower(power) > 0)
@@ -5684,28 +5684,28 @@ void Aura::PeriodicTick()
                     modOwner->ApplySpellMod(GetId(), SPELLMOD_MULTIPLE_VALUE, gain_multiplier);
             }*/
 
-			//[TZERO]damage == power type, school == damage/drain, absorb == multiplier (spell power)
-			periodicInfo.damage = power;
-			periodicInfo.school = drain_amount;			
-			periodicInfo.absorb = 1;
+            //[TZERO]damage == power type, school == damage/drain, absorb == multiplier (spell power)
+            periodicInfo.damage = power;
+            periodicInfo.school = drain_amount;            
+            periodicInfo.absorb = 1;
 
-			//Send periodicInfo log to client
-			periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
+            //Send periodicInfo log to client
+            periodicInfo.attacker->SendPeriodicAuraLog(&periodicInfo);
 
-			//[TZERO]Mana drain spells are not affected by spell power
+            //[TZERO]Mana drain spells are not affected by spell power
             //int32 gain_amount = drain_amount * gain_multiplier;
-			switch(GetId())
-			{
-			case 3034:	case 14279:	case 14380:
-				break;
+            switch(GetId())
+            {
+            case 3034:    case 14279:    case 14380:
+                break;
 
-			default:
-				if(periodicInfo.attacker->GetMaxPower(power) - periodicInfo.attacker->GetPower(power))
-				{
-					int32 gain = periodicInfo.attacker->ModifyPower(power, drain_amount);
-					m_target->AddThreat(periodicInfo.attacker, float(gain) * 0.5f, GetSpellSchoolMask(GetSpellProto()), GetSpellProto());
-				}
-			}
+            default:
+                if(periodicInfo.attacker->GetMaxPower(power) - periodicInfo.attacker->GetPower(power))
+                {
+                    int32 gain = periodicInfo.attacker->ModifyPower(power, drain_amount);
+                    m_target->AddThreat(periodicInfo.attacker, float(gain) * 0.5f, GetSpellSchoolMask(GetSpellProto()), GetSpellProto());
+                }
+            }
 
             // Mark of Kaz'rogal
             if(GetId() == 31447 && m_target->GetPower(power) == 0)

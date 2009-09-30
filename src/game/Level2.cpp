@@ -3264,7 +3264,7 @@ bool ChatHandler::HandleShowHonor(const char* args)
     char const* rank_name = NULL;
     char const* hrank_name = NULL;
  
-	Player *target = getSelectedPlayer();
+    Player *target = getSelectedPlayer();
     uint32 honor_rank = target->CalculateHonorRank( target->GetTotalHonor() );
 
     if ( target->GetTeam() == ALLIANCE )
@@ -3309,7 +3309,7 @@ bool ChatHandler::HandleAddHonorCommand(const char* args)
 
     float amount = (float)atof(args);
     target->SetStoredHonor(target->GetStoredHonor()+amount);
-	target->UpdateHonor();
+    target->UpdateHonor();
     return true;
 }
 
@@ -3323,8 +3323,8 @@ bool ChatHandler::HandleHonorAddKillCommand(const char* /*args*/)
         return false;
     }
 
-	if( target == m_session->GetPlayer())
-		return false;
+    if( target == m_session->GetPlayer())
+        return false;
 
     m_session->GetPlayer()->CalculateHonor(target);
     return true;
@@ -3357,43 +3357,43 @@ bool ChatHandler::HandleModifyHonorCommand (const char* args)
         return false;
     }
 
-	std::string field = (strtok((char*)args, " "));
-	if (field.empty())
-		return false;
+    std::string field = (strtok((char*)args, " "));
+    if (field.empty())
+        return false;
 
-	char * temp = strtok(NULL, " ");
-	if (!temp)
-		return false;
-	
-	int32 amount = atoi(temp);
+    char * temp = strtok(NULL, " ");
+    if (!temp)
+        return false;
+    
+    int32 amount = atoi(temp);
 
     // hack code 
     if (hasStringAbbr(field.c_str(),"points"))
        target->SetUInt32Value(PLAYER_FIELD_BYTES2, (uint32)amount);
-	else if (hasStringAbbr(field.c_str(),"rank"))
+    else if (hasStringAbbr(field.c_str(),"rank"))
        target->SetInt32Value(PLAYER_BYTES_3, (( amount << 24) + 0x04000000) + (target->GetDrunkValue() & 0xFFFE) + target->getGender());
-	else if (hasStringAbbr(field.c_str(),"todaykills"))
+    else if (hasStringAbbr(field.c_str(),"todaykills"))
        target->SetUInt32Value(PLAYER_FIELD_SESSION_KILLS, ((uint32)amount << 16) + (uint32)amount );
-	else if (hasStringAbbr(field.c_str(),"yesterdaykills"))
+    else if (hasStringAbbr(field.c_str(),"yesterdaykills"))
        target->SetUInt32Value(PLAYER_FIELD_YESTERDAY_KILLS, (uint32)amount);
-	else if (hasStringAbbr(field.c_str(),"yesterdayhonor"))
+    else if (hasStringAbbr(field.c_str(),"yesterdayhonor"))
        target->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, (uint32)amount);
-	else if (hasStringAbbr(field.c_str(),"thisweekkills"))
+    else if (hasStringAbbr(field.c_str(),"thisweekkills"))
        target->SetUInt32Value(PLAYER_FIELD_THIS_WEEK_KILLS, (uint32)amount);
     else if (hasStringAbbr(field.c_str(),"thisweekhonor"))
        target->SetUInt32Value(PLAYER_FIELD_THIS_WEEK_CONTRIBUTION, (uint32)amount);
     else if (hasStringAbbr(field.c_str(),"lastweekkills"))
        target->SetUInt32Value(PLAYER_FIELD_LAST_WEEK_KILLS,(uint32)amount);
-	else if (hasStringAbbr(field.c_str(), "lastweekhonor"))
+    else if (hasStringAbbr(field.c_str(), "lastweekhonor"))
        target->SetUInt32Value(PLAYER_FIELD_LAST_WEEK_CONTRIBUTION, (uint32)amount);
     else if (hasStringAbbr(field.c_str(),"lastweekstanding"))
        target->SetUInt32Value(PLAYER_FIELD_LAST_WEEK_RANK,(uint32)amount);
     else if (hasStringAbbr(field.c_str(),"lifetimedishonorablekills"))
        target->SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, (uint32)amount);
-	else if (hasStringAbbr(field.c_str(),"lifetimehonorablekills"))
+    else if (hasStringAbbr(field.c_str(),"lifetimehonorablekills"))
        target->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS,(uint32)amount);
 
-	PSendSysMessage(LANG_COMMAND_MODIFY_HONOR, field.c_str(), target->GetName(), hasStringAbbr(field.c_str(),"rank") ? amount : (uint32)amount);
+    PSendSysMessage(LANG_COMMAND_MODIFY_HONOR, field.c_str(), target->GetName(), hasStringAbbr(field.c_str(),"rank") ? amount : (uint32)amount);
 
     return true;
 }

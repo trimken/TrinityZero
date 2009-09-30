@@ -137,10 +137,10 @@ struct ChrRacesEntry
 struct CreatureDisplayInfoEntry
 {
     uint32      Displayid;                                  // 0
-	                                                        // 1	iRefID_CreatureModelData Points to the model filename.
-                                                            // 3	iRefID_CreatureDisplayInfoExtra	
+                                                            // 1    iRefID_CreatureModelData Points to the model filename.
+                                                            // 3    iRefID_CreatureDisplayInfoExtra    
     float       scale;                                      // 4    Default model scale if not set by server for that spawn
-                                                            // 6	    Opacity	 Integer	 0 - 255. 0 is totally transparent, 255 is solid	
+                                                            // 6        Opacity     Integer     0 - 255. 0 is totally transparent, 255 is solid    
 };
 
 struct CreatureFamilyEntry
@@ -306,7 +306,7 @@ struct MapEntry
     //char*     allianceIntro                               // 29-36 text for PvP Zones
                                                             // 37 intro text flags
     uint32      multimap_id;                                // 38
-															// 39-42 unused
+                                                            // 39-42 unused
     // Helpers
 
 
@@ -646,11 +646,11 @@ struct SpellShapeshiftEntry
     //char*  Name[8];                                       // 2-9 unused
     //uint32 NameFlags;                                     // 10 unused
     uint32 flags1;                                          // 11
-															// 12 unused
+                                                            // 12 unused
     //uint32 unk1;                                          // 13 unused
 
-    //int32  creatureType;									// TODO: remove this for 1.12
-    //uint32 attackSpeed;						     		// TODO: remove this for 1.12
+    //int32  creatureType;                                    // TODO: remove this for 1.12
+    //uint32 attackSpeed;                                     // TODO: remove this for 1.12
 };
 
 struct SpellDurationEntry

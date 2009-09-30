@@ -111,7 +111,7 @@ enum SpellModOp
     SPELLMOD_EFFECT_PAST_FIRST      = 20,
     SPELLMOD_CASTING_TIME_OLD       = 21,
     SPELLMOD_DOT                    = 22,
-	 //[TZERO] next enumerations changed in tbc
+     //[TZERO] next enumerations changed in tbc
     SPELLMOD_EFFECT3                = 23,
     SPELLMOD_SPELL_BONUS_DAMAGE     = 24,
     // spellmod 25, 26 unused
@@ -364,14 +364,14 @@ enum DeathState
     JUST_DIED   = 1,
     CORPSE      = 2,
     DEAD        = 3,
-	//[TZERO] Tbc enumerations [?]
+    //[TZERO] Tbc enumerations [?]
     JUST_ALIVED = 4,
     DEAD_FALLING= 5
 };
 
 enum UnitState
 {
-	UNIT_STAT_STOPPED       = 0,
+    UNIT_STAT_STOPPED       = 0,
     UNIT_STAT_DIED            = 0x00000001,
     UNIT_STAT_MELEE_ATTACKING = 0x00000002,                     // player is melee attacking someone
     UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone
@@ -460,7 +460,7 @@ enum UnitFlags
     UNIT_FLAG_PVP_ATTACKABLE = 0x00000008,                // allow apply pvp rules to attackable state in addition to faction dependent state, UNIT_FLAG_UNKNOWN1 in pre-bc mangos
     UNIT_FLAG_RENAME         = 0x00000010,                // rename creature
     UNIT_FLAG_PREPARATION    = 0x00000020,                // don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP   // UNIT_FLAG_RESTING in pre-bc mangos
-    UNIT_FLAG_PVP            = 0x00001000,				  
+    UNIT_FLAG_PVP            = 0x00001000,                  
     UNIT_FLAG_MOUNT          = 0x00002000,
     UNIT_FLAG_DISABLE_ROTATE = 0x00040000,
     UNIT_FLAG_IN_COMBAT      = 0x00080000,
@@ -561,7 +561,7 @@ enum MovementFlags
     MOVEMENTFLAG_SPLINE         = 0x4000000,
 
     //[TZERO] other enumeration to delete or check  
-	MOVEMENTFLAG_NONE           = 0x00000000,
+    MOVEMENTFLAG_NONE           = 0x00000000,
     MOVEMENTFLAG_LEVITATING     = 0x00000400,
     MOVEMENTFLAG_FLY_UNK1       = 0x00000800,
     MOVEMENTFLAG_UNK4           = 0x00002000,
@@ -657,11 +657,11 @@ struct PeriodicAura{
     attacker(_attacker), target(_target), SpellID(_SpellID), damage(0), school(_school),
     absorb(0), resist(0), isFromAura(1) {}
     
-	Unit   *target;
+    Unit   *target;
     Unit   *attacker;
     uint32 SpellID;
-	uint32 isFromAura;
-	uint32 auraType;
+    uint32 isFromAura;
+    uint32 auraType;
     uint32 damage;
     uint32 school;
     uint32 absorb;
@@ -1060,7 +1060,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void SendAttackStateUpdate(CalcDamageInfo *damageInfo);
         void SendAttackStateUpdate(uint32 HitInfo, Unit *target, uint8 SwingType, SpellSchoolMask damageSchoolMask, uint32 Damage, uint32 AbsorbDamage, uint32 Resist, VictimState TargetState, uint32 BlockedAmount);
         void SendSpellNonMeleeDamageLog(SpellNonMeleeDamage *log);
-		void SendPeriodicAuraLog(PeriodicAura *log);
+        void SendPeriodicAuraLog(PeriodicAura *log);
         void SendSpellNonMeleeDamageLog(Unit *target,uint32 SpellID,uint32 Damage, SpellSchoolMask damageSchoolMask,uint32 AbsorbedDamage, uint32 Resist,bool PhysicalDamage, uint32 Blocked, bool CriticalHit = false);
         void SendSpellMiss(Unit *target, uint32 spellID, SpellMissInfo missInfo);
 

@@ -37,21 +37,21 @@ class ItemEnchMgr
 {
   public:
      ItemEnchMgr();
-	 ~ItemEnchMgr();
+     ~ItemEnchMgr();
 
   public:
-	void LoadRandomEnchantmentsTable();
-	void LoadRandomPropPointsTable();
+    void LoadRandomEnchantmentsTable();
+    void LoadRandomPropPointsTable();
     uint32 GetItemEnchantMod(uint32 entry);
     uint32 GenerateEnchSuffixFactor(uint32 item_id);
 
-	RandomPropertiesPoints const *GetRandomPropPoints(uint32 itemlevel) const
-	{
-		RandomPropertiesPointsStore::const_iterator itr = mRandomPropertiesPoints.find(itemlevel);
-		if(itr != mRandomPropertiesPoints.end())
-		   return &itr->second;
-		return NULL;
-	}
+    RandomPropertiesPoints const *GetRandomPropPoints(uint32 itemlevel) const
+    {
+        RandomPropertiesPointsStore::const_iterator itr = mRandomPropertiesPoints.find(itemlevel);
+        if(itr != mRandomPropertiesPoints.end())
+           return &itr->second;
+        return NULL;
+    }
 
    private:
     RandomPropertiesPointsStore  mRandomPropertiesPoints;

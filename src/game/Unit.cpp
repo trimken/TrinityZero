@@ -377,7 +377,7 @@ void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, uint32 T
     data << getMSTime();
 
     data << uint8(0);
-	data << uint32(MOVEFLAG_WALK);
+    data << uint32(MOVEFLAG_WALK);
 
     data << Time;                                           // Time in between points
     data << uint32(1);                                      // 1 single waypoint
@@ -1686,9 +1686,9 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
         return;
 
     // Magic damage, check for resists
-	if ( schoolMask != SPELL_SCHOOL_MASK_NORMAL && schoolMask != SPELL_SCHOOL_MASK_NONE)// && (GetEffectMechanic(m_spellInfo, pVictim->) != MECHANIC_BLEED))
+    if ( schoolMask != SPELL_SCHOOL_MASK_NORMAL && schoolMask != SPELL_SCHOOL_MASK_NONE)// && (GetEffectMechanic(m_spellInfo, pVictim->) != MECHANIC_BLEED))
     {
-		// Get base victim resistance for school
+        // Get base victim resistance for school
         float tmpvalue2 = (float)pVictim->GetResistance(GetFirstSchoolInMask(schoolMask));
         // Ignore resistance by self SPELL_AURA_MOD_TARGET_RESISTANCE aura
         tmpvalue2 += (float)GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_TARGET_RESISTANCE, schoolMask);
@@ -1730,8 +1730,8 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
     {
         next = i; ++next;
 
-		// check damage school mask
-		//[TZERO]Not working correctly, needs rewrite?
+        // check damage school mask
+        //[TZERO]Not working correctly, needs rewrite?
         if (((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
             continue;
 
@@ -1815,7 +1815,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
         next = i; ++next;
 
         // check damage school mask
-		//[TZERO]Not working correctly, needs rewrite?
+        //[TZERO]Not working correctly, needs rewrite?
         if(((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
             continue;
 
@@ -1855,7 +1855,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
             next = i; ++next;
 
             // check damage school mask
-			//[TZERO]Not working correctly, needs rewrite?
+            //[TZERO]Not working correctly, needs rewrite?
             if(((*i)->GetModifier()->m_miscvalue & schoolMask)==0)
                 continue;
 
@@ -4643,17 +4643,17 @@ void Unit::SendSpellNonMeleeDamageLog(Unit *target,uint32 SpellID,uint32 Damage,
 }
 void Unit::SendPeriodicAuraLog(PeriodicAura *log)
 {
-	WorldPacket data(SMSG_PERIODICAURALOG, (21+16));		// we guess size
+    WorldPacket data(SMSG_PERIODICAURALOG, (21+16));        // we guess size
     data.append(log->target->GetPackGUID());
-	data.append(log->attacker->GetPackGUID());				//data.appendPackGUID(log->attacker->GetGUID());			
-    data << uint32(log->SpellID);							//Spell ID
-	data << uint32(log->isFromAura);						//isFromAura?
-	data << uint32(log->auraType);							//Aura Type
-    data << uint32(log->damage);							//Damage Amount / Power value for SPELL_AURA_PERIODIC_MANA_LEECH
-    data << uint32(log->school);							//[TZERO] Spell School / drain value for SPELL_AURA_PERIODIC_MANA_LEECH
+    data.append(log->attacker->GetPackGUID());                //data.appendPackGUID(log->attacker->GetGUID());            
+    data << uint32(log->SpellID);                            //Spell ID
+    data << uint32(log->isFromAura);                        //isFromAura?
+    data << uint32(log->auraType);                            //Aura Type
+    data << uint32(log->damage);                            //Damage Amount / Power value for SPELL_AURA_PERIODIC_MANA_LEECH
+    data << uint32(log->school);                            //[TZERO] Spell School / drain value for SPELL_AURA_PERIODIC_MANA_LEECH
     data << uint32(log->absorb);                            //Absorbed Damage / multiplier value for SPELL_AURA_PERIODIC_MANA_LEECH
-    data << uint32(log->resist);							//Resisted Damage	
-	SendMessageToSet( &data, true );
+    data << uint32(log->resist);                            //Resisted Damage    
+    SendMessageToSet( &data, true );
 }
 
 void Unit::ProcDamageAndSpell(Unit *pVictim, uint32 procAttacker, uint32 procVictim, uint32 procExtra, uint32 amount, WeaponAttackType attType, SpellEntry const *procSpell)
@@ -10228,7 +10228,7 @@ uint32 Unit::GetCreatureType() const
 {
     if(GetTypeId() == TYPEID_PLAYER)
     {
-	   // TODO: find way to return correct creature type for 1.12 for shapeshifted players
+       // TODO: find way to return correct creature type for 1.12 for shapeshifted players
        // SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(((Player*)this)->m_form);
        // if(ssEntry && ssEntry->creatureType > 0)
        //     return ssEntry->creatureType;
@@ -10662,7 +10662,7 @@ void Unit::RemoveFromWorld()
 void Unit::CleanupsBeforeDelete()
 {
      
-	assert(m_uint32Values);
+    assert(m_uint32Values);
 
     //A unit may be in removelist and not in world, but it is still in grid
     //and may have some references during delete

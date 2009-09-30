@@ -2754,7 +2754,7 @@ void Spell::SendCastResult(SpellCastResult result)
 
     if(result != SPELL_CAST_OK)
     {
-		data << uint8(2); // status = fail
+        data << uint8(2); // status = fail
         data << uint8(result);                              // problem
         switch (result)
         {
@@ -2798,7 +2798,7 @@ void Spell::SendSpellStart()
     data << uint16(castFlags);
     data << uint32(m_timer);
 
-	data << m_targets.m_targetMask;
+    data << m_targets.m_targetMask;
     m_targets.write(&data);
 
     if( castFlags & CAST_FLAG_AMMO )
@@ -3360,7 +3360,7 @@ SpellCastResult Spell::CheckCast(bool strict)
     if( strict && !m_IsTriggeredSpell)
     {
         // Cannot be used in this stance/form
-		SpellCastResult shapeError = GetErrorAtShapeshiftedCast(m_spellInfo, m_caster->m_form);
+        SpellCastResult shapeError = GetErrorAtShapeshiftedCast(m_spellInfo, m_caster->m_form);
         if( shapeError != SPELL_CAST_OK )
             return shapeError;
 
@@ -3657,23 +3657,23 @@ SpellCastResult Spell::CheckCast(bool strict)
     }*/
 
     if(!m_IsTriggeredSpell)
-    {	
-		SpellCastResult castResult = CheckRange(strict);
-		if(castResult != SPELL_CAST_OK)
+    {    
+        SpellCastResult castResult = CheckRange(strict);
+        if(castResult != SPELL_CAST_OK)
             return castResult;
-	}
+    }
  
-	{
+    {
         SpellCastResult castResult = CheckPower();
-		if(castResult != SPELL_CAST_OK)
+        if(castResult != SPELL_CAST_OK)
             return castResult;
-	}
+    }
 
-	if(!m_IsTriggeredSpell)    // triggered spell not affected by stun/etc
-	{
+    if(!m_IsTriggeredSpell)    // triggered spell not affected by stun/etc
+    {
 
         SpellCastResult castResult = CheckCasterAuras();
-	    if(castResult != SPELL_CAST_OK)
+        if(castResult != SPELL_CAST_OK)
             return castResult;
     }
 
@@ -4410,7 +4410,7 @@ SpellCastResult Spell::CheckRange(bool strict)
 
     // self cast doesn't need range checking -- also for Starshards fix
     if (m_spellInfo->rangeIndex == 1) 
-		return SPELL_CAST_OK;
+        return SPELL_CAST_OK;
 
     // i do not know why we need this
     /*if (strict)                                             //add radius of caster
@@ -4447,7 +4447,7 @@ SpellCastResult Spell::CheckRange(bool strict)
         else if(min_range && m_caster->IsWithinCombatRange(target, min_range)) // skip this check if min_range = 0
             return SPELL_FAILED_TOO_CLOSE;
 
-		/*[TZERO] workaround for facing flag
+        /*[TZERO] workaround for facing flag
         if( (m_caster->GetTypeId() == TYPEID_PLAYER) && // is a player
 
             !m_caster->IsFriendlyTo(target) && !m_caster->HasInArc( M_PI, target ) &&
@@ -4558,7 +4558,7 @@ SpellCastResult Spell::CheckPower()
     {
         if(m_caster->GetHealth() <= m_powerCost)
             return SPELL_FAILED_CASTER_AURASTATE;
-		return SPELL_CAST_OK;
+        return SPELL_CAST_OK;
     }
     // Check valid power type
     if( m_spellInfo->powerType >= MAX_POWERS )

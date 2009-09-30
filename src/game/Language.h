@@ -321,7 +321,7 @@ enum TrinityStrings
     LANG_CREATURE_NOT_FOLLOW_YOU_NOW    = 342,
     LANG_CREATURE_NON_TAMEABLE          = 343,
     LANG_YOU_ALREADY_HAVE_PET           = 344,
-	// alliance ranks
+    // alliance ranks
     LANG_ALI_PRIVATE                    = 345,
     LANG_ALI_CORPORAL                   = 346,
     LANG_ALI_SERGEANT                   = 347,               

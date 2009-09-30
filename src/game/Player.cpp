@@ -304,11 +304,11 @@ Player::Player (WorldSession *session): Unit()
     duel = NULL;
 
     m_total_honor_points = 0;
-	m_pending_honor = 0;
-	m_pending_honorableKills = 0;
-	m_pending_dishonorableKills = 0;
-	m_storingDate = 0;
-	m_stored_honorableKills = 0;
+    m_pending_honor = 0;
+    m_pending_honorableKills = 0;
+    m_pending_dishonorableKills = 0;
+    m_storingDate = 0;
+    m_stored_honorableKills = 0;
     m_stored_dishonorableKills = 0;
 
     m_GuildIdInvited = 0;
@@ -1756,7 +1756,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         else
             return false;
     }
-	GetSession()->HandleMoveWorldportAckOpcode();
+    GetSession()->HandleMoveWorldportAckOpcode();
     return true;
 }
 
@@ -3453,9 +3453,9 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
     if (!trainer_spell->spell)
         return TRAINER_SPELL_RED;
 
-	// exist, already checked at loading
+    // exist, already checked at loading
     SpellEntry const* spell = sSpellStore.LookupEntry(trainer_spell->spell);
-	SpellEntry const* TriggerSpell = sSpellStore.LookupEntry(spell->EffectTriggerSpell[0]);
+    SpellEntry const* TriggerSpell = sSpellStore.LookupEntry(spell->EffectTriggerSpell[0]);
 
     // known spell
     if(HasSpell(TriggerSpell->Id))
@@ -3466,7 +3466,7 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
         return TRAINER_SPELL_RED;
 
     // check level requirement
-	uint32 spellLevel = trainer_spell->reqlevel ? trainer_spell->reqlevel : TriggerSpell->spellLevel;
+    uint32 spellLevel = trainer_spell->reqlevel ? trainer_spell->reqlevel : TriggerSpell->spellLevel;
     if(getLevel() < spellLevel)
         return TRAINER_SPELL_RED;
 
@@ -3638,7 +3638,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     CharacterDatabase.PExecute("DELETE FROM mail_items WHERE receiver = '%u'",guid);
     CharacterDatabase.PExecute("DELETE FROM character_pet WHERE owner = '%u'",guid);
     CharacterDatabase.PExecute("DELETE FROM character_pet_declinedname WHERE owner = '%u'",guid);
-	CharacterDatabase.PExecute("DELETE FROM character_kill WHERE `guid` = '%u'",guid);
+    CharacterDatabase.PExecute("DELETE FROM character_kill WHERE `guid` = '%u'",guid);
     CharacterDatabase.CommitTransaction();
 
     //LoginDatabase.PExecute("UPDATE realmcharacters SET numchars = numchars - 1 WHERE acctid = %d AND realmid = %d", accountId, realmID);
@@ -5785,13 +5785,13 @@ void Player::UpdateHonor(void)
     uint32 LastWeekBegin = 0;
     uint32 LastWeekEnd = 0;
 
-	uint32 lastweek_honorableKills = 0;
+    uint32 lastweek_honorableKills = 0;
     uint32 lastweek_dishonorableKills = 0;
     uint32 today_honorableKills = 0;
     uint32 today_dishonorableKills = 0;
     m_pending_honorableKills = 0;
-	m_pending_dishonorableKills = 0;
-	m_pending_honor = 0;
+    m_pending_dishonorableKills = 0;
+    m_pending_honor = 0;
 
     uint32 yesterdayKills = 0;
     uint32 thisWeekKills = 0;
@@ -5812,7 +5812,7 @@ void Player::UpdateHonor(void)
     ThisWeekEnd   = ThisWeekBegin + 7;
     LastWeekBegin = ThisWeekBegin - 7;
     LastWeekEnd   = LastWeekBegin + 7;
-	m_storingDate = LastWeekBegin;
+    m_storingDate = LastWeekBegin;
 
     sLog.outDetail("PLAYER: UpdateHonor");
 
@@ -5846,12 +5846,12 @@ void Player::UpdateHonor(void)
                     lastWeekKills++;
                     lastWeekHonor += fields[1].GetFloat();
                 }
-				
-				if(date < m_storingDate)
-				{
-					m_pending_honor += fields[1].GetFloat();
-				    m_pending_honorableKills++;
-				}
+                
+                if(date < m_storingDate)
+                {
+                    m_pending_honor += fields[1].GetFloat();
+                    m_pending_honorableKills++;
+                }
 
             }
             else if(fields[0].GetUInt32() == DISHONORABLE_KILL)
@@ -5861,17 +5861,17 @@ void Player::UpdateHonor(void)
                     today_dishonorableKills++;
                 }
 
-				if( (date >= LastWeekBegin) && (date < LastWeekEnd) )
-				{
-					lastWeekTotalHonor -= fields[1].GetFloat();
-					lastweek_dishonorableKills++;
-				}
-				
-				if( date < m_storingDate)
-				{
-					m_pending_honor -= fields[1].GetFloat();
-				    m_pending_dishonorableKills++;
-				}
+                if( (date >= LastWeekBegin) && (date < LastWeekEnd) )
+                {
+                    lastWeekTotalHonor -= fields[1].GetFloat();
+                    lastweek_dishonorableKills++;
+                }
+                
+                if( date < m_storingDate)
+                {
+                    m_pending_honor -= fields[1].GetFloat();
+                    m_pending_dishonorableKills++;
+                }
             }
         }
         while( result->NextRow() );
@@ -5879,13 +5879,13 @@ void Player::UpdateHonor(void)
         delete result;
     }
 
-	lastWeekTotalHonor += lastWeekHonor;
+    lastWeekTotalHonor += lastWeekHonor;
 
-	uint32 total_dishonorableKills = m_pending_dishonorableKills + lastweek_dishonorableKills + today_dishonorableKills + GetHonorStoredKills(false);
-	uint32 total_honorableKills = m_pending_honorableKills + lastweek_honorableKills + today_honorableKills + GetHonorStoredKills(true);
+    uint32 total_dishonorableKills = m_pending_dishonorableKills + lastweek_dishonorableKills + today_dishonorableKills + GetHonorStoredKills(false);
+    uint32 total_honorableKills = m_pending_honorableKills + lastweek_honorableKills + today_honorableKills + GetHonorStoredKills(true);
 
     //Store Total Honor points...
-	SetTotalHonor(lastWeekTotalHonor+m_pending_honor+GetStoredHonor());
+    SetTotalHonor(lastWeekTotalHonor+m_pending_honor+GetStoredHonor());
 
     //RIGHEST RANK
     //If the new rank is highest then the old one, then m_highest_rank is updated
@@ -5927,7 +5927,7 @@ void Player::UpdateHonor(void)
     //LIFE TIME
     SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, total_dishonorableKills);
     SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, total_honorableKills);
-	SetUInt32Value(PLAYER_FIELD_SESSION_KILLS, (GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS) << 16) + GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS) );
+    SetUInt32Value(PLAYER_FIELD_SESSION_KILLS, (GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS) << 16) + GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS) );
     //TODO: Into what field we need to set it? Fix it!
     SetUInt32Value(PLAYER_FIELD_PVP_MEDALS/*???*/, (GetHonorHighestRank() != 0 ? ((GetHonorHighestRank() << 24) + 0x040F0001) : 0) );
 }
@@ -13028,9 +13028,9 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
         return false;
     }
 
-	//Store original values before modifying temporarily the data field
-	SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS),true);
-	SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS),false);
+    //Store original values before modifying temporarily the data field
+    SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS),true);
+    SetHonorStoredKills(GetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS),false);
 
     // overwrite possible wrong/corrupted guid
     SetUInt64Value(OBJECT_FIELD_GUID, MAKE_NEW_GUID(guid, 0, HIGHGUID_PLAYER));
@@ -14456,14 +14456,14 @@ void Player::SaveToDB()
 
     bool inworld = IsInWorld();
 
-	SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, GetHonorStoredKills(false)+m_pending_honorableKills);
+    SetUInt32Value(PLAYER_FIELD_LIFETIME_DISHONORABLE_KILLS, GetHonorStoredKills(false)+m_pending_honorableKills);
     SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, GetHonorStoredKills(true)+m_pending_dishonorableKills);
-	m_stored_honor += m_pending_honor;
+    m_stored_honor += m_pending_honor;
     m_pending_honor = 0;
 
     CharacterDatabase.BeginTransaction();
 
-	CharacterDatabase.PExecute("DELETE FROM characters WHERE guid = '%u'",GetGUIDLow());
+    CharacterDatabase.PExecute("DELETE FROM characters WHERE guid = '%u'",GetGUIDLow());
     CharacterDatabase.PExecute("DELETE FROM character_kill WHERE date < '%u'",m_storingDate);
 
     std::string sql_name = m_name;

@@ -97,7 +97,7 @@ struct TRINITY_DLL_DECL boss_patchwerkAI : public ScriptedAI
             for (i = m_creature->getThreatManager().getThreatList().begin(); i!=m_creature->getThreatManager().getThreatList().end();)
             {
                 pTemp = Unit::GetUnit((*m_creature),(*i)->getUnitGuid());
-				++i;
+                ++i;
                 if (pTemp && pTemp->isAlive() && pTemp->GetHealth() > MostHP && m_creature->GetDistance2d(pTemp) < 5)
                 {
                     MostHP = pTemp->GetHealth();

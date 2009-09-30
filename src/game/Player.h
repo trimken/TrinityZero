@@ -1719,8 +1719,8 @@ class TRINITY_DLL_SPEC Player : public Unit
         //Acessors of rating
         float GetStoredHonor() const { return m_stored_honor; }
         void SetStoredHonor(float rating) { m_stored_honor = rating; }
-		//Acessors of lifetime
-		uint32 GetHonorStoredKills(bool honorable) const { return honorable? m_stored_honorableKills : m_stored_dishonorableKills; }
+        //Acessors of lifetime
+        uint32 GetHonorStoredKills(bool honorable) const { return honorable? m_stored_honorableKills : m_stored_dishonorableKills; }
         void SetHonorStoredKills(uint32 kills,bool honorable) { if (honorable) m_stored_honorableKills = kills; else m_stored_dishonorableKills = kills; }
         //Acessors of last week standing
         int32 GetHonorLastWeekStanding() const { return m_standing; }
@@ -1728,12 +1728,12 @@ class TRINITY_DLL_SPEC Player : public Unit
 
         float m_total_honor_points;
         float m_stored_honor;
-		float m_pending_honor;
-		uint32 m_pending_honorableKills;
-		uint32 m_pending_dishonorableKills;
-		uint32 m_storingDate;
-		uint32 m_stored_honorableKills;
-		uint32 m_stored_dishonorableKills;
+        float m_pending_honor;
+        uint32 m_pending_honorableKills;
+        uint32 m_pending_dishonorableKills;
+        uint32 m_storingDate;
+        uint32 m_stored_honorableKills;
+        uint32 m_stored_dishonorableKills;
         uint32 m_highest_rank;
         int32 m_standing;
 

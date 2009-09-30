@@ -514,8 +514,8 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
     if(!random_id)
     {
        sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in 'ItemRandomProperties.dbc'",randomPropId);
-	   return 0;
-	}
+       return 0;
+    }
 
     return random_id->ID;
 }
