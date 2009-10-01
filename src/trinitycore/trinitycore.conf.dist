@@ -109,7 +109,7 @@ EAIErrorLevel = 2
 #
 #    SocketSelectTime
 #        Socket select time (in milliseconds)
-#        Default: 10000
+#        Default: 10000 (10 secs)
 #
 #    GridCleanUpDelay
 #        Grid clean up delay (in milliseconds)
@@ -433,7 +433,7 @@ LogColors = ""
 #    MaxPlayerLevel
 #        Max level that can be reached by player for experience (in range from 1 to 255).
 #        Change not recommended
-#        Default: 70
+#        Default: 60
 #
 #    StartPlayerLevel
 #        Staring level that have character at creating (in range 1 to MaxPlayerLevel)
@@ -462,13 +462,13 @@ LogColors = ""
 #
 #    AllFlightPaths
 #        Players will start with all flight paths (Note: ALL flight paths, not only player's team)
-#        Default: 0 (true)
-#                 1 (false)
+#        Default: 0 (false)
+#                 1 (true)
 #
 #    AlwaysMaxSkillForLevel
 #        Players will automatically gain max level dependent (weapon/defense) skill when logging in, leveling up etc.
-#        Default: 0 (true)
-#                 1 (false)
+#        Default: 0 (false)
+#                 1 (true)
 #
 #    ActivateWeather
 #        Activate weather system
@@ -1095,7 +1095,6 @@ BattleGround.PrematureFinishTimer = 300000
 
 
 ###################################################################################################################
-#
 # NETWORK CONFIG
 #
 #    Network.Threads
