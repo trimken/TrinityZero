@@ -151,9 +151,11 @@ enum EnchantmentSlot
     TEMP_ENCHANTMENT_SLOT       = 1,
     MAX_INSPECTED_ENCHANTMENT_SLOT = 2,
 
-    PROP_ENCHANTMENT_SLOT_0     = 2,                        // used with RandomProperty
-    PROP_ENCHANTMENT_SLOT_1     = 3,                        // used with RandomProperty
-    MAX_ENCHANTMENT_SLOT        = 4
+    PROP_ENCHANTMENT_SLOT_0     = 3,
+    PROP_ENCHANTMENT_SLOT_1     = 4,
+    PROP_ENCHANTMENT_SLOT_2     = 5,
+    PROP_ENCHANTMENT_SLOT_3     = 6,
+    MAX_ENCHANTMENT_SLOT        = 7
 };
 
 #define MAX_VISIBLE_ITEM_OFFSET   12                        //

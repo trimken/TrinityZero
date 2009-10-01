@@ -254,8 +254,7 @@ struct ItemRandomPropertiesEntry
     //char*     internalName                                // 1   unused
     uint32    enchant_id[3];                                // 2-4
                                                             // 5-6 unused, 0 only values, reserved for additional enchantments?
-    //char*     nameSuffix[16]                              // 7-22, unused
-                                                            // 23 nameSufix flags, unused
+    //char*     nameSuffix[8]                               // 7-15, unused
 };
 
 struct ItemSetEntry
