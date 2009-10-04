@@ -1756,7 +1756,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         else
             return false;
     }
-    GetSession()->HandleMoveWorldportAckOpcode();
     return true;
 }
 
