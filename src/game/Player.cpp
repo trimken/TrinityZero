@@ -867,7 +867,7 @@ void Player::HandleDrowning()
         return;
 
     //if player is GM, have waterbreath, is dead or if breathing is disabled then return
-    if(waterbreath || isGameMaster() || !isAlive() || GetSession()->GetSecurity() >= sWorld.getConfig(CONFIG_DISABLE_BREATHING))
+    if(waterbreath || isGameMaster() || !isAlive() || ( GetSession()->GetSecurity() >= sWorld.getConfig(CONFIG_DISABLE_BREATHING) && sWorld.getConfig(CONFIG_DISABLE_BREATHING)< SEC_CONSOLE) )
     {
         StopMirrorTimer(BREATH_TIMER);
         m_isunderwater = 0;
