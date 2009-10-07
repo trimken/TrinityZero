@@ -41,7 +41,6 @@ class ItemEnchMgr
 
   public:
     void LoadRandomEnchantmentsTable();
-    void LoadRandomPropPointsTable();
     uint32 GetItemEnchantMod(uint32 entry);
     uint32 GenerateEnchSuffixFactor(uint32 item_id);
 

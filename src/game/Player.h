@@ -821,7 +821,7 @@ struct InstancePlayerBind
 {
     InstanceSave *save;
     bool perm;
-    /* permanent PlayerInstanceBinds are created in Raid/Heroic instances for players
+    /* permanent PlayerInstanceBinds are created in Raid instances for players
        that aren't already permanently bound when they are inside when a boss is killed
        or when they enter an instance that the group leader is permanently bound to. */
     InstancePlayerBind() : save(NULL), perm(false) {}

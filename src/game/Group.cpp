@@ -275,7 +275,7 @@ bool Group::AddMember(const uint64 &guid, const char* name)
         if(!IsLeader(player->GetGUID()) && !isBGGroup())
         {
             // reset the new member's instances, unless he is currently in one of them
-            // including raid/heroic instances that they are not permanently bound to!
+            // including raid instances that they are not permanently bound to!
             player->ResetInstances(INSTANCE_RESET_GROUP_JOIN);
         }
         player->SetGroupUpdateFlag(GROUP_UPDATE_FULL);
@@ -398,7 +398,7 @@ void Group::SendLootStartRoll(uint32 CountDown, const Roll &r)
     data << uint64(r.itemGUID);                             // guid of rolled item
     data << uint32(r.totalPlayersRolling);                  // maybe the number of players rolling for it???
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for
-    data << uint32(r.itemRandomSuffix);                     // randomSuffix
+    data << uint32(0);
     data << uint32(r.itemRandomPropId);                     // item random property ID
     data << uint32(CountDown);                              // the countdown time to choose "need" or "greed"
 
@@ -420,7 +420,7 @@ void Group::SendLootRoll(const uint64& SourceGuid, const uint64& TargetGuid, uin
     data << uint32(0);                                      // unknown, maybe amount of players
     data << uint64(TargetGuid);
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for
-    data << uint32(r.itemRandomSuffix);                     // randomSuffix
+    data << uint32(0);
     data << uint32(r.itemRandomPropId);                     // Item random property ID
     data << uint8(RollNumber);                              // 0: "Need for: [item name]" > 127: "you passed on: [item name]"      Roll number
     data << uint8(RollType);                                // 0: "Need for: [item name]" 0: "You have selected need for [item name] 1: need roll 2: greed roll
@@ -443,7 +443,7 @@ void Group::SendLootRollWon(const uint64& SourceGuid, const uint64& TargetGuid, 
     data << uint64(SourceGuid);                             // guid of the item rolled
     data << uint32(0);                                      // unknown, maybe amount of players
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for
-    data << uint32(r.itemRandomSuffix);                     // randomSuffix
+    data << uint32(0);
     data << uint32(r.itemRandomPropId);                     // Item random property
     data << uint64(TargetGuid);                             // guid of the player who won.
     data << uint8(RollNumber);                              // rollnumber realted to SMSG_LOOT_ROLL
@@ -467,7 +467,7 @@ void Group::SendLootAllPassed(uint32 NumberOfPlayers, const Roll &r)
     data << uint32(NumberOfPlayers);                        // The number of players rolling for it???
     data << uint32(r.itemid);                               // The itemEntryId for the item that shall be rolled for
     data << uint32(r.itemRandomPropId);                     // Item random property ID
-    data << uint32(r.itemRandomSuffix);                     // Item random suffix ID
+    data << uint32(0);
 
     for( Roll::PlayerVote::const_iterator itr=r.playerVote.begin(); itr!=r.playerVote.end(); ++itr)
     {

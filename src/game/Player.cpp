@@ -11140,7 +11140,7 @@ void Player::SendNewItem(Item *item, uint32 count, bool received, bool created, 
                                                             // item slot, but when added to stack: 0xFFFFFFFF
     data << (uint32) ((item->GetCount()==count) ? item->GetSlot() : -1);
     data << uint32(item->GetEntry());                       // item id
-    data << uint32(item->GetItemSuffixFactor());            // SuffixFactor
+    data << uint32(0);
     data << uint32(item->GetItemRandomPropertyId());        // random item property id
     data << uint32(count);                                  // count of items
     data << GetItemCount(item->GetEntry());                 // count of items in inventory
@@ -14272,7 +14272,7 @@ void Player::SendSavedInstances()
         }
     }
 
-    //Send opcode 811. true or false means, whether you have current raid/heroic instances
+    //Send opcode 811. true or false means, whether you have current raid instances
     data.Initialize(SMSG_UPDATE_INSTANCE_OWNERSHIP);
     data << uint32(hasBeenSaved);
     GetSession()->SendPacket(&data);

@@ -3513,14 +3513,7 @@ void ObjectMgr::LoadInstanceTemplate()
             // use defaults from the DBC
             /*
             TEMPORARY
-            if(entry->SupportsHeroicMode())
-            {
-                temp->reset_delay = entry->resetTimeHeroic / DAY;
-            }
-            else if (entry->resetTimeRaid && entry->map_type == MAP_RAID)
-            {
                 temp->reset_delay = entry->resetTimeRaid / DAY;
-            }
             */
         }
 
