@@ -387,14 +387,6 @@
 				Name="creature"
 				>
 				<File
-					RelativePath="..\scripts\creature\mob_event_ai.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\scripts\creature\mob_event_ai.h"
-					>
-				</File>
-				<File
 					RelativePath="..\scripts\creature\mob_generic_creature.cpp"
 					>
 				</File>
@@ -1596,6 +1588,26 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="System"
+			>
+			<File
+				RelativePath="..\system\ScriptLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\system\ScriptLoader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\system\system.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\system\system.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\config.h"
 			>
@@ -1610,10 +1622,6 @@
 		</File>
 		<File
 			RelativePath="..\svn_revision.h"
-			>
-		</File>
-		<File
-			RelativePath="..\system.cpp"
 			>
 		</File>
 	</Files>
