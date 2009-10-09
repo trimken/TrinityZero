@@ -777,7 +777,7 @@ enum TeleportToOptions
 };
 
 /// Type of environmental damages
-enum EnviromentalDamage
+enum EnvironmentalDamageType
 {
     DAMAGE_EXHAUSTED = 0,
     DAMAGE_DROWNING  = 1,
@@ -1926,10 +1926,10 @@ class TRINITY_DLL_SPEC Player : public Unit
         void SetRestTime(uint32 v) { m_restTime = v;};
 
         /*********************************************************/
-        /***              ENVIROMENTAL SYSTEM                  ***/
+        /***              ENVIRONMENTAL SYSTEM                  ***/
         /*********************************************************/
 
-        void EnvironmentalDamage(uint64 guid, EnviromentalDamage type, uint32 damage);
+        void EnvironmentalDamage(uint64 guid, EnvironmentalDamageType type, uint32 damage);
 
         /*********************************************************/
         /***               FLOOD FILTER SYSTEM                 ***/
