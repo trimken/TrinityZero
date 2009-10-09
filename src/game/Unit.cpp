@@ -48,7 +48,7 @@
 #include "Path.h"
 #include "CreatureGroups.h"
 #include "PetAI.h"
-#include "NullCreatureAI.h"
+#include "PassiveAI.h"
 
 #include <math.h>
 
@@ -463,7 +463,7 @@ void Unit::resetAttackTimer(WeaponAttackType type)
     m_attackTimer[type] = uint32(GetAttackTime(type) * m_modAttackSpeedPct[type]);
 }
 
-bool Unit::IsWithinCombatRange(Unit *obj, float dist2compare) const
+bool Unit::IsWithinCombatRange(const Unit *obj, float dist2compare) const
 {
     if (!obj || !IsInMap(obj)) return false;
 
@@ -2675,9 +2675,9 @@ float Unit::CalculateLevelPenalty(SpellEntry const* spellProto) const
     return (100.0f - LvlPenalty) * LvlFactor / 100.0f;
 }
 
-void Unit::SendAttackStart(Unit* pVictim)
+void Unit::SendMeleeAttackStart(Unit* pVictim)
 {
-    WorldPacket data( SMSG_ATTACKSTART, 16 );
+    WorldPacket data( SMSG_ATTACKSTART, 8+8 );
     data << uint64(GetGUID());
     data << uint64(pVictim->GetGUID());
 
@@ -2685,7 +2685,7 @@ void Unit::SendAttackStart(Unit* pVictim)
     DEBUG_LOG( "WORLD: Sent SMSG_ATTACKSTART" );
 }
 
-void Unit::SendAttackStop(Unit* victim)
+void Unit::SendMeleeAttackStop(Unit* victim)
 {
     if(!victim)
         return;
@@ -3478,6 +3478,13 @@ Spell* Unit::FindCurrentSpellBySpellId(uint32 spell_id) const
         if(m_currentSpells[i] && m_currentSpells[i]->m_spellInfo->Id==spell_id)
             return m_currentSpells[i];
     return NULL;
+}
+
+int32 Unit::GetCurrentSpellCastTime(uint32 spell_id) const
+{
+    if (Spell const * spell = FindCurrentSpellBySpellId(spell_id))
+        return spell->GetCastTime();
+    return 0;
 }
 
 bool Unit::isInFront(Unit const* target, float distance,  float arc) const
@@ -7705,7 +7712,7 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
             if( meleeAttack && !hasUnitState(UNIT_STAT_MELEE_ATTACKING) )
             {
                 addUnitState(UNIT_STAT_MELEE_ATTACKING);
-                SendAttackStart(victim);
+                SendMeleeAttackStart(victim);
                 return true;
             }
             return false;
@@ -7745,7 +7752,7 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
         resetAttackTimer(OFF_ATTACK);
 
     if(meleeAttack)
-        SendAttackStart(victim);
+        SendMeleeAttackStart(victim);
 
     return true;
 }
@@ -7773,7 +7780,7 @@ bool Unit::AttackStop()
         ((Creature*)this)->SetNoCallAssistance(false);
     }
 
-    SendAttackStop(victim);
+    SendMeleeAttackStop(victim);
 
     return true;
 }
@@ -10204,6 +10211,17 @@ void Unit::ApplyDiminishingAura( DiminishingGroup group, bool apply )
     }
 }
 
+uint32 Unit::GetSpellRadiusForTarget(Unit* target,const SpellRadiusEntry * radiusEntry)
+{
+    if (!radiusEntry)
+        return 0;
+    if (radiusEntry->radiusHostile == radiusEntry->radiusFriend)
+        return radiusEntry->radiusFriend;
+    if (IsHostileTo(target))
+        return radiusEntry->radiusHostile;
+    return radiusEntry->radiusFriend;
+};
+
 Unit* Unit::GetUnit(WorldObject& object, uint64 guid)
 {
     return ObjectAccessor::GetUnit(object,guid);
@@ -10799,7 +10817,7 @@ void CharmInfo::InitPossessCreateSpells()
             if(IsPassiveSpell(spellid))
                 m_unit->CastSpell(m_unit, spellid, true);
             else
-                AddSpellToAB(0, spellid, ACT_CAST);
+                AddSpellToActionBar(0, spellid, ACT_CAST);
         }
     }
 }
@@ -10845,12 +10863,12 @@ void CharmInfo::InitCharmCreateSpells()
             else
                 newstate = ACT_CAST;
 
-            AddSpellToAB(0, spellId, newstate);
+            AddSpellToActionBar(0, spellId, newstate);
         }
     }
 }
 
-bool CharmInfo::AddSpellToAB(uint32 oldid, uint32 newid, ActiveStates newstate)
+bool CharmInfo::AddSpellToActionBar(uint32 oldid, uint32 newid, ActiveStates newstate)
 {
     for(uint8 i = 0; i < 10; i++)
     {
@@ -12142,7 +12160,7 @@ bool Unit::HandleMeandingAuraProc( Aura* triggeredByAura )
     {
         float radius;
         if (spellProto->EffectRadiusIndex[effIdx])
-            radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellProto->EffectRadiusIndex[effIdx]));
+            radius = GetSpellRadius(spellProto,effIdx,false);
         else
             radius = GetSpellMaxRange(sSpellRangeStore.LookupEntry(spellProto->rangeIndex));
 
@@ -12856,5 +12874,58 @@ void Unit::AddAura(uint32 spellId, Unit* target)
             }
         }
     }
+}
+
+// MrSmite 09-05-2009 PetAI_v1.0
+void CharmInfo::SetIsCommandAttack(bool val)
+{
+    m_isCommandAttack = val;
+}
+
+bool CharmInfo::IsCommandAttack()
+{
+    return m_isCommandAttack;
+}
+
+void CharmInfo::SaveStayPosition()
+{
+    m_unit->GetPosition(m_stayX, m_stayY, m_stayZ);
+}
+
+void CharmInfo::GetStayPosition(float &x, float &y, float &z)
+{
+    x = m_stayX;
+    y = m_stayY;
+    z = m_stayZ;
+}
+
+void CharmInfo::SetIsAtStay(bool val)
+{
+    m_isAtStay = val;
+}
+
+bool CharmInfo::IsAtStay()
+{
+    return m_isAtStay;
+}
+
+void CharmInfo::SetIsFollowing(bool val)
+{
+    m_isFollowing = val;
+}
+
+bool CharmInfo::IsFollowing()
+{
+    return m_isFollowing;
+}
+
+void CharmInfo::SetIsReturning(bool val)
+{
+    m_isReturning = val;
+}
+
+bool CharmInfo::IsReturning()
+{
+    return m_isReturning;
 }
 

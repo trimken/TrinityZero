@@ -1599,7 +1599,7 @@ void Creature::setDeathState(DeathState s)
 {
     if((s == JUST_DIED && !m_isDeadByDefault)||(s == JUST_ALIVED && m_isDeadByDefault))
     {
-        m_deathTimer = m_corpseDelay*1000;
+        m_deathTimer = m_corpseDelay*IN_MILISECONDS;
 
         // always save boss respawn time at death to prevent crash cheating
         if(sWorld.getConfig(CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY) || isWorldBoss())
@@ -1705,6 +1705,13 @@ void Creature::Respawn()
 
         //GetMap()->Add(this);
     }
+}
+
+void Creature::ForcedDespawn()
+{
+    setDeathState(JUST_DIED);
+    RemoveCorpse();
+    SetHealth(0);                                           // just for nice GM-mode view
 }
 
 bool Creature::IsImmunedToSpell(SpellEntry const* spellInfo, bool useCharges)
@@ -1933,7 +1940,26 @@ void Creature::CallAssistance()
     }
 }
 
-bool Creature::CanAssistTo(const Unit* u, const Unit* enemy) const
+void Creature::CallForHelp(float fRadius)
+{
+    if (fRadius <= 0.0f || !getVictim() || isPet() || isCharmed())
+        return;
+
+    CellPair p(Trinity::ComputeCellPair(GetPositionX(), GetPositionY()));
+    Cell cell(p);
+    cell.data.Part.reserved = ALL_DISTRICT;
+    cell.SetNoCreate();
+
+    Trinity::CallOfHelpCreatureInRangeDo u_do(this, getVictim(), fRadius);
+    Trinity::CreatureWorker<Trinity::CallOfHelpCreatureInRangeDo> worker(this, u_do);
+
+    TypeContainerVisitor<Trinity::CreatureWorker<Trinity::CallOfHelpCreatureInRangeDo>, GridTypeMapContainer >  grid_creature_searcher(worker);
+
+    CellLock<GridReadGuard> cell_lock(cell, p);
+    cell_lock->Visit(cell_lock, grid_creature_searcher, *GetMap(), *this, fRadius);
+}
+
+bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /*= true*/) const
 {
     // is it true?
     if(!HasReactState(REACT_AGGRESSIVE))
@@ -1948,8 +1974,16 @@ bool Creature::CanAssistTo(const Unit* u, const Unit* enemy) const
         return false;
 
     // only from same creature faction
-    if(getFaction() != u->getFaction() )
-        return false;
+    if (checkfaction)
+    {
+        if (getFaction() != u->getFaction())
+            return false;
+    }
+    else
+    {
+        if (!IsFriendlyTo(u))
+            return false;
+    }
 
     // only free creature
     if( GetCharmerOrOwnerGUID() )
@@ -2074,6 +2108,43 @@ void Creature::SendZoneUnderAttackMessage(Player* attacker)
     WorldPacket data(SMSG_ZONE_UNDER_ATTACK,4);
     data << (uint32)GetZoneId();
     sWorld.SendGlobalMessage(&data,NULL,(enemy_team==ALLIANCE ? HORDE : ALLIANCE));
+}
+
+void Creature::SetInCombatWithZone()
+{
+    if (!CanHaveThreatList())
+    {
+        sLog.outError("Creature entry %u call SetInCombatWithZone but creature cannot have threat list.", GetEntry());
+        return;
+    }
+
+    Map* pMap = GetMap();
+
+    if (!pMap->IsDungeon())
+    {
+        sLog.outError("Creature entry %u call SetInCombatWithZone for map (id: %u) that isn't an instance.", GetEntry(), pMap->GetId());
+        return;
+    }
+
+    Map::PlayerList const &PlList = pMap->GetPlayers();
+
+    if (PlList.isEmpty())
+        return;
+
+    for(Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+    {
+        if (Player* pPlayer = i->getSource())
+        {
+            if (pPlayer->isGameMaster())
+                continue;
+
+            if (pPlayer->isAlive())
+            {
+                pPlayer->SetInCombatWith(this);
+                AddThreat(pPlayer, 0.0f);
+            }
+        }
+    }
 }
 
 void Creature::_AddCreatureSpellCooldown(uint32 spell_id, time_t end_time)
@@ -2206,6 +2277,11 @@ uint32 Creature::getLevelForTarget( Unit const* target ) const
     if(level > 255)
         return 255;
     return level;
+}
+
+std::string Creature::GetAIName() const
+{
+    return ObjectMgr::GetCreatureTemplate(GetEntry())->AIName;
 }
 
 std::string Creature::GetScriptName()

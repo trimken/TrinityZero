@@ -19,7 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include "InstanceSaveMgr.h"
 #include "Common.h"
 #include "Database/SQLStorage.h"
 
@@ -43,6 +42,8 @@
 #include "Group.h"
 #include "InstanceData.h"
 #include "ProgressBar.h"
+#include "Policies/Singleton.h"
+#include "Policies/SingletonImp.h"
 
 INSTANTIATE_SINGLETON_1( InstanceSaveManager );
 

@@ -83,7 +83,9 @@ enum SpellAuraInterruptFlags
     AURA_INTERRUPT_FLAG_UNK21               = 0x00200000,   // 21
     AURA_INTERRUPT_FLAG_TELEPORTED          = 0x00400000,   // 22
     AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT    = 0x00800000,   // 23   removed by entering pvp combat
-    AURA_INTERRUPT_FLAG_DIRECT_DAMAGE       = 0x01000000    // 24   removed by any direct damage
+    AURA_INTERRUPT_FLAG_DIRECT_DAMAGE       = 0x01000000,    // 24   removed by any direct damage
+
+    AURA_INTERRUPT_FLAG_NOT_VICTIM = (AURA_INTERRUPT_FLAG_HITBYSPELL | AURA_INTERRUPT_FLAG_DAMAGE | AURA_INTERRUPT_FLAG_DIRECT_DAMAGE),
 };
 
 enum SpellModOp
@@ -184,6 +186,8 @@ enum SheathState
     SHEATH_STATE_RANGED   = 2                               // prepared ranged weapon
 };
 
+#define MAX_SHEATH_STATE    3
+
 // byte (1 from 0..3) of UNIT_FIELD_BYTES_2
 enum UnitBytes2_Flags
 {
@@ -266,6 +270,7 @@ class Item;
 class Pet;
 class Path;
 class PetAura;
+class UnitAI;
 
 struct SpellImmune
 {
@@ -747,11 +752,23 @@ struct TRINITY_DLL_SPEC CharmInfo
         void InitPetActionBar();
         void InitEmptyActionBar(bool withAttack = true);
                                                             //return true if successful
-        bool AddSpellToAB(uint32 oldid, uint32 newid, ActiveStates newstate = ACT_DECIDE);
+        bool AddSpellToActionBar(uint32 oldid, uint32 newid, ActiveStates newstate = ACT_DECIDE);
         void ToggleCreatureAutocast(uint32 spellid, bool apply);
 
         UnitActionBarEntry* GetActionBarEntry(uint8 index) { return &(PetActionBar[index]); }
         CharmSpellEntry* GetCharmSpell(uint8 index) { return &(m_charmspells[index]); }
+
+        void SetIsCommandAttack(bool val);
+        bool IsCommandAttack();
+        void SetIsAtStay(bool val);
+        bool IsAtStay();
+        void SetIsFollowing(bool val);
+        bool IsFollowing();
+        void SetIsReturning(bool val);
+        bool IsReturning();
+        void SaveStayPosition();
+        void GetStayPosition(float &x, float &y, float &z);
+
     private:
         Unit* m_unit;
         UnitActionBarEntry PetActionBar[10];
@@ -763,6 +780,14 @@ struct TRINITY_DLL_SPEC CharmInfo
 
         //for restoration after charmed
         ReactStates     m_oldReactState;
+
+        bool m_isCommandAttack;
+        bool m_isAtStay;
+        bool m_isFollowing;
+        bool m_isReturning;
+        float m_stayX;
+        float m_stayY;
+        float m_stayZ;
 };
 
 // for clearing special attacks
@@ -808,6 +833,9 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void ApplyDiminishingToDuration(DiminishingGroup  group, int32 &duration,Unit* caster, DiminishingLevels Level);
         void ApplyDiminishingAura(DiminishingGroup  group, bool apply);
         void ClearDiminishings() { m_Diminishing.clear(); }
+        
+        //target dependent checks
+        uint32 GetSpellRadiusForTarget(Unit* target,const SpellRadiusEntry * radiusEntry);
 
         virtual void Update( uint32 time );
 
@@ -820,7 +848,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void SetCanDualWield(bool value) { m_canDualWield = value; }
         float GetCombatReach() const { return m_floatValues[UNIT_FIELD_COMBATREACH]; }
         float GetMeleeReach() const { float reach = m_floatValues[UNIT_FIELD_COMBATREACH]; return reach > MIN_MELEE_REACH ? reach : MIN_MELEE_REACH; }
-        bool IsWithinCombatRange(Unit *obj, float dist2compare) const;
+        bool IsWithinCombatRange(const Unit *obj, float dist2compare) const;
         bool IsWithinMeleeRange(Unit *obj, float dist = MELEE_RANGE) const;
         void GetRandomContactPoint( const Unit* target, float &x, float &y, float &z, float distance2dMin, float distance2dMax ) const;
         uint32 m_extraAttacks;
@@ -858,6 +886,8 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void CombatStop(bool cast = false);
         void CombatStopWithPets(bool cast = false);
         Unit* SelectNearbyTarget(float dist = NOMINAL_MELEE_RANGE) const;
+        void SendMeleeAttackStop(Unit* victim);
+        void SendMeleeAttackStart(Unit* pVictim);
 
         void addUnitState(uint32 f) { m_state |= f; }
         bool hasUnitState(const uint32 f) const { return (m_state & f); }
@@ -1056,7 +1086,6 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
 
         void DeMorph();
 
-        void SendAttackStart(Unit* pVictim);
         void SendAttackStateUpdate(CalcDamageInfo *damageInfo);
         void SendAttackStateUpdate(uint32 HitInfo, Unit *target, uint8 SwingType, SpellSchoolMask damageSchoolMask, uint32 Damage, uint32 AbsorbDamage, uint32 Resist, VictimState TargetState, uint32 BlockedAmount);
         void SendSpellNonMeleeDamageLog(SpellNonMeleeDamage *log);
@@ -1211,6 +1240,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void InterruptNonMeleeSpells(bool withDelayed, uint32 spellid = 0, bool withInstant = true);
 
         Spell* FindCurrentSpellBySpellId(uint32 spell_id) const;
+        int32 GetCurrentSpellCastTime(uint32 spell_id) const;
 
         Spell* m_currentSpells[CURRENT_MAX_SPELL];
 
@@ -1452,6 +1482,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         }
         uint32 GetReducedThreatPercent() { return m_reducedThreatPercent; }
         Unit *GetMisdirectionTarget() { return m_misdirectionTargetGUID ? GetUnit(*this, m_misdirectionTargetGUID) : NULL; }
+        virtual float GetFollowAngle() const { return PET_FOLLOW_ANGLE; }
 
         bool IsAIEnabled, NeedChangeAI;
     protected:
@@ -1509,9 +1540,6 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         ThreatManager m_ThreatManager;
 
     private:
-        void SendAttackStop(Unit* victim);                  // only from AttackStop(Unit*)
-        //void SendAttackStart(Unit* pVictim);                // only from Unit::AttackStart(Unit*)
-
         bool IsTriggeredAtSpellProcEvent( Aura* aura, SpellEntry const* procSpell, uint32 procFlag, uint32 procExtra, WeaponAttackType attType, bool isVictim, bool active, SpellProcEventEntry const*& spellProcEvent );
         bool HandleDummyAuraProc(   Unit *pVictim, uint32 damage, Aura* triggredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown);
         bool HandleHasteAuraProc(   Unit *pVictim, uint32 damage, Aura* triggredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown);

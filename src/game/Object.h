@@ -28,7 +28,6 @@
 #include "GameSystem/GridReference.h"
 #include "ObjectDefines.h"
 #include "GridDefines.h"
-#include "CreatureAI.h"
 #include "Map.h"
 
 #include <set>
@@ -96,6 +95,7 @@ class Player;
 class UpdateMask;
 class InstanceData;
 class GameObject;
+class CreatureAI;
 
 typedef UNORDERED_MAP<Player*, UpdateData> UpdateDataMapType;
 
@@ -350,7 +350,7 @@ class TRINITY_DLL_SPEC Object
         Object& operator=(Object const&);                   // prevent generation assigment operator
 };
 
-class TRINITY_DLL_SPEC WorldObject : public Object
+class TRINITY_DLL_SPEC WorldObject : public Object, public WorldLocation
 {
     public:
         virtual ~WorldObject ( ) {}
@@ -439,11 +439,34 @@ class TRINITY_DLL_SPEC WorldObject : public Object
         float GetDistance2d(const WorldObject* obj) const;
         float GetDistance2d(const float x, const float y) const;
         float GetExactDistance2d(const float x, const float y) const;
+
+        float GetExactDist2dSq(float x, float y) const
+            { float dx = m_positionX - x; float dy = m_positionY - y; return dx*dx + dy*dy; }
+        float GetExactDist2d(const float x, const float y) const
+            { return sqrt(GetExactDist2dSq(x, y)); }
+        float GetExactDist2dSq(const WorldLocation *pos) const
+            { float dx = m_positionX - pos->x; float dy = m_positionY - pos->y; return dx*dx + dy*dy; }
+        float GetExactDist2d(const WorldLocation *pos) const
+            { return sqrt(GetExactDist2dSq(pos)); }
+        float GetExactDistSq(float x, float y, float z) const
+            { float dz = m_positionZ - z; return GetExactDist2dSq(x, y) + dz*dz; }
+        float GetExactDist(float x, float y, float z) const
+            { return sqrt(GetExactDistSq(x, y, z)); }
+        float GetExactDistSq(const WorldLocation *pos) const
+            { float dx = m_positionX - pos->x; float dy = m_positionY - pos->y; float dz = m_positionZ - pos->z; return dx*dx + dy*dy + dz*dz; }
+        float GetExactDist(const WorldLocation *pos) const
+            { return sqrt(GetExactDistSq(pos)); }
+
         float GetDistanceZ(const WorldObject* obj) const;
         bool IsInMap(const WorldObject* obj) const { return GetMapId()==obj->GetMapId() && GetInstanceId()==obj->GetInstanceId(); }
         bool IsWithinDistInMap(const WorldObject* obj, const float dist2compare, const bool is3D = true) const;
         bool IsWithinLOS(const float x, const float y, const float z ) const;
         bool IsWithinLOSInMap(const WorldObject* obj) const;
+
+        bool GetDistanceOrder(WorldObject const* obj1, WorldObject const* obj2, bool is3D = true) const;
+        bool IsInRange(WorldObject const* obj, float minRange, float maxRange, bool is3D = true) const;
+        bool IsInRange2d(float x, float y, float minRange, float maxRange) const;
+        bool IsInRange3d(float x, float y, float z, float minRange, float maxRange) const;
 
         float GetAngle( const WorldObject* obj ) const;
         float GetAngle( const float x, const float y ) const;
@@ -462,6 +485,7 @@ class TRINITY_DLL_SPEC WorldObject : public Object
         void MonsterWhisper(const char* text, uint64 receiver, bool IsBossWhisper = false);
         void MonsterSay(int32 textId, uint32 language, uint64 TargetGuid);
         void MonsterYell(int32 textId, uint32 language, uint64 TargetGuid);
+        void MonsterYellToZone(int32 textId, uint32 language, uint64 TargetGuid);
         void MonsterTextEmote(int32 textId, uint64 TargetGuid, bool IsBossEmote = false);
         void MonsterWhisper(int32 textId, uint64 receiver, bool IsBossWhisper = false);
         void BuildMonsterChat(WorldPacket *data, uint8 msgtype, char const* text, uint32 language, char const* name, uint64 TargetGuid) const;

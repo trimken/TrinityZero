@@ -426,7 +426,7 @@ void ScriptedAI::SelectUnitList(std::list<Unit*> &targetList, uint32 num, Select
     }
 }
 
-SpellEntry const* ScriptedAI::SelectSpell(Unit* Target, int32 School, int32 Mechanic, SelectTarget Targets, uint32 PowerCostMin, uint32 PowerCostMax, float RangeMin, float RangeMax, SelectEffect Effects)
+SpellEntry const* ScriptedAI::SelectSpell(Unit* Target, int32 School, int32 Mechanic, SelectTargetType Targets, uint32 PowerCostMin, uint32 PowerCostMax, float RangeMin, float RangeMax, SelectEffect Effects)
 {
     //No target so we can't cast
     if (!Target)
@@ -537,20 +537,10 @@ bool ScriptedAI::CanCast(Unit* Target, SpellEntry const *Spell, bool Triggered)
         return false;
 
     //Unit is out of range of this spell
-    if (m_creature->GetDistance(Target) > TempRange->maxRange || m_creature->GetDistance(Target) < TempRange->minRange)
+    if (me->IsInRange(Target, GetSpellMinRange(TempRange), GetSpellMaxRange(TempRange)))
         return false;
 
     return true;
-}
-
-
-float GetSpellMaxRange(uint32 id)
-{
-    SpellEntry const *spellInfo = GetSpellStore()->LookupEntry(id);
-    if(!spellInfo) return 0;
-    SpellRangeEntry const *range = GetSpellRangeStore()->LookupEntry(spellInfo->rangeIndex);
-    if(!range) return 0;
-    return range->maxRange;
 }
 
 void FillSpellSummary()

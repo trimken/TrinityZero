@@ -64,6 +64,7 @@
 #include "Language.h"
 #include "CreatureGroups.h"
 #include "Transports.h"
+#include "CreatureEventAIMgr.h"
 
 INSTANTIATE_SINGLETON_1( World );
 
@@ -1287,6 +1288,15 @@ void World::SetInitialWorldSettings()
 
     sLog.outString( "Loading Scripts text locales..." );    // must be after Load*Scripts calls
     objmgr.LoadDbScriptStrings();
+
+    sLog.outString( "Loading CreatureEventAI Texts...");
+    CreatureEAI_Mgr.LoadCreatureEventAI_Texts(false);       // false, will checked in LoadCreatureEventAI_Scripts
+
+    sLog.outString( "Loading CreatureEventAI Summons...");
+    CreatureEAI_Mgr.LoadCreatureEventAI_Summons(false);     // false, will checked in LoadCreatureEventAI_Scripts
+ 
+    sLog.outString( "Loading CreatureEventAI Scripts...");
+    CreatureEAI_Mgr.LoadCreatureEventAI_Scripts();
 
     sLog.outString( "Initializing Scripts..." );
     if(!LoadScriptingModule())

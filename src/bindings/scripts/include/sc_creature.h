@@ -8,10 +8,9 @@
 #ifndef SC_CREATURE_H
 #define SC_CREATURE_H
 
-#include "CreatureAI.h"
 #include "Creature.h"
-
-float GetSpellMaxRange(uint32 id);
+#include "CreatureAI.h"
+#include "CreatureAIImpl.h"
 
 class SummonList : std::list<uint64>
 {
@@ -173,7 +172,7 @@ struct TRINITY_DLL_DECL ScriptedAI : public CreatureAI
     void SelectUnitList(std::list<Unit*> &targetList, uint32 num, SelectAggroTarget target, float dist, bool playerOnly);
 
     //Returns spells that meet the specified criteria from the creatures spell list
-    SpellEntry const* SelectSpell(Unit* Target, int32 School, int32 Mechanic, SelectTarget Targets,  uint32 PowerCostMin, uint32 PowerCostMax, float RangeMin, float RangeMax, SelectEffect Effect);
+    SpellEntry const* SelectSpell(Unit* Target, int32 School, int32 Mechanic, SelectTargetType Targets,  uint32 PowerCostMin, uint32 PowerCostMax, float RangeMin, float RangeMax, SelectEffect Effect);
 
     //Checks if you can cast the specified spell
     bool CanCast(Unit* Target, SpellEntry const *Spell, bool Triggered = false);
@@ -188,21 +187,6 @@ struct TRINITY_DLL_DECL Scripted_NoMovementAI : public ScriptedAI
 
     //Called at each attack of m_creature by any victim
     void AttackStart(Unit *);
-};
-
-struct TRINITY_DLL_DECL NullCreatureAI : public ScriptedAI
-{
-    NullCreatureAI(Creature* c) : ScriptedAI(c) {}
-    ~NullCreatureAI() {}
-
-    void Reset() {}
-    void Aggro(Unit*) {}
-    void MoveInLineOfSight(Unit *) {}
-    void AttackStart(Unit *) {}
-    void EnterEvadeMode() {}
-    bool IsVisible(Unit *) const { return false; }
-
-    void UpdateAI(const uint32) {}
 };
 
 #endif

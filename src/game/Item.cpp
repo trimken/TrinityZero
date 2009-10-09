@@ -502,7 +502,7 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
     if(!itemProto && !itemProto->RandomProperty)
         return 0;
 
-    uint32 randomPropId = iEnchMgr.GetItemEnchantMod(itemProto->RandomProperty);
+    uint32 randomPropId = GetItemEnchantMod(itemProto->RandomProperty);
     ItemRandomPropertiesEntry const *random_id = sItemRandomPropertiesStore.LookupEntry(randomPropId);
     if(!random_id)
     {

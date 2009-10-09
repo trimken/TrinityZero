@@ -1008,6 +1008,95 @@ bool WorldObject::IsWithinLOS(const float ox, const float oy, const float oz ) c
     return vMapManager->isInLineOfSight(GetMapId(), x, y, z+2.0f, ox, oy, oz+2.0f);
 }
 
+bool WorldObject::GetDistanceOrder(WorldObject const* obj1, WorldObject const* obj2, bool is3D /* = true */) const
+{
+    float dx1 = GetPositionX() - obj1->GetPositionX();
+    float dy1 = GetPositionY() - obj1->GetPositionY();
+    float distsq1 = dx1*dx1 + dy1*dy1;
+    if(is3D)
+    {
+        float dz1 = GetPositionZ() - obj1->GetPositionZ();
+        distsq1 += dz1*dz1;
+    }
+
+    float dx2 = GetPositionX() - obj2->GetPositionX();
+    float dy2 = GetPositionY() - obj2->GetPositionY();
+    float distsq2 = dx2*dx2 + dy2*dy2;
+    if(is3D)
+    {
+        float dz2 = GetPositionZ() - obj2->GetPositionZ();
+        distsq2 += dz2*dz2;
+    }
+
+    return distsq1 < distsq2;
+}
+
+bool WorldObject::IsInRange(WorldObject const* obj, float minRange, float maxRange, bool is3D /* = true */) const
+{
+    float dx = GetPositionX() - obj->GetPositionX();
+    float dy = GetPositionY() - obj->GetPositionY();
+    float distsq = dx*dx + dy*dy;
+    if(is3D)
+    {
+        float dz = GetPositionZ() - obj->GetPositionZ();
+        distsq += dz*dz;
+    }
+
+    float sizefactor = GetObjectSize() + obj->GetObjectSize();
+
+    // check only for real range
+    if(minRange > 0.0f)
+    {
+        float mindist = minRange + sizefactor;
+        if(distsq < mindist * mindist)
+            return false;
+    }
+
+    float maxdist = maxRange + sizefactor;
+    return distsq < maxdist * maxdist;
+}
+
+bool WorldObject::IsInRange2d(float x, float y, float minRange, float maxRange) const
+{
+    float dx = GetPositionX() - x;
+    float dy = GetPositionY() - y;
+    float distsq = dx*dx + dy*dy;
+
+    float sizefactor = GetObjectSize();
+
+    // check only for real range
+    if(minRange > 0.0f)
+    {
+        float mindist = minRange + sizefactor;
+        if(distsq < mindist * mindist)
+            return false;
+    }
+
+    float maxdist = maxRange + sizefactor;
+    return distsq < maxdist * maxdist;
+}
+
+bool WorldObject::IsInRange3d(float x, float y, float z, float minRange, float maxRange) const
+{
+    float dx = GetPositionX() - x;
+    float dy = GetPositionY() - y;
+    float dz = GetPositionZ() - z;
+    float distsq = dx*dx + dy*dy + dz*dz;
+
+    float sizefactor = GetObjectSize();
+
+    // check only for real range
+    if(minRange > 0.0f)
+    {
+        float mindist = minRange + sizefactor;
+        if(distsq < mindist * mindist)
+            return false;
+    }
+
+    float maxdist = maxRange + sizefactor;
+    return distsq < maxdist * maxdist;
+}
+
 float WorldObject::GetAngle(const WorldObject* obj) const
 {
     if(!obj) return 0;
@@ -1231,6 +1320,18 @@ void WorldObject::MonsterYell(int32 textId, uint32 language, uint64 TargetGuid)
     TypeContainerVisitor<Trinity::PlayerWorker<Trinity::MessageChatLocaleCacheDo>, WorldTypeMapContainer > message(say_worker);
     CellLock<GridReadGuard> cell_lock(cell, p);
     cell_lock->Visit(cell_lock, message, *GetMap());
+}
+
+void WorldObject::MonsterYellToZone(int32 textId, uint32 language, uint64 TargetGuid)
+{
+    Trinity::MessageChatLocaleCacheDo say_do(*this, CHAT_MSG_MONSTER_YELL, textId,language,TargetGuid,sWorld.getConfig(CONFIG_LISTEN_RANGE_YELL));
+
+    uint32 zoneid = GetZoneId();
+
+    Map::PlayerList const& pList = GetMap()->GetPlayers();
+    for(Map::PlayerList::const_iterator itr = pList.begin(); itr != pList.end(); ++itr)
+        if(itr->getSource()->GetZoneId()==zoneid)
+            say_do(itr->getSource());
 }
 
 void WorldObject::MonsterTextEmote(int32 textId, uint64 TargetGuid, bool IsBossEmote)
