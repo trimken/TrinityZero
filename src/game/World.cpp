@@ -1104,7 +1104,7 @@ void World::SetInitialWorldSettings()
     objmgr.LoadGossipText();
 
     sLog.outString( "Loading Item Random Enchantments Table..." );
-    iEnchMgr.LoadRandomEnchantmentsTable();
+    LoadRandomEnchantmentsTable();
 
     sLog.outString( "Loading Items..." );                   // must be after LoadRandomEnchantmentsTable and LoadPageTexts
     objmgr.LoadItemPrototypes();

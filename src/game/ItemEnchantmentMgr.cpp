@@ -29,17 +29,6 @@
 #include <vector>
 #include "Util.h"
 
-INSTANTIATE_SINGLETON_1( ItemEnchMgr );
-
-ItemEnchMgr::ItemEnchMgr()
-{
-}
-
-ItemEnchMgr::~ItemEnchMgr()
-{
-}
-
-
 struct EnchStoreItem
 {
     uint32  ench;
@@ -57,7 +46,7 @@ typedef UNORDERED_MAP<uint32, EnchStoreList> EnchantmentStore;
 
 static EnchantmentStore RandomItemEnch;
 
-void ItemEnchMgr::LoadRandomEnchantmentsTable()
+void LoadRandomEnchantmentsTable()
 {
     RandomItemEnch.clear();                                 // for reload case
 
@@ -99,7 +88,7 @@ void ItemEnchMgr::LoadRandomEnchantmentsTable()
     }
 }
 
-uint32 ItemEnchMgr::GetItemEnchantMod(uint32 entry)
+uint32 GetItemEnchantMod(uint32 entry)
 {
     if (!entry) return 0;
 

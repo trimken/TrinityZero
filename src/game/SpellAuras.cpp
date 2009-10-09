@@ -411,7 +411,7 @@ Unit *caster, Item* castItem) : Aura(spellproto, eff, currentBasePoints, target,
     // caster==NULL in constructor args if target==caster in fact
     Unit* caster_ptr = caster ? caster : target;
 
-    m_radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(GetSpellProto()->EffectRadiusIndex[m_effIndex]));
+    m_radius = GetSpellRadius(spellproto,m_effIndex,false);
     if(Player* modOwner = caster_ptr->GetSpellModOwner())
         modOwner->ApplySpellMod(GetId(), SPELLMOD_RADIUS, m_radius);
 
@@ -530,7 +530,7 @@ void Aura::Update(uint32 diff)
         SpellModOp mod;
         if (m_spellProto->EffectRadiusIndex[GetEffIndex()])
         {
-            radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellProto->EffectRadiusIndex[GetEffIndex()]));
+            radius = GetSpellRadius(m_spellProto,GetEffIndex(),false);
             mod = SPELLMOD_RADIUS;
         }
         else
