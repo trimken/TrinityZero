@@ -11,6 +11,7 @@
 #include "Common.h"
 #include "Platform/CompilerDefs.h"
 #include "Database/DBCStructure.h"
+#include "Unit.h"
 
 class Player;
 class Creature;
