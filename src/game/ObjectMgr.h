@@ -883,7 +883,7 @@ class ObjectMgr
 #define objmgr Trinity::Singleton<ObjectMgr>::Instance()
 
 // scripting access functions
-TRINITY_DLL_SPEC bool LoadTrinityStrings(DatabaseType& db, char const* table,int32 start_value = -1, int32 end_value = std::numeric_limits<int32>::min());
+TRINITY_DLL_SPEC bool LoadTrinityStrings(DatabaseType& db, char const* table,int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());
 TRINITY_DLL_SPEC uint32 GetAreaTriggerScriptId(uint32 trigger_id);
 TRINITY_DLL_SPEC uint32 GetScriptId(const char *name);
 TRINITY_DLL_SPEC ObjectMgr::ScriptNameMap& GetScriptNames();
