@@ -338,12 +338,8 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts()
                             continue;
                         }
 
-                        //[TZERO] if ((temp.spell_hit.schoolMask & pSpell->SchoolMask) != pSpell->SchoolMask)
-                        //    sLog.outErrorDb("CreatureEventAI:  Creature %u has param1(spellId %u) but param2 is not -1 and not equal to spell's school mask. Event %u can never trigger.", temp.creature_id, temp.spell_hit.schoolMask, i);
-                    
-                        // if you fill schoolmask field it will show an error
-                        if (temp.spell_hit.schoolMask)
-                            sLog.outErrorDb("CreatureEventAI:  Creature %u has param1(spellId %u) but param2 is not 0. Event %u can never trigger.", temp.creature_id, temp.spell_hit.schoolMask, i);
+                        if ((temp.spell_hit.schoolMask & GetSchoolMask(pSpell->School)) != GetSchoolMask(pSpell->School))
+                            sLog.outErrorDb("CreatureEventAI:  Creature %u has param1(spellId %u) but param2 is not -1 and not equal to spell's school mask. Event %u can never trigger.", temp.creature_id, temp.spell_hit.schoolMask, i);
                     }
 
                     if (!temp.spell_hit.schoolMask)

@@ -5327,7 +5327,7 @@ void Aura::PeriodicTick()
 
                 // Calculate armor mitigation if it is a physical spell
                 // But not for bleed mechanic spells
-                if ( SpellSchoolMask(GetSpellProto()->School) & SPELL_SCHOOL_NORMAL &&
+                if ( GetSpellSchoolMask(GetSpellProto()) & SPELL_SCHOOL_MASK_NORMAL &&
                      GetEffectMechanic(GetSpellProto(), m_effIndex) != MECHANIC_BLEED)
                 {
                     uint32 damageReductedArmor = periodicInfo.attacker->CalcArmorReducedDamage(m_target, periodicInfo.damage);
@@ -5384,7 +5384,7 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_LEECH:
         {
             //Fill base damage struct periodicInfo 
-            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), GetSchoolMask(GetSpellProto()->School));
 
             if(!periodicInfo.attacker)
                 return;
@@ -5525,7 +5525,7 @@ void Aura::PeriodicTick()
         case SPELL_AURA_OBS_MOD_HEALTH:
         {
             //Fill base damage struct periodicInfo 
-            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), GetSchoolMask(GetSpellProto()->School));
 
             if(!periodicInfo.attacker)
                 return;
@@ -5610,7 +5610,7 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_MANA_LEECH:
         {
             //Fill base damage struct periodicInfo 
-            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), SpellSchoolMask(GetSpellProto()->School));
+            PeriodicAura periodicInfo(GetCaster(), m_target, GetId(), GetSchoolMask(GetSpellProto()->School));
             periodicInfo.auraType = m_modifier.m_auraname;
 
             if(!periodicInfo.attacker)

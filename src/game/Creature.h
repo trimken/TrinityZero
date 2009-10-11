@@ -499,7 +499,7 @@ class TRINITY_DLL_SPEC Creature : public Unit
         }
 
         SpellSchoolMask GetMeleeDamageSchoolMask() const { return m_meleeDamageSchoolMask; }
-        void SetMeleeDamageSchool(uint32 school) { m_meleeDamageSchoolMask = SpellSchoolMask(school); }
+        void SetMeleeDamageSchool(uint32 school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
         void _AddCreatureSpellCooldown(uint32 spell_id, time_t end_time);
         void _AddCreatureCategoryCooldown(uint32 category, time_t apply_time);
