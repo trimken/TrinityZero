@@ -353,7 +353,7 @@ void GameObject::Update(uint32 /*p_time*/)
                 {
                     //Unit *caster =  owner ? owner : ok;
 
-                    //caster->CastSpell(ok, goInfo->trap.spellId, true);
+                    //caster->CastSpell(ok, goInfo->trap.spellId, true,0,0,GetGUID());
                     CastSpell(ok, goInfo->trap.spellId);
                     m_cooldownTime = time(NULL) + 4;        // 4 seconds
 
@@ -1300,9 +1300,34 @@ void GameObject::Use(Unit* user)
 
 void GameObject::CastSpell(Unit* target, uint32 spell)
 {
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spell);
+    if(!spellInfo)
+        return;
+
+    bool self = false;
+    for(uint8 i = 0; i < 3; ++i)
+    {
+        if(spellInfo->EffectImplicitTargetA[i] == TARGET_UNIT_CASTER)
+        {
+            self = true;
+            break;
+        }
+    }
+
+    if(self)
+    {
+        if(target)
+            target->CastSpell(target, spellInfo, true);
+        return;
+    }
+
     //summon world trigger
     Creature *trigger = SummonTrigger(GetPositionX(), GetPositionY(), GetPositionZ(), 0, 1);
-    if(!trigger) return;
+    if(!trigger) 
+    {
+        sLog.outError("%u Trigger creature can't be created , %u spell won't be casted",WORLD_TRIGGER,spell);
+        return;
+    }
 
     trigger->SetVisibility(VISIBILITY_OFF); //should this be true?
     if(Unit *owner = GetOwner())

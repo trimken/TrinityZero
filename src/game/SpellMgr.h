@@ -27,6 +27,7 @@
 #include "SharedDefines.h"
 #include "Database/DBCStructure.h"
 #include "Database/SQLStorage.h"
+#include "Unit.h"
 
 #include "Utilities/UnorderedMap.h"
 #include <map>

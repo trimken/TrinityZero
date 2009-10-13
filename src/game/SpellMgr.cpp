@@ -26,7 +26,6 @@
 #include "World.h"
 #include "Chat.h"
 #include "Spell.h"
-#include "Unit.h"
 
 bool IsAreaEffectTarget[TOTAL_SPELL_TARGETS];
 
