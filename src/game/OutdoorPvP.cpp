@@ -117,13 +117,11 @@ bool OutdoorPvPObjective::AddCreature(uint32 type, uint32 entry, uint32 teamval,
     }
 
     uint32 displayId = objmgr.ChooseDisplayId(teamval, cinfo, NULL);
-    CreatureModelInfo const *minfo = objmgr.GetCreatureModelRandomGender(displayId);
-    if (!minfo)
+    displayId = objmgr.GetCreatureModelRandomGenderId(displayId); // it can be different (for another gender)
+    if (!displayId)
     {
         return false;
     }
-    else
-        displayId = minfo->modelid;                        // it can be different (for another gender)
 
     uint32 guid = objmgr.GenerateLowGuid(HIGHGUID_UNIT);
 

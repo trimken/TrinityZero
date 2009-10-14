@@ -2232,9 +2232,7 @@ void Aura::HandleAuraMounted(bool apply, bool Real)
             team = ((Player*)m_target)->GetTeam();
 
         uint32 display_id = objmgr.ChooseDisplayId(team,ci);
-        CreatureModelInfo const *minfo = objmgr.GetCreatureModelRandomGender(display_id);
-        if (minfo)
-            display_id = minfo->modelid;
+        display_id = objmgr.GetCreatureModelRandomGenderId(display_id);
 
         m_target->Mount(display_id);
     }
@@ -2690,9 +2688,7 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
                         team = ((Player*)m_target)->GetTeam();
 
                     uint32 display_id = objmgr.ChooseDisplayId(team,ci);
-                    CreatureModelInfo const *minfo = objmgr.GetCreatureModelRandomGender(display_id);
-                    if (minfo)
-                        display_id = minfo->modelid;
+                    display_id = objmgr.GetCreatureModelRandomGenderId(display_id);
 
                     m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,display_id);
                 }

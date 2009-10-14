@@ -47,6 +47,7 @@
 #include "OutdoorPvPMgr.h"
 #include "GameEvent.h"
 #include "CreatureGroups.h"
+#include "ObjectMgr.h"
 // apply implementation of the singletons
 #include "Policies/SingletonImp.h"
 
@@ -259,18 +260,16 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     }
 
     uint32 display_id = objmgr.ChooseDisplayId(team, GetCreatureInfo(), data);
-    CreatureModelInfo const *minfo = objmgr.GetCreatureModelRandomGender(display_id);
-    if (!minfo)
+    display_id = objmgr.GetCreatureModelRandomGenderId(display_id); // it can be different (for another gender)
+    if (!display_id)
     {
         sLog.outErrorDb("Creature (Entry: %u) has model %u not found in table `creature_model_info`, can't load. ", Entry, display_id);
         return false;
-    }
-    else
-        display_id = minfo->modelid;                        // it can be different (for another gender)
+    }                    
 
     SetDisplayId(display_id);
     SetNativeDisplayId(display_id);
-    SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
+    SetByteValue(UNIT_FIELD_BYTES_0, 2, objmgr.GetCreatureModelInfo(display_id)->gender);
 
     // Load creature equipment
     if(!data || data->equipmentId == 0)
@@ -284,8 +283,8 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
 
     SetName(normalInfo->Name);                              // at normal entry always
 
-    SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS,minfo->bounding_radius);
-    SetFloatValue(UNIT_FIELD_COMBATREACH,minfo->combat_reach );
+    SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS,objmgr.GetCreatureModelInfo(display_id)->bounding_radius);
+    SetFloatValue(UNIT_FIELD_COMBATREACH,objmgr.GetCreatureModelInfo(display_id)->combat_reach );
 
     SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 

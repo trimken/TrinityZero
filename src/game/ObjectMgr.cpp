@@ -448,22 +448,22 @@ void ObjectMgr::LoadCreatureTemplates()
             sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_H template (%u)", cInfo->Entry, cInfo->faction_H);
 
         // check model ids, supplying and sending non-existent ids to the client might crash them
-        if(cInfo->Modelid_A1 && !sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid_A1))
+        if(cInfo->Modelid_A1 && !GetCreatureModelInfo(cInfo->Modelid_A1))
         {
             sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A1 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_A1);
             const_cast<CreatureInfo*>(cInfo)->Modelid_A1 = 0;
         }
-        if(cInfo->Modelid_A2 && !sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid_A2))
+        if(cInfo->Modelid_A2 && !GetCreatureModelInfo(cInfo->Modelid_A2))
         {
             sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A2 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_A2);
             const_cast<CreatureInfo*>(cInfo)->Modelid_A2 = 0;
         }
-        if(cInfo->Modelid_H1 && !sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid_H1))
+        if(cInfo->Modelid_H1 && !GetCreatureModelInfo(cInfo->Modelid_H1))
         {
             sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H1 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_H1);
             const_cast<CreatureInfo*>(cInfo)->Modelid_H1 = 0;
         }
-        if(cInfo->Modelid_H2 && !sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid_H2))
+        if(cInfo->Modelid_H2 && !GetCreatureModelInfo(cInfo->Modelid_H2))
         {
             sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H2 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_H2);
             const_cast<CreatureInfo*>(cInfo)->Modelid_H2 = 0;
@@ -655,11 +655,6 @@ void ObjectMgr::LoadEquipmentTemplates()
     sLog.outString();
 }
 
-CreatureModelInfo const* ObjectMgr::GetCreatureModelInfo(uint32 modelid)
-{
-    return sCreatureModelStorage.LookupEntry<CreatureModelInfo>(modelid);
-}
-
 uint32 ObjectMgr::ChooseDisplayId(uint32 team, const CreatureInfo *cinfo, const CreatureData *data)
 {
     // Load creature model (display id)
@@ -673,48 +668,86 @@ uint32 ObjectMgr::ChooseDisplayId(uint32 team, const CreatureInfo *cinfo, const 
     return display_id;
 }
 
-CreatureModelInfo const* ObjectMgr::GetCreatureModelRandomGender(uint32 display_id)
+uint32 ObjectMgr::GetCreatureModelRandomGenderId(uint32 display_id)
 {
     CreatureModelInfo const *minfo = GetCreatureModelInfo(display_id);
     if(!minfo)
-        return NULL;
+        return 0;
 
     // If a model for another gender exists, 50% chance to use it
     if(minfo->modelid_other_gender != 0 && urand(0,1) == 0)
     {
-        CreatureModelInfo const *minfo_tmp = GetCreatureModelInfo(minfo->modelid_other_gender);
-        if(!minfo_tmp)
+        if(!GetCreatureModelInfo(minfo->modelid_other_gender))
         {
-            sLog.outErrorDb("Model (Entry: %u) has modelid_other_gender %u not found in table `creature_model_info`. ", minfo->modelid, minfo->modelid_other_gender);
-            return minfo;                                   // not fatal, just use the previous one
+            sLog.outErrorDb("Model (Entry: %u) has modelid_other_gender %u not found in table `creature_model_info`. ", display_id, minfo->modelid_other_gender);
+            return display_id;                                   // not fatal, just use the previous one
         }
         else
-            return minfo_tmp;
+            return minfo->modelid_other_gender;
     }
     else
-        return minfo;
+        return display_id;
 }
 
 void ObjectMgr::LoadCreatureModelInfo()
 {
-    sCreatureModelStorage.Load();
+    mCreatureModels.clear();                                  // need for reload case
 
-    sLog.outString( ">> Loaded %u creature model based info", sCreatureModelStorage.RecordCount );
-    sLog.outString();
+    uint32 count = 0;
 
-    // check if combat_reach is valid
-    for(uint32 i = 1; i < sCreatureModelStorage.MaxEntry; ++i)
+    //                                                   0            1           2              3               4  
+    QueryResult *result = WorldDatabase.Query("SELECT modelid, bounding_radius, combat_reach, gender, modelid_other_gender FROM creature_model_info");
+    if( !result )
     {
-        CreatureModelInfo const* mInfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(i);
-        if(!mInfo)
-            continue;
 
-        if(mInfo->combat_reach < 0.1f)
-        {
-            //sLog.outErrorDb("Creature model (Entry: %u) has invalid combat reach (%f), setting it to 0.5", mInfo->modelid, mInfo->combat_reach);
-            const_cast<CreatureModelInfo*>(mInfo)->combat_reach = DEFAULT_COMBAT_REACH;
-        }
+        barGoLink bar( 1 );
+
+        bar.step();
+
+        sLog.outString();
+        sLog.outString( ">> Loaded %u creature model based info", count );
+        return;
     }
+
+    barGoLink bar( result->GetRowCount() );
+
+    do
+    {
+        Field *fields = result->Fetch();
+
+        bar.step();
+
+        ++count;
+
+        uint32 ModelId = fields[0].GetUInt32();
+
+        CreatureModelInfo cm;
+           
+        cm.bounding_radius          = fields[1].GetFloat();
+        cm.combat_reach             = fields[2].GetFloat();
+        cm.gender                   = fields[3].GetUInt32();
+        cm.modelid_other_gender     = fields[4].GetUInt32();
+
+        if(!sCreatureDisplayInfoStore.LookupEntry(ModelId))
+        {
+            sLog.outErrorDb("Creature model (Entry: %u) does not exist in `CreatureDisplayInfo.dbc`.",ModelId);
+            continue;
+        }
+
+        if(cm.combat_reach < 0.1f)
+        {
+            // sLog.outErrorDb("Creature model (Entry: %u) has invalid combat reach (%f), setting it to %f", ModelId, cm.combat_reach,DEFAULT_COMBAT_REACH);
+            cm.combat_reach = DEFAULT_COMBAT_REACH;
+        }
+
+        mCreatureModels[ModelId] = cm;
+
+    } while( result->NextRow() );
+
+    delete result;
+
+    sLog.outString( ">> Loaded %u creature model based info", count );
+    sLog.outString();
 }
 
 bool ObjectMgr::CheckCreatureLinkedRespawn(uint32 guid, uint32 linkedGuid) const
@@ -4022,8 +4055,8 @@ uint16 ObjectMgr::GetTaxiMount( uint32 id, uint32 team )
 
         return false;
     }
-    if(minfo->modelid_other_gender!=0)
-        mount_id = urand(0,1) ? mount_id : minfo->modelid_other_gender;
+
+    mount_id = GetCreatureModelRandomGenderId(mount_id);
 
     return mount_id;
 }

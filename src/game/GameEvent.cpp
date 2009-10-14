@@ -1290,9 +1290,7 @@ void GameEvent::ChangeEquipOrModel(int16 event_id, bool activate)
             {
                 CreatureInfo const *cinfo = objmgr.GetCreatureTemplate(data->id);
                 uint32 display_id = objmgr.ChooseDisplayId(0,cinfo,data);
-                CreatureModelInfo const *minfo = objmgr.GetCreatureModelRandomGender(display_id);
-                if (minfo)
-                    display_id = minfo->modelid;
+                display_id = objmgr.GetCreatureModelRandomGenderId(display_id);
                 if (data->equipmentId == 0)
                     itr->second.equipement_id_prev = cinfo->equipmentId;
                 else if (data->equipmentId != -1)

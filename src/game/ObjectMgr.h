@@ -48,7 +48,6 @@
 extern SQLStorage sCreatureStorage;
 extern SQLStorage sCreatureDataAddonStorage;
 extern SQLStorage sCreatureInfoAddonStorage;
-extern SQLStorage sCreatureModelStorage;
 extern SQLStorage sEquipmentStorage;
 extern SQLStorage sGOStorage;
 extern SQLStorage sPageTextStore;
@@ -309,6 +308,8 @@ class ObjectMgr
 
         typedef UNORDERED_MAP<uint32, PetCreateSpellEntry> PetCreateSpellMap;
 
+        typedef UNORDERED_MAP<uint32, CreatureModelInfo> CreatureModelMap;
+
         typedef std::vector<std::string> ScriptNameMap;
 
         UNORDERED_MAP<uint32, uint32> TransportEventMap;
@@ -333,8 +334,12 @@ class ObjectMgr
         void RemoveGuild(uint32 Id);
 
         static CreatureInfo const *GetCreatureTemplate( uint32 id );
-        CreatureModelInfo const *GetCreatureModelInfo( uint32 modelid );
-        CreatureModelInfo const* GetCreatureModelRandomGender(uint32 display_id);
+        CreatureModelInfo const * GetCreatureModelInfo( uint32 display_id ) const
+        { 
+            CreatureModelMap::const_iterator itr = mCreatureModels.find(display_id);
+            return  itr != mCreatureModels.end() ? &itr->second : NULL; 
+        }
+        uint32 GetCreatureModelRandomGenderId(uint32 display_id);
         uint32 ChooseDisplayId(uint32 team, const CreatureInfo *cinfo, const CreatureData *data = NULL);
         EquipmentInfo const *GetEquipmentInfo( uint32 entry );
         static CreatureDataAddon const *GetCreatureAddon( uint32 lowguid )
@@ -803,6 +808,7 @@ class ObjectMgr
         AreaTriggerMap      mAreaTriggers;
         AreaTriggerScriptMap  mAreaTriggerScripts;
         AccessRequirementMap  mAccessRequirements;
+        CreatureModelMap    mCreatureModels;
 
         RepOnKillMap        mRepOnKill;
 
