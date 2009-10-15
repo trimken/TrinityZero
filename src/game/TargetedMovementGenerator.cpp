@@ -44,20 +44,66 @@ struct StackCleaner
 */
 
 template<class T>
-void
+bool
 TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 {
-    if( !i_target.isValid() || !&owner )
-        return;
+    if (!i_target.isValid() || !i_target->IsInWorld())
+        return false;
 
     if( owner.hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED | UNIT_STAT_DISTRACTED) )
-        return;
-
-    // prevent redundant micro-movement for pets, other followers.
-    //if(i_offset && i_target->IsWithinDistInMap(&owner,2*i_offset))
-    //    return;
+        return false;
 
     float x, y, z;
+    Traveller<T> traveller(owner);
+    if(i_destinationHolder.HasDestination())
+    {
+        if(i_destinationHolder.HasArrived())
+        {
+            // prevent redundant micro-movement
+            if(!i_offset)
+            {
+                if(i_target->IsWithinMeleeRange(&owner))
+                    return false;
+            }
+            else if(!i_angle && !owner.hasUnitState(UNIT_STAT_FOLLOW))
+            {
+                if(i_target->IsWithinDistInMap(&owner, i_offset))
+                    return false;
+            }
+            else
+            {
+                if(i_target->IsWithinDistInMap(&owner, i_offset + 1.0f))
+                    return false;
+            }
+        }
+        else
+        {
+            bool stop = false;
+            if(!i_offset)
+            {
+                if(i_target->IsWithinMeleeRange(&owner, 0))
+                    stop = true;
+            }
+            else if(!i_angle && !owner.hasUnitState(UNIT_STAT_FOLLOW))
+            {
+                if(i_target->IsWithinDist(&owner, i_offset * 0.8f))
+                    stop = true;
+            }
+
+            if(stop)
+            {
+                owner.GetPosition(x, y, z);
+                i_destinationHolder.SetDestination(traveller, x, y, z);
+                i_destinationHolder.StartTravel(traveller, false);
+                owner.StopMoving();
+                return false;
+            }
+        }
+
+        if(i_target->GetExactDistSq(i_targetX, i_targetY, i_targetZ) < 0.01f)
+            return false;
+    }
+
     if(!i_offset)
     {
         // to nearest random contact position
@@ -121,7 +167,7 @@ template<class T>
 bool
 TargetedMovementGenerator<T>::Update(T &owner, const uint32 & time_diff)
 {
-    if(!i_target.isValid())
+    if(!i_target.isValid() || !i_target->IsInWorld())
         return false;
 
     if( !&owner || !owner.isAlive())
@@ -146,7 +192,7 @@ TargetedMovementGenerator<T>::Update(T &owner, const uint32 & time_diff)
 
     if( !i_destinationHolder.HasDestination() )
         _setTargetLocation(owner);
-    if( owner.IsStopped() && !i_destinationHolder.HasArrived() )
+    else if( owner.IsStopped() && !i_destinationHolder.HasArrived() )
     {
         owner.addUnitState(UNIT_STAT_CHASE);
         i_destinationHolder.StartTravel(traveller);
@@ -156,26 +202,19 @@ TargetedMovementGenerator<T>::Update(T &owner, const uint32 & time_diff)
     if (i_destinationHolder.UpdateTraveller(traveller, time_diff))
     {
         // put targeted movement generators on a higher priority
-        if (owner.GetObjectSize())
-            i_destinationHolder.ResetUpdate(50);
+        //if (owner.GetObjectSize())
+        //i_destinationHolder.ResetUpdate(50);
 
-        //float dist = owner.GetCombatReach() + i_target.getTarget()->GetCombatReach() + sWorld.getRate(RATE_TARGET_POS_RECALCULATION_RANGE);
-
-        //More distance let have better performance, less distance let have more sensitive reaction at target move.
-
-        // try to counter precision differences
-        //if( i_destinationHolder.GetDistance2dFromDestSq(*i_target.getTarget()) >= dist * dist)
-        if(i_offset ? !i_target->IsWithinDistInMap(&owner,2*i_offset)
-            : !i_target->IsWithinMeleeRange(&owner))
+        // target moved
+        if (i_targetX != i_target->GetPositionX() || i_targetY != i_target->GetPositionY()
+            || i_targetZ != i_target->GetPositionZ())
         {
-            owner.SetInFront(i_target.getTarget());         // Set new Angle For Map::
-            _setTargetLocation(owner);                      //Calculate New Dest and Send data To Player
+            if( _setTargetLocation(owner) || !owner.hasUnitState(UNIT_STAT_FOLLOW))
+                owner.SetInFront(i_target.getTarget());
+            i_target->GetPosition(i_targetX, i_targetY, i_targetZ);
         }
-        // Update the Angle of the target only for Map::, no need to send packet for player
-        else if ( !i_angle && !owner.HasInArc( 0.01f, i_target.getTarget() ) )
-            owner.SetInFront(i_target.getTarget());
 
-        if(( owner.IsStopped() && !i_destinationHolder.HasArrived() ) || i_recalculateTravel )
+        if ((owner.IsStopped() && !i_destinationHolder.HasArrived()) || i_recalculateTravel)
         {
             i_recalculateTravel = false;
             //Angle update will take place into owner.StopMoving()
@@ -186,9 +225,11 @@ TargetedMovementGenerator<T>::Update(T &owner, const uint32 & time_diff)
                 owner.Attack(i_target.getTarget(),true);
         }
     }
+
     // Implemented for PetAI to handle resetting flags when pet owner reached
     if (i_destinationHolder.HasArrived())
         MovementInform(owner);
+
     return true;
 }
 
@@ -210,8 +251,11 @@ template <> void TargetedMovementGenerator<Creature>::MovementInform(Creature &u
     unit.AI()->MovementInform(TARGETED_MOTION_TYPE, i_target.getTarget()->GetGUIDLow());
 }
 
-template void TargetedMovementGenerator<Player>::_setTargetLocation(Player &);
-template void TargetedMovementGenerator<Creature>::_setTargetLocation(Creature &);
+template void TargetedMovementGenerator<Player>::MovementInform(Player&); // Not implemented for players
+template TargetedMovementGenerator<Player>::TargetedMovementGenerator(Unit &target, float offset, float angle);
+template TargetedMovementGenerator<Creature>::TargetedMovementGenerator(Unit &target, float offset, float angle);
+template bool TargetedMovementGenerator<Player>::_setTargetLocation(Player &);
+template bool TargetedMovementGenerator<Creature>::_setTargetLocation(Creature &);
 template void TargetedMovementGenerator<Player>::Initialize(Player &);
 template void TargetedMovementGenerator<Creature>::Initialize(Creature &);
 template void TargetedMovementGenerator<Player>::Finalize(Player &);

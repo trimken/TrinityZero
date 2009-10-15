@@ -421,8 +421,6 @@ enum UnitMoveType
 #define MAX_MOVE_TYPE 8
 
 extern float baseMoveSpeed[MAX_MOVE_TYPE];
-// assume it is 25 yard per 0.6 second
-#define SPEED_CHARGE    42.0f
 
 enum WeaponAttackType
 {
@@ -1092,6 +1090,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void SendMonsterMoveByPath(Path const& path, uint32 start, uint32 end);
         void SendMonsterMoveWithSpeed(float x, float y, float z, uint32 MovementFlags, uint32 transitTime = 0, Player* player = NULL);
         void SendMonsterMoveWithSpeedToCurrentDestination(Player* player = NULL);
+        void SendMovementFlagUpdate();
 
         virtual void MoveOutOfRange(Player &) {  };
 
@@ -1396,6 +1395,7 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         float GetSpeed( UnitMoveType mtype ) const;
         float GetSpeedRate( UnitMoveType mtype ) const { return m_speed_rate[mtype]; }
         void SetSpeed(UnitMoveType mtype, float rate, bool forced = false);
+        float m_TempSpeed;
 
         void SetHover(bool on);
         bool isHover() const { return HasAuraType(SPELL_AURA_HOVER); }

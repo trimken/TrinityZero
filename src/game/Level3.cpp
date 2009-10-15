@@ -6385,9 +6385,7 @@ bool ChatHandler::HandleCastBackCommand(const char* args)
     caster->SetOrientation(caster->GetAngle(m_session->GetPlayer()));
 
     // and client
-    WorldPacket data;
-    caster->BuildHeartBeatMsg(&data);
-    caster->SendMessageToSet(&data,true);
+    caster->SendMovementFlagUpdate();
 
     caster->CastSpell(m_session->GetPlayer(),spell,triggered);
 

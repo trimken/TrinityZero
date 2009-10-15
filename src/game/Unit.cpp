@@ -7779,6 +7779,7 @@ bool Unit::AttackStop()
     {
         // reset call assistance
         ((Creature*)this)->SetNoCallAssistance(false);
+        ((Creature*)this)->SetNoSearchAssistance(false);
     }
 
     SendMeleeAttackStop(victim);
@@ -11552,6 +11553,13 @@ void Unit::StopMoving()
     SendMessageToSet(&data,false);
 }
 
+void Unit::SendMovementFlagUpdate()
+{
+    WorldPacket data;
+    BuildHeartBeatMsg(&data);
+    SendMessageToSet(&data, false);
+}
+
 /*
 void Unit::SetFeared(bool apply, uint64 casterGUID, uint32 spellID)
 {
@@ -12496,12 +12504,17 @@ void Unit::SetFeared(bool apply)
             caster = ObjectAccessor::GetUnit(*this, fearAuras.front()->GetCasterGUID());
         if(!caster)
             caster = getAttackerForHelper();
-        GetMotionMaster()->MoveFleeing(caster);             // caster==NULL processed in MoveFleeing
+        GetMotionMaster()->MoveFleeing(caster, fearAuras.empty() ? sWorld.getConfig(CONFIG_CREATURE_FAMILY_FLEE_DELAY) : 0);             // caster==NULL processed in MoveFleeing
     }
     else
     {
-        if(isAlive() && GetMotionMaster()->GetCurrentMovementGeneratorType() == FLEEING_MOTION_TYPE)
-            GetMotionMaster()->MovementExpired();
+        if(isAlive())
+        {
+            if(GetMotionMaster()->GetCurrentMovementGeneratorType() == FLEEING_MOTION_TYPE)
+                GetMotionMaster()->MovementExpired();
+            if(getVictim())
+                SetUInt64Value(UNIT_FIELD_TARGET, getVictim()->GetGUID());
+        }
     }
 
     if (GetTypeId() == TYPEID_PLAYER)
