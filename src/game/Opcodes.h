@@ -1021,7 +1021,6 @@ enum OpcodesList
     SMSG_GOGOGO_OBSOLETE                            = 0x3F4,
     SMSG_ECHO_PARTY_SQUELCH                         = 0x3F5,
     CMSG_SET_TITLE_SUFFIX                           = 0x3F6,
-    CMSG_SPELLCLICK                                 = 0x3F7,
     SMSG_LOOT_LIST                                  = 0x3F8,
     CMSG_GM_CHARACTER_RESTORE                       = 0x3F9,
     CMSG_GM_CHARACTER_SAVE                          = 0x3FA,

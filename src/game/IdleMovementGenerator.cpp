@@ -19,6 +19,7 @@
  */
 
 #include "IdleMovementGenerator.h"
+#include "CreatureAI.h"
 #include "Creature.h"
 
 IdleMovementGenerator si_idleMovement;
@@ -48,6 +49,8 @@ void
 DistractMovementGenerator::Finalize(Unit& owner)
 {
     owner.clearUnitState(UNIT_STAT_DISTRACTED);
+    if(unit.GetTypeId() == TYPEID_UNIT)
+        ((Creature*)&unit)->AI()->MovementInform(ROTATE_MOTION_TYPE, 0);
 }
 
 bool

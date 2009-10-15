@@ -1004,7 +1004,6 @@ void Opcodes::BuildOpcodeList()
     StoreOpcode(SMSG_GOGOGO_OBSOLETE                                           , "SMSG_GOGOGO_OBSOLETE"                                            , STATUS_NEVER                 , &WorldSession::Handle_ServerSide);
     StoreOpcode(SMSG_ECHO_PARTY_SQUELCH                                        , "SMSG_ECHO_PARTY_SQUELCH"                                         , STATUS_NEVER                 , &WorldSession::Handle_ServerSide);
     StoreOpcode(CMSG_SET_TITLE_SUFFIX                                          , "CMSG_SET_TITLE_SUFFIX"                                           , STATUS_NEVER                 , &WorldSession::Handle_NULL);
-    StoreOpcode(CMSG_SPELLCLICK                                                , "CMSG_SPELLCLICK"                                                 , STATUS_NEVER                 , &WorldSession::Handle_NULL);
     StoreOpcode(SMSG_LOOT_LIST                                                 , "SMSG_LOOT_LIST"                                                  , STATUS_NEVER                 , &WorldSession::Handle_ServerSide);
     StoreOpcode(CMSG_GM_CHARACTER_RESTORE                                      , "CMSG_GM_CHARACTER_RESTORE"                                       , STATUS_NEVER                 , &WorldSession::Handle_NULL);
     StoreOpcode(CMSG_GM_CHARACTER_SAVE                                         , "CMSG_GM_CHARACTER_SAVE"                                          , STATUS_NEVER                 , &WorldSession::Handle_NULL);

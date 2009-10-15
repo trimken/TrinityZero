@@ -21,6 +21,7 @@
 #include "ByteBuffer.h"
 #include "TargetedMovementGenerator.h"
 #include "Errors.h"
+#include "CreatureAI.h"
 #include "Creature.h"
 #include "MapManager.h"
 #include "DestinationHolderImp.h"
@@ -191,6 +192,9 @@ TargetedMovementGenerator<T>::Update(T &owner, const uint32 & time_diff)
                 owner.Attack(i_target.getTarget(),true);
         }
     }
+    // Implemented for PetAI to handle resetting flags when pet owner reached
+    if (i_destinationHolder.HasArrived())
+        MovementInform(owner);
     return true;
 }
 
@@ -199,6 +203,17 @@ Unit*
 TargetedMovementGenerator<T>::GetTarget() const
 {
     return i_target.getTarget();
+}
+
+template<class T>
+void TargetedMovementGenerator<T>::MovementInform(T &unit)
+{
+}
+
+template <> void TargetedMovementGenerator<Creature>::MovementInform(Creature &unit)
+{
+    // Pass back the GUIDLow of the target. If it is pet's owner then PetAI will handle
+    unit.AI()->MovementInform(TARGETED_MOTION_TYPE, i_target.getTarget()->GetGUIDLow());
 }
 
 template void TargetedMovementGenerator<Player>::_setTargetLocation(Player &);

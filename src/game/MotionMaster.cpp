@@ -329,7 +329,7 @@ MotionMaster::MoveCharge(float x, float y, float z)
 }
 
 void
-MotionMaster::MoveFleeing(Unit* enemy)
+MotionMaster::MoveFleeing(Unit* enemy, uint32 time)
 {
     if(!enemy)
         return;
@@ -350,7 +350,10 @@ MotionMaster::MoveFleeing(Unit* enemy)
             i_owner->GetEntry(), i_owner->GetGUIDLow(),
             enemy->GetTypeId()==TYPEID_PLAYER ? "player" : "creature",
             enemy->GetTypeId()==TYPEID_PLAYER ? enemy->GetGUIDLow() : ((Creature*)enemy)->GetDBTableGUIDLow() );
-        Mutate(new FleeingMovementGenerator<Creature>(enemy->GetGUID()), MOTION_SLOT_CONTROLLED);
+        if (time)
+            Mutate(new TimedFleeingMovementGenerator(enemy->GetGUID(), time), MOTION_SLOT_CONTROLLED);
+        else
+            Mutate(new FleeingMovementGenerator<Creature>(enemy->GetGUID()), MOTION_SLOT_CONTROLLED);
     }
 }
 
