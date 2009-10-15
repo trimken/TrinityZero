@@ -23,6 +23,7 @@
 
 #include "Common.h"
 #include <vector>
+#include "SharedDefines.h"
 
 class MovementGenerator;
 class Unit;
