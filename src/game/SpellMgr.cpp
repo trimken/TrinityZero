@@ -26,6 +26,7 @@
 #include "World.h"
 #include "Chat.h"
 #include "Spell.h"
+#include "CreatureAI.h"
 
 bool IsAreaEffectTarget[TOTAL_SPELL_TARGETS];
 
@@ -2352,6 +2353,7 @@ void SpellMgr::LoadSpellCustomAttr()
             break;
         }
     }
+    CreatureAI::FillAISpellInfo();
 }
 
 void SpellMgr::LoadSpellLinked()
