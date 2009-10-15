@@ -448,25 +448,52 @@ void ObjectMgr::LoadCreatureTemplates()
             sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_H template (%u)", cInfo->Entry, cInfo->faction_H);
 
         // check model ids, supplying and sending non-existent ids to the client might crash them
-        if(cInfo->Modelid_A1 && !GetCreatureModelInfo(cInfo->Modelid_A1))
+        if (cInfo->Modelid_A1)
         {
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A1 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_A1);
-            const_cast<CreatureInfo*>(cInfo)->Modelid_A1 = 0;
+            if(!sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid_A1))
+            {
+                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A1 id (%u), can crash client", cInfo->Entry, cInfo->Modelid_A1);
+                const_cast<CreatureInfo*>(cInfo)->Modelid_A1 = 0;
+            }
+            else
+                if (!GetCreatureModelInfo(cInfo->Modelid_A1))
+                    sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid_A1 (%u) in `creature_model_info`", cInfo->Entry, cInfo->Modelid_A1);
         }
-        if(cInfo->Modelid_A2 && !GetCreatureModelInfo(cInfo->Modelid_A2))
+
+        if (cInfo->Modelid_A2)
         {
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A2 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_A2);
-            const_cast<CreatureInfo*>(cInfo)->Modelid_A2 = 0;
+            if(!sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid_A2))
+            {
+                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_A2 id (%u), can crash client", cInfo->Entry, cInfo->Modelid_A2);
+                const_cast<CreatureInfo*>(cInfo)->Modelid_A2 = 0;
+            }
+            else
+                if (!GetCreatureModelInfo(cInfo->Modelid_A2))
+                    sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid_A2 (%u) in `creature_model_info`", cInfo->Entry, cInfo->Modelid_A2);
         }
-        if(cInfo->Modelid_H1 && !GetCreatureModelInfo(cInfo->Modelid_H1))
+
+        if (cInfo->Modelid_H1)
         {
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H1 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_H1);
-            const_cast<CreatureInfo*>(cInfo)->Modelid_H1 = 0;
+            if(!sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid_H1))
+            {
+                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H id (%u), can crash client", cInfo->Entry, cInfo->Modelid_H1);
+                const_cast<CreatureInfo*>(cInfo)->Modelid_H1 = 0;
+            }
+            else
+                if (!GetCreatureModelInfo(cInfo->Modelid_H1))
+                    sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid_H (%u) in `creature_model_info`", cInfo->Entry, cInfo->Modelid_H1);
         }
-        if(cInfo->Modelid_H2 && !GetCreatureModelInfo(cInfo->Modelid_H2))
+
+        if (cInfo->Modelid_H2)
         {
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H2 (%u), setting it to 0", cInfo->Entry, cInfo->Modelid_H2);
-            const_cast<CreatureInfo*>(cInfo)->Modelid_H2 = 0;
+            if(!sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid_H2))
+            {
+                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid_H2 id (%u), can crash client", cInfo->Entry, cInfo->Modelid_H2);
+                const_cast<CreatureInfo*>(cInfo)->Modelid_H2 = 0;
+            }
+            else
+                if (!GetCreatureModelInfo(cInfo->Modelid_H2))
+                    sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid_H2 (%u) in `creature_model_info`", cInfo->Entry, cInfo->Modelid_H2);
         }
 
         if(cInfo->dmgschool >= MAX_SPELL_SCHOOL)

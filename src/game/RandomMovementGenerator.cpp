@@ -113,6 +113,12 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
     { */
         i_nextMoveTime.Reset(urand(500+i_destinationHolder.GetTotalTravelTime(),5000+i_destinationHolder.GetTotalTravelTime()));
         creature.SetUnitMovementFlags(MOVEMENTFLAG_WALK_MODE);
+    //}
+
+    //Call for creature group update
+    if(creature.GetFormation() && creature.GetFormation()->getLeader() == &creature)
+    {
+        creature.GetFormation()->LeaderMoveTo(nx, ny, nz);
     }
 }
 

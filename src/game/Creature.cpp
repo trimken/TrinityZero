@@ -594,12 +594,30 @@ bool Creature::AIM_Initialize(CreatureAI* ai)
         return false;
     }
 
-    if(i_AI) delete i_AI;
-    i_motionMaster.Initialize();
+    UnitAI *oldAI = i_AI;
+
+    Motion_Initialize();
+
     i_AI = ai ? ai : FactorySelector::selectAI(this);
+    if(oldAI) delete oldAI;
     IsAIEnabled = true;
     i_AI->InitializeAI();
     return true;
+}
+
+void Creature::Motion_Initialize()
+{
+    if(!m_formation)
+        i_motionMaster.Initialize();
+    else if(m_formation->getLeader() == this)
+    {    
+        m_formation->FormationReset(false);
+        i_motionMaster.Initialize();
+    }
+    else if(m_formation->isFormed())
+        i_motionMaster.MoveIdle(MOTION_SLOT_IDLE); //wait the order of leader
+    else
+        i_motionMaster.Initialize();
 }
 
 bool Creature::Create (uint32 guidlow, Map *map, uint32 Entry, uint32 team, const CreatureData *data)
@@ -1643,7 +1661,7 @@ void Creature::setDeathState(DeathState s)
         AddUnitMovementFlag(MOVEMENTFLAG_WALK_MODE);
         SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
         clearUnitState(UNIT_STAT_ALL_STATE);
-        i_motionMaster.Initialize();
+        Motion_Initialize();
         SetMeleeDamageSchool(SpellSchools(cinfo->dmgschool));
         LoadCreaturesAddon(true);
     }
