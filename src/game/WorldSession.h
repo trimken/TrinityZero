@@ -565,7 +565,6 @@ class TRINITY_DLL_SPEC WorldSession
         void HandleRandomRollOpcode(WorldPacket& recv_data);
         void HandleFarSightOpcode(WorldPacket& recv_data);
         void HandleSetLfgOpcode(WorldPacket& recv_data);
-        void HandleMoveFlyModeChangeAckOpcode(WorldPacket& recv_data);
         void HandleLfgAutoJoinOpcode(WorldPacket& recv_data);
         void HandleLfgCancelAutoJoinOpcode(WorldPacket& recv_data);
         void HandleLfgClearOpcode(WorldPacket& recv_data);

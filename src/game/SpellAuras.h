@@ -124,7 +124,6 @@ class TRINITY_DLL_SPEC Aura
         void HandleAuraModStat(bool Apply, bool Real);
         void HandleAuraModIncreaseSpeed(bool Apply, bool Real);
         void HandleAuraModIncreaseMountedSpeed(bool Apply, bool Real);
-        void HandleAuraModIncreaseFlightSpeed(bool Apply, bool Real);
         void HandleAuraModDecreaseSpeed(bool Apply, bool Real);
         void HandleAuraModUseNormalSpeed(bool Apply, bool Real);
         void HandleAuraModIncreaseHealth(bool Apply, bool Real);

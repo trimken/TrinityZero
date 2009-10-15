@@ -1398,12 +1398,12 @@ bool Creature::LoadFromDB(uint32 guid, Map *map)
     if(m_respawnTime)                          // respawn on Update
     {
         m_deathState = DEAD;
-        if(canFly())
+        /* [TZERO] if(canFly())
         {
             float tz = GetMap()->GetHeight(data->posX,data->posY,data->posZ,false);
             if(data->posZ - tz > 0.1)
                 Relocate(data->posX,data->posY,tz);
-        }
+        } */
     }
 
     uint32 curhealth = data->curhealth;
@@ -1546,7 +1546,7 @@ bool Creature::canStartAttack(Unit const* who) const
 {
     if(isCivilian()
         || !who->isInAccessiblePlaceFor(this)
-        || !canFly() && GetDistanceZ(who) > CREATURE_Z_ATTACK_RANGE
+        || GetDistanceZ(who) > CREATURE_Z_ATTACK_RANGE
         || !IsWithinDistInMap(who, GetAttackDistance(who)))
         return false;
 
@@ -1604,8 +1604,8 @@ void Creature::setDeathState(DeathState s)
         if(sWorld.getConfig(CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY) || isWorldBoss())
             SaveRespawnTime();
 
-        if (canFly() && FallGround())
-            return;
+       if (FallGround())
+           return;
     }
     Unit::setDeathState(s);
 
@@ -1620,7 +1620,13 @@ void Creature::setDeathState(DeathState s)
             if ( LootTemplates_Skinning.HaveLootFor(GetCreatureInfo()->SkinLootId) )
                 SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 
-        if (canFly() && FallGround())
+        SetNoSearchAssistance(false);
+    
+        //Dismiss group if is leader
+        if(m_formation && m_formation->getLeader() == this)
+            m_formation->FormationReset(true);
+
+        if (FallGround())
             return;
 
         Unit::setDeathState(CORPSE);

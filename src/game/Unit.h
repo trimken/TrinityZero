@@ -379,33 +379,32 @@ enum UnitState
     UNIT_STAT_STOPPED       = 0,
     UNIT_STAT_DIED            = 0x00000001,
     UNIT_STAT_MELEE_ATTACKING = 0x00000002,                     // player is melee attacking someone
-    UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone
-                                                                // player is in combat mode
-    UNIT_STAT_IN_COMBAT       = (UNIT_STAT_MELEE_ATTACKING | UNIT_STAT_MELEE_ATTACK_BY),
+    //UNIT_STAT_MELEE_ATTACK_BY = 0x00000004,                     // player is melee attack by someone                                           
     UNIT_STAT_STUNNED         = 0x00000008,
     UNIT_STAT_ROAMING         = 0x00000010,
     UNIT_STAT_CHASE           = 0x00000020,
-    UNIT_STAT_SEARCHING       = 0x00000040,
+    //UNIT_STAT_SEARCHING       = 0x00000040,
     UNIT_STAT_FLEEING         = 0x00000080,
-    UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE | UNIT_STAT_SEARCHING | UNIT_STAT_FLEEING),
-    UNIT_STAT_IN_FLIGHT       = 0x00000100,                     // player is in flight mode
+    UNIT_STAT_IN_FLIGHT       = 0x00000100,                     // player is in flight mode ( taxi )
     UNIT_STAT_FOLLOW          = 0x00000200,
     UNIT_STAT_ROOT            = 0x00000400,
     UNIT_STAT_CONFUSED        = 0x00000800,
-    UNIT_STAT_ALL_STATE       = 0xffffffff,                      //(UNIT_STAT_STOPPED | UNIT_STAT_MOVING | UNIT_STAT_IN_COMBAT | UNIT_STAT_IN_FLIGHT)
-
-    //[TZERO] Tbc enumerations [?]
     UNIT_STAT_DISTRACTED      = 0x00001000,
     UNIT_STAT_ISOLATED        = 0x00002000,                     // area auras do not affect other players
     UNIT_STAT_ATTACK_PLAYER   = 0x00004000,
     UNIT_STAT_CASTING         = 0x00008000,
     UNIT_STAT_POSSESSED       = 0x00010000,
     UNIT_STAT_CHARGING        = 0x00020000,
-    UNIT_STAT_MOVE            = 0x00040000,
-    // UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE),
+    UNIT_STAT_JUMPING         = 0x00040000,
+    UNIT_STAT_MOVE            = 0x00100000,
+    UNIT_STAT_ROTATING        = 0x00200000,
+    UNIT_STAT_EVADE           = 0x00400000,
+    UNIT_STAT_MOVING          = (UNIT_STAT_ROAMING | UNIT_STAT_CHASE),
     UNIT_STAT_LOST_CONTROL    = (UNIT_STAT_CONFUSED | UNIT_STAT_STUNNED | UNIT_STAT_FLEEING | UNIT_STAT_CHARGING),
     UNIT_STAT_SIGHTLESS       = (UNIT_STAT_LOST_CONTROL),
     UNIT_STAT_CANNOT_AUTOATTACK     = (UNIT_STAT_LOST_CONTROL | UNIT_STAT_CASTING),
+    UNIT_STAT_CANNOT_TURN     = (UNIT_STAT_LOST_CONTROL | UNIT_STAT_ROTATING),
+    UNIT_STAT_ALL_STATE       = 0xffffffff,                      //(UNIT_STAT_STOPPED | UNIT_STAT_MOVING | UNIT_STAT_IN_COMBAT | UNIT_STAT_IN_FLIGHT)
     
 };
 
@@ -417,8 +416,6 @@ enum UnitMoveType
     MOVE_SWIM           = 3,
     MOVE_SWIM_BACK      = 4,
     MOVE_TURN_RATE      = 5,
-    MOVE_FLIGHT         = 6, //[TZERO] added in TBC
-    MOVE_FLIGHT_BACK    = 7, //added in TBC
 };
 
 #define MAX_MOVE_TYPE 8
@@ -570,10 +567,7 @@ enum MovementFlags
     MOVEMENTFLAG_FLY_UNK1       = 0x00000800,
     MOVEMENTFLAG_UNK4           = 0x00002000,
     // 0x8000, 0x10000, 0x20000, 0x40000, 0x80000, 0x100000
-    MOVEMENTFLAG_FLY_UP         = 0x00400000,
     MOVEMENTFLAG_CAN_FLY        = 0x00800000,
-    MOVEMENTFLAG_FLYING         = 0x01000000,
-    MOVEMENTFLAG_FLYING2        = 0x02000000,               // Actual flying mode
     MOVEMENTFLAG_SPLINE2        = 0x08000000,               // used for flight paths
     MOVEMENTFLAG_WATERWALKING   = 0x10000000,               // prevent unit from falling through water
     MOVEMENTFLAG_SAFE_FALL      = 0x20000000,               // active rogue safe fall spell (passive)

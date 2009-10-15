@@ -1561,33 +1561,6 @@ void WorldSession::HandleDismountOpcode( WorldPacket & /*recv_data*/ )
     _player->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
 }
 
-void WorldSession::HandleMoveFlyModeChangeAckOpcode( WorldPacket & recv_data )
-{
-    CHECK_PACKET_SIZE(recv_data, 8+4+4);
-
-    // fly mode on/off
-    sLog.outDebug("WORLD: CMSG_MOVE_SET_CAN_FLY_ACK");
-    //recv_data.hexlike();
-
-    uint64 guid;
-    uint32 unk;
-    uint32 flags;
-
-    recv_data >> guid >> unk >> flags;
-
-    _player->SetUnitMovementFlags(flags);
-    /*
-    on:
-    25 00 00 00 00 00 00 00 | 00 00 00 00 00 00 80 00
-    85 4E A9 01 19 BA 7A C3 | 42 0D 70 44 44 B0 A8 42
-    78 15 94 40 39 03 00 00 | 00 00 80 3F
-    off:
-    25 00 00 00 00 00 00 00 | 00 00 00 00 00 00 00 00
-    10 FD A9 01 19 BA 7A C3 | 42 0D 70 44 44 B0 A8 42
-    78 15 94 40 39 03 00 00 | 00 00 00 00
-    */
-}
-
 void WorldSession::HandleRequestPetInfoOpcode( WorldPacket & /*recv_data */)
 {
     /*

@@ -261,11 +261,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNoImmediateEffect,                         //204 SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE implemented in Unit::CalculateMeleeDamage and Unit::CalculateSpellDamage
     &Aura::HandleNULL,                                      //205 vulnerable to school dmg?
     &Aura::HandleNULL,                                      //206 SPELL_AURA_MOD_SPEED_MOUNTED
-    &Aura::HandleAuraModIncreaseFlightSpeed,                //207 SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED
-    &Aura::HandleAuraModIncreaseFlightSpeed,                //208 SPELL_AURA_MOD_SPEED_FLIGHT, used only in spell: Flight Form (Passive)
-    &Aura::HandleAuraModIncreaseFlightSpeed,                //209 SPELL_AURA_MOD_FLIGHT_SPEED_ALWAYS
     &Aura::HandleNULL,                                      //210 Commentator's Command
-    &Aura::HandleAuraModIncreaseFlightSpeed,                //211 SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK
     &Aura::HandleAuraModRangedAttackPowerOfStatPercent,     //212 SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT
     &Aura::HandleNoImmediateEffect,                         //213 SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT implemented in Player::RewardRage
     &Aura::HandleNULL,                                      //214 Tamed Pet Passive
@@ -2630,10 +2626,6 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
                                                             // Will use the default model here
                 if (uint32 modelid = ci->GetRandomValidModelId())
                     m_target->SetDisplayId(modelid);
-
-                // Dragonmaw Illusion (set mount model also)
-                if(GetId()==42016 && m_target->GetMountID() && !m_target->GetAurasByType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED).empty())
-                    m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,16314);
             }
             m_target->setTransForm(GetId());
         }
@@ -3371,36 +3363,6 @@ void Aura::HandleAuraModIncreaseMountedSpeed(bool /*apply*/, bool Real)
     m_target->UpdateSpeed(MOVE_RUN, true);
 }
 
-void Aura::HandleAuraModIncreaseFlightSpeed(bool apply, bool Real)
-{
-    // all applied/removed only at real aura add/remove
-    if(!Real)
-        return;
-
-    // Enable Fly mode for flying mounts
-    if (m_modifier.m_auraname == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED)
-    {
-        WorldPacket data;
-        if(apply)
-            data.Initialize(SMSG_MOVE_SET_CAN_FLY, 12);
-        else
-            data.Initialize(SMSG_MOVE_UNSET_CAN_FLY, 12);
-        data.append(m_target->GetPackGUID());
-        data << uint32(0);                                      // unknown
-        m_target->SendMessageToSet(&data, true);
-
-        //Players on flying mounts must be immune to polymorph
-        if (m_target->GetTypeId()==TYPEID_PLAYER)
-            m_target->ApplySpellImmune(GetId(),IMMUNITY_MECHANIC,MECHANIC_POLYMORPH,apply);
-
-        // Dragonmaw Illusion (overwrite mount model, mounted aura already applied)
-        if( apply && m_target->HasAura(42016,0) && m_target->GetMountID())
-            m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,16314);
-    }
-
-    m_target->UpdateSpeed(MOVE_FLIGHT, true);
-}
-
 void Aura::HandleAuraModIncreaseSwimSpeed(bool /*apply*/, bool Real)
 {
     // all applied/removed only at real aura add/remove
@@ -3419,7 +3381,6 @@ void Aura::HandleAuraModDecreaseSpeed(bool /*apply*/, bool Real)
     //m_target->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
     m_target->UpdateSpeed(MOVE_RUN, true);
     m_target->UpdateSpeed(MOVE_SWIM, true);
-    m_target->UpdateSpeed(MOVE_FLIGHT, true);
 }
 
 void Aura::HandleAuraModUseNormalSpeed(bool /*apply*/, bool Real)
@@ -3430,7 +3391,6 @@ void Aura::HandleAuraModUseNormalSpeed(bool /*apply*/, bool Real)
 
     m_target->UpdateSpeed(MOVE_RUN,  true);
     m_target->UpdateSpeed(MOVE_SWIM, true);
-    m_target->UpdateSpeed(MOVE_FLIGHT,  true);
 }
 
 /*********************************************************/

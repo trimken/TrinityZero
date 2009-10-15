@@ -3494,7 +3494,8 @@ bool Unit::isInFront(Unit const* target, float distance,  float arc) const
 
 void Unit::SetInFront(Unit const* target)
 {
-    SetOrientation(GetAngle(target));
+    if(!hasUnitState(UNIT_STAT_CANNOT_TURN))
+        SetOrientation(GetAngle(target));
 }
 
 bool Unit::isInBack(Unit const* target, float distance, float arc) const
@@ -3515,7 +3516,7 @@ bool Unit::isInAccessiblePlaceFor(Creature const* c) const
     if(IsInWater())
         return c->canSwim();
     else
-        return c->canWalk() || c->canFly();
+        return c->canWalk();
 }
 
 bool Unit::IsInWater() const
@@ -9326,7 +9327,6 @@ void Unit::SetInCombatState(bool PvP)
     {
         UpdateSpeed(MOVE_RUN, true);
         UpdateSpeed(MOVE_SWIM, true);
-        UpdateSpeed(MOVE_FLIGHT, true);
     }
     else if(!isCharmed())
         return;
@@ -9615,18 +9615,6 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         }
         case MOVE_SWIM_BACK:
             return;
-        case MOVE_FLIGHT:
-        {
-            if (IsMounted()) // Use on mount auras
-                main_speed_mod  = GetMaxPositiveAuraModifier(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED);
-            else             // Use not mount (shapeshift for example) auras (should stack)
-                main_speed_mod  = GetTotalAuraModifier(SPELL_AURA_MOD_SPEED_FLIGHT);
-            stack_bonus     = GetTotalAuraMultiplier(SPELL_AURA_MOD_FLIGHT_SPEED_ALWAYS);
-            non_stack_bonus = (100.0 + GetMaxPositiveAuraModifier(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK))/100.0f;
-            break;
-        }
-        case MOVE_FLIGHT_BACK:
-            return;
         default:
             sLog.outError("Unit::UpdateSpeed: Unsupported move type (%d)", mtype);
             return;
@@ -9640,7 +9628,6 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
     {
         case MOVE_RUN:
         case MOVE_SWIM:
-        case MOVE_FLIGHT:
         {
             // Normalize speed by 191 aura SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED if need
             // TODO: possible affect only on MOVE_RUN
@@ -9709,12 +9696,6 @@ void Unit::SetSpeed(UnitMoveType mtype, float rate, bool forced)
             case MOVE_TURN_RATE:
                 data.Initialize(MSG_MOVE_SET_TURN_RATE, 8+4+1+4+4+4+4+4+4+4);
                 break;
-            case MOVE_FLIGHT:
-                data.Initialize(MSG_MOVE_SET_FLIGHT_SPEED, 8+4+1+4+4+4+4+4+4+4);
-                break;
-            case MOVE_FLIGHT_BACK:
-                data.Initialize(MSG_MOVE_SET_FLIGHT_BACK_SPEED, 8+4+1+4+4+4+4+4+4+4);
-                break;
             default:
                 sLog.outError("Unit::SetSpeed: Unsupported move type (%d), data not sent to client.",mtype);
                 return;
@@ -9756,12 +9737,6 @@ void Unit::SetSpeed(UnitMoveType mtype, float rate, bool forced)
                 break;
             case MOVE_TURN_RATE:
                 data.Initialize(SMSG_FORCE_TURN_RATE_CHANGE, 16);
-                break;
-            case MOVE_FLIGHT:
-                data.Initialize(SMSG_FORCE_FLIGHT_SPEED_CHANGE, 16);
-                break;
-            case MOVE_FLIGHT_BACK:
-                data.Initialize(SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE, 16);
                 break;
             default:
                 sLog.outError("Unit::SetSpeed: Unsupported move type (%d), data not sent to client.",mtype);
@@ -12513,6 +12488,8 @@ void Unit::SetFeared(bool apply)
 {
     if(apply)
     {
+        SetUInt64Value(UNIT_FIELD_TARGET, 0);
+        
         Unit *caster = NULL;
         Unit::AuraList const& fearAuras = GetAurasByType(SPELL_AURA_MOD_FEAR);
         if(!fearAuras.empty())

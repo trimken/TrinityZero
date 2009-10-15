@@ -55,7 +55,6 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
     // For 2D/3D system selection
     bool is_land_ok  = creature.canWalk();
     bool is_water_ok = creature.canSwim();
-    bool is_air_ok   = creature.canFly();
 
     const float angle = rand_norm()*(M_PI*2);
     const float range = rand_norm()*wander_distance;
@@ -71,7 +70,7 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
 
     dist = (nx - X)*(nx - X) + (ny - Y)*(ny - Y);
 
-    if (is_air_ok) // 3D system above ground and above water (flying mode)
+    /*[TZERO] if (is_air_ok) // 3D system above ground and above water (flying mode)
     {
         const float distanceZ = rand_norm() * sqrtf(dist)/2; // Limit height change
         nz = Z + distanceZ;
@@ -82,7 +81,7 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
     }
     //else if (is_water_ok) // 3D system under water and above ground (swimming mode)
     else // 2D only
-    {
+    { */
         dist = dist>=100.0f ? 10.0f : sqrtf(dist); // 10.0 is the max that vmap high can check (MAX_CAN_FALL_DISTANCE)
         // The fastest way to get an accurate result 90% of the time.
         // Better result can be obtained like 99% accuracy with a ray light, but the cost is too high and the code is too long.
@@ -97,20 +96,20 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
                     return; // let's forget this bad coords where a z cannot be find and retry at next tick
             }
         }
-    }
+   // }
 
     Traveller<Creature> traveller(creature);
     creature.SetOrientation(creature.GetAngle(nx,ny));
     i_destinationHolder.SetDestination(traveller, nx, ny, nz);
     creature.addUnitState(UNIT_STAT_ROAMING);
-    if (is_air_ok)
+    /*[TZERO] if (is_air_ok)
     {
         i_nextMoveTime.Reset(i_destinationHolder.GetTotalTravelTime());
         creature.AddUnitMovementFlag(MOVEMENTFLAG_FLYING2);
     }
     //else if (is_water_ok) // Swimming mode to be done with more than this check
     else
-    {
+    { */
         i_nextMoveTime.Reset(urand(500+i_destinationHolder.GetTotalTravelTime(),5000+i_destinationHolder.GetTotalTravelTime()));
         creature.SetUnitMovementFlags(MOVEMENTFLAG_WALK_MODE);
     }
@@ -168,10 +167,7 @@ RandomMovementGenerator<Creature>::Update(Creature &creature, const uint32 &diff
     {
         if(i_nextMoveTime.Passed())
         {
-            if (creature.canFly())
-                creature.AddUnitMovementFlag(MOVEMENTFLAG_FLYING2);
-            else
-                creature.SetUnitMovementFlags(irand(0,RUNNING_CHANCE_RANDOMMV) > 0 ? MOVEMENTFLAG_WALK_MODE : MOVEMENTFLAG_NONE);
+            creature.SetUnitMovementFlags(irand(0,RUNNING_CHANCE_RANDOMMV) > 0 ? MOVEMENTFLAG_WALK_MODE : MOVEMENTFLAG_NONE);
             _setRandomLocation(creature);
         }
         else if(creature.isPet() && creature.GetOwner() && creature.GetDistance(creature.GetOwner()) > PET_FOLLOW_DIST+2.5f)

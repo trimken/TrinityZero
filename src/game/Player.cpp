@@ -6269,7 +6269,7 @@ void Player::CheckDuelDistance(time_t currTime)
 
 bool Player::IsOutdoorPvPActive()
 {
-    return (isAlive() && !HasInvisibilityAura() && !HasStealthAura() && (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP) || sWorld.IsPvPRealm())  && !HasUnitMovementFlag(MOVEMENTFLAG_FLYING2) && !isInFlight());
+    return (isAlive() && !HasInvisibilityAura() && !HasStealthAura() && (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP) || sWorld.IsPvPRealm()) && !isInFlight());
 }
 
 void Player::DuelComplete(DuelCompleteType type)
@@ -16917,8 +16917,8 @@ void Player::SendInitialPacketsBeforeAddToMap()
     SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE );
 
     // set fly flag if in fly form or taxi flight to prevent visually drop at ground in showup moment
-    if(HasAuraType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED) || isInFlight())
-        AddUnitMovementFlag(MOVEMENTFLAG_FLYING2);
+    //if(HasAuraType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED) || isInFlight())
+    //    AddUnitMovementFlag(MOVEMENTFLAG_FLYING2);
 }
 
 void Player::SendInitialPacketsAfterAddToMap()
@@ -16932,7 +16932,7 @@ void Player::SendInitialPacketsAfterAddToMap()
     {
         SPELL_AURA_MOD_FEAR,     SPELL_AURA_TRANSFORM,                 SPELL_AURA_WATER_WALK,
         SPELL_AURA_FEATHER_FALL, SPELL_AURA_HOVER,                     SPELL_AURA_SAFE_FALL,
-        SPELL_AURA_FLY,          SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED, SPELL_AURA_NONE
+        SPELL_AURA_NONE
     };
     for(AuraType const* itr = &auratypes[0]; itr && itr[0] != SPELL_AURA_NONE; ++itr)
     {
@@ -17714,14 +17714,7 @@ void Player::SetClientControl(Unit* target, uint8 allowMove)
 
 void Player::UpdateZoneDependentAuras( uint32 newZone )
 {
-    // remove new continent flight forms
-    if( !isGameMaster() &&
-    GetVirtualMapForMapAndZone(GetMapId(),newZone) != 530)
-    {
-        RemoveSpellsCausingAura(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED);
-        RemoveSpellsCausingAura(SPELL_AURA_FLY);
-    }
-
+    /* [TZERO] OLD HILLSBRAD NOT IN PRE-BC
     // Some spells applied at enter into zone (with subzones)
     // Human Illusion
     // NOTE: these are removed by RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CHANGE_MAP);
@@ -17737,7 +17730,7 @@ void Player::UpdateZoneDependentAuras( uint32 newZone )
 
         if(spellid && !HasAura(spellid,0) )
             CastSpell(this,spellid,true);
-    }
+    } */
 }
 
 void Player::UpdateAreaDependentAuras( uint32 newArea )
@@ -17955,8 +17948,8 @@ void Player::HandleFallDamage(MovementInfo& movementInfo)
     //Players with low fall distance, Feather Fall or physical immunity (charges used) are ignored
     // 14.57 can be calculated by resolving damageperc formular below to 0
     if (z_diff >= 14.57f && !isDead() && !isGameMaster() &&
-        !HasAuraType(SPELL_AURA_HOVER) && !HasAuraType(SPELL_AURA_FEATHER_FALL) &&
-        !HasAuraType(SPELL_AURA_FLY) && !IsImmunedToDamage(SPELL_SCHOOL_MASK_NORMAL,true) )
+        !HasAuraType(SPELL_AURA_HOVER) && !HasAuraType(SPELL_AURA_FEATHER_FALL)
+        && !IsImmunedToDamage(SPELL_SCHOOL_MASK_NORMAL,true) )
     {
         //Safe fall, fall height reduction
         int32 safe_fall = GetTotalAuraModifier(SPELL_AURA_SAFE_FALL);
