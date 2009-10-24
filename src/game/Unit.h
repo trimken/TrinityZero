@@ -898,8 +898,8 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         uint32 getClassMask() const { return 1 << (getClass()-1); }
         uint8 getGender() const { return GetByteValue(UNIT_FIELD_BYTES_0, 2); }
 
-        float GetStat(Stats stat) const { return float(GetFloatValue(UNIT_FIELD_STR+stat)); }
-        void SetStat(Stats stat, float val) { SetFloatValue(UNIT_FIELD_STR+stat, val); }
+        float GetStat(Stats stat) const { return float(GetFloatValue(UNIT_FIELD_STAT0+stat)); }
+        void SetStat(Stats stat, float val) { SetFloatValue(UNIT_FIELD_STAT0+stat, val); }
         uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL) ; }
         void SetArmor(float val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
 
@@ -1199,10 +1199,10 @@ class TRINITY_DLL_SPEC Unit : public WorldObject
         void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
         void InitStatBuffMods()
         {
-            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(PLAYER_FIELD_POSSTAT0+i, 0);
-            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(PLAYER_FIELD_NEGSTAT0+i, 0);
+            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_STAT0+i, 0);
+            for(int i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_STAT0+i, 0);
         }
-        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? PLAYER_FIELD_POSSTAT0+stat : PLAYER_FIELD_NEGSTAT0+stat), val, apply); }
+        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? UNIT_FIELD_STAT0+stat : UNIT_FIELD_STAT0+stat), val, apply); }
         void ApplyStatPercentBuffMod(Stats stat, float val, bool apply)
         {
             ApplyPercentModFloatValue(PLAYER_FIELD_POSSTAT0+stat, val, apply);
