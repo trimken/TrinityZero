@@ -407,7 +407,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
                 if(                                         // unit fields
                     index >= UNIT_FIELD_POWER1         && index <= UNIT_FIELD_MAXPOWER5 ||
                     index >= UNIT_FIELD_BASEATTACKTIME && index <= UNIT_FIELD_RANGEDATTACKTIME ||
-                    index >= UNIT_FIELD_STR            && index <= UNIT_FIELD_RESISTANCES + 6 ||
+                    index >= UNIT_FIELD_STAT0            && index <= UNIT_FIELD_RESISTANCES + 6 ||
                     //player fields (2 comparison preferred instead redundant isType(TYPE_PLAYER) check
                     index >= PLAYER_FIELD_POSSTAT0     && index <= PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE + 6 )
                 {
