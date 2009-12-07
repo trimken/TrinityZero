@@ -733,7 +733,7 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
         return;
     }
 
-    data->Initialize(SMSG_BATTLEFIELD_STATUS, 6*4 + 1);
+    data->Initialize(SMSG_BATTLEFIELD_STATUS, 6*4 + 1); //Wrong datapacket size...
     *data << uint32(QueueSlot);                               // Unknown 1
     *data << uint32(bg->GetMapId());                          // MapID
     *data << uint8(0);                                        // Unknown
@@ -750,12 +750,12 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
             *data << uint32(bg->GetMapId());                // map id
             *data << uint32(Time1);                         // time to remove from queue, milliseconds
             break;
-       /* case STATUS_IN_PROGRESS:                            // status_in_progress
-            //*data << uint32(bg->GetMapId());                // map id
+           case STATUS_IN_PROGRESS:                            // status_in_progress
+            *data << uint32(bg->GetMapId());                // map id
             *data << uint32(Time1);                         // 0 at bg start, 120000 after bg end, time to bg auto leave, milliseconds
             *data << uint32(Time2);                         // time from bg start, milliseconds
-            //*data << uint8(0x1);                            // unk sometimes 0x0!
-            break;*/
+            *data << uint8(0x1);                            // unk sometimes 0x0!
+            break;
         default:
             sLog.outError("Unknown BG status!");
             break;
@@ -764,9 +764,8 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
 
 void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
 {
-    data->Initialize(MSG_PVP_LOG_DATA, (1+1+4+40*bg->GetPlayerScoresSize()));
-    *data << uint8(0);                                      // seems to be type (battleground=0)
-
+    data->Initialize(MSG_PVP_LOG_DATA, (1+1+4+40*bg->GetPlayerScoresSize())); //Wrong Datapacket size
+ //   *data << uint8(0);                                      // Don't use, because client crash, and only BG type, not arena... etc..
 
     if(bg->GetWinner() == 2)
     {
@@ -792,8 +791,8 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         *data << (int32)itr->second->Deaths;
         *data << (int32)(itr->second->BonusHonor);
 
-        *data << (int32)itr->second->DamageDone;             // damage done
-        *data << (int32)itr->second->HealingDone;            // healing done
+    //    *data << (int32)itr->second->DamageDone;             // Don't use 1.12 Client
+    //    *data << (int32)itr->second->HealingDone;            // Don't use 1.12 Client
         switch(bg->GetTypeID())                              // battleground specific things
         {
             case BATTLEGROUND_AV:
