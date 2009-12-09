@@ -741,7 +741,7 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
     *data << uint32(StatusID);                                // Status ID
     switch(StatusID)
     {
-        case STATUS_IN_PROGRESS:
+        //[TZERO]case STATUS_IN_PROGRESS:
         case STATUS_WAIT_QUEUE:                             // status_in_queue
             *data << uint32(Time1);                         // average wait time, milliseconds
             *data << uint32(Time2);                         // time in queue, updated every minute?
