@@ -376,6 +376,18 @@ void WorldSession::DoLootRelease( uint64 lguid )
         {
             loot->clear();
             corpse->RemoveFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
+            }
+        }
+        else if (IS_ITEM_GUID(lguid))
+        {
+            Item *pItem = player->GetItemByGuid(lguid);
+            if(!pItem)
+                return;
+
+        loot = &pItem->loot;
+        if (loot->isLooted()) {
+            player->DestroyItem( pItem->GetBagSlot(),pItem->GetSlot(), true);
+            loot->clear();
         }
     }
     else
