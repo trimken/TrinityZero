@@ -163,6 +163,7 @@ enum ShapeshiftForm
     FORM_GHOUL              = 0x07,
     FORM_DIREBEAR           = 0x08,
     FORM_CREATUREBEAR       = 0x0E,
+    FORM_CREATURECAT        = 0x0F,  //[TZERO] added in TBC
     FORM_GHOSTWOLF          = 0x10,
     FORM_BATTLESTANCE       = 0x11,
     FORM_DEFENSIVESTANCE    = 0x12,
@@ -170,7 +171,7 @@ enum ShapeshiftForm
     FORM_SHADOW             = 0x1C,
     FORM_STEALTH            = 0x1E,
     FORM_MOONKIN            = 0x1F,
-
+    FORM_SPIRITOFREDEMPTION = 0x20 //added in TBC
 };
 
 // low byte ( 0 from 0..3 ) of UNIT_FIELD_BYTES_2

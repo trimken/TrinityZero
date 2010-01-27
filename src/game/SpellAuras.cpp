@@ -2359,23 +2359,11 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         case FORM_GHOSTWOLF:
             modelid = 4613;
             break;
-        case FORM_FLIGHT:
-            if(Player::TeamForRace(m_target->getRace())==ALLIANCE)
-                modelid = 20857;
-            else
-                modelid = 20872;
-            break;
         case FORM_MOONKIN:
             if(Player::TeamForRace(m_target->getRace())==ALLIANCE)
                 modelid = 15374;
             else
                 modelid = 15375;
-            break;
-        case FORM_FLIGHT_EPIC:
-            if(Player::TeamForRace(m_target->getRace())==ALLIANCE)
-                modelid = 21243;
-            else
-                modelid = 21244;
             break;
         case FORM_AMBIENT:
         case FORM_SHADOW:
@@ -2405,8 +2393,6 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         case FORM_AQUA:
         case FORM_BEAR:
         case FORM_DIREBEAR:
-        case FORM_FLIGHT_EPIC:
-        case FORM_FLIGHT:
         case FORM_MOONKIN:
             // remove movement affects
             m_target->RemoveMovementImpairingAuras();
@@ -4864,13 +4850,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             spellId = 24905;
             // aura from effect trigger spell
             spellId2 = 24907;
-            break;
-        case FORM_FLIGHT:
-            spellId = 33948;
-            break;
-        case FORM_FLIGHT_EPIC:
-            spellId  = 40122;
-            spellId2 = 40121;
             break;
         case FORM_SPIRITOFREDEMPTION:
             spellId  = 27792;

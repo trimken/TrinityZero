@@ -2753,9 +2753,7 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool loading,
             (spell_id ==  7376 && m_form == FORM_DEFENSIVESTANCE) ||
             (spell_id ==  7381 && m_form == FORM_BERSERKERSTANCE) ||
             (spell_id == 21156 && m_form == FORM_BATTLESTANCE)||
-            (spell_id == 21178 && (m_form == FORM_BEAR || m_form == FORM_DIREBEAR) ) ||
-            (spell_id == 33948 && m_form == FORM_FLIGHT) ||
-            (spell_id == 40121 && m_form == FORM_FLIGHT_EPIC) )
+            (spell_id == 21178 && (m_form == FORM_BEAR || m_form == FORM_DIREBEAR) ) )
         {
             //Check CasterAuraStates
             AuraStates const *SpellCasterAuraStates = spellmgr.GetCasterAuraStates(spell_id);

@@ -415,7 +415,7 @@ void WorldSession::HandleGuildLeaveOpcode(WorldPacket& /*recvPacket*/)
 
     guild->DelMember(_player->GetGUID());
     // Put record into guildlog
-    guild->LogGuildEvent(GUILD_EVENT_LOG_LEAVE_GUILD, _player->GetGUIDLow(), 0, 0);
+    //guild->LogGuildEvent(GUILD_EVENT_LOG_LEAVE_GUILD, _player->GetGUIDLow(), 0, 0);
 
     WorldPacket data(SMSG_GUILD_EVENT, (2+10));             // guess size
     data << (uint8)GE_LEFT;
