@@ -654,8 +654,9 @@ void Spell::prepareDataForTriggerSystem()
             break;
         }
     }
-    // Do not trigger from item cast spell
-    if (m_CastItem)
+    // Do not trigger from item cast spell except taming rod
+    // This is a hack, needs fix
+    if (m_CastItem && !(m_spellInfo->SpellVisual == 411))
        m_canTrigger = false;
 
     // Get data for type of attack and fill base info for trigger
@@ -4105,9 +4106,10 @@ SpellCastResult Spell::CheckCast(bool strict)
     {
         switch(m_spellInfo->EffectApplyAuraName[i])
         {
-            case SPELL_AURA_DUMMY:
-            {
-                if(m_spellInfo->Id == 1515)
+            case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
+                {
+                    // Tame beast
+                    if(m_spellInfo->SpellVisual == 411) 
                 {
                     if (!m_targets.getUnitTarget() || m_targets.getUnitTarget()->GetTypeId() == TYPEID_PLAYER)
                         return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
@@ -4116,7 +4118,9 @@ SpellCastResult Spell::CheckCast(bool strict)
                         return SPELL_FAILED_HIGHLEVEL;
 
                     // use SMSG_PET_TAME_FAILURE?
-                    if (!((Creature*)m_targets.getUnitTarget())->GetCreatureInfo()->isTameable ())
+                    if ((!((Creature*)m_targets.getUnitTarget())->GetCreatureInfo()->isTameable()) ||
+                    (!(IsCorrectMobForTameQuest(((Creature*)m_targets.getUnitTarget())->GetEntry(), m_spellInfo->Id))))
+
                         return SPELL_FAILED_BAD_TARGETS;
 
                     if(m_caster->GetPetGUID())

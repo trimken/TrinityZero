@@ -512,6 +512,7 @@ void Aura::Update(uint32 diff)
     }
 
     // Channeled aura required check distance from caster except in possessed cases
+    // also requires target check for tame spells
     if(IsChanneledSpell(m_spellProto) && m_caster_guid != m_target->GetGUID() && !m_target->isPossessed())
     {
         Unit* caster = GetCaster();
@@ -542,7 +543,12 @@ void Aura::Update(uint32 diff)
         {
             m_target->RemoveAura(GetId(),GetEffIndex());
             return;
-        }
+            }
+            if((caster != m_target->getVictim()) && IsTameSpell(GetId()))
+            {
+            m_target->RemoveAura(GetId(),GetEffIndex());
+            return;
+            }
     }
 
     if(m_isPeriodic && (m_duration >= 0 || m_isPassive || m_permanent))
@@ -1784,7 +1790,15 @@ void Aura::TriggerSpell()
                 caster = target;
                 originalCasterGUID = 0;
                 break;
-            }
+            }                             // Tame beast + quest spells
+            case 1515:      case 19548:     case 19674:     case 19687:     case 19688:     case 19689:     
+            case 19692:     case 19693:     case 19694:     case 19696:     case 19697:     case 19699:     
+            case 19700:     case 30646:     case 30653:     case 30654:     case 30099:     case 30102:     
+            case 30105:
+                {
+                caster->CastSpell(m_target, triggeredSpellInfo, true, 0, this, originalCasterGUID);
+                    return;
+                }
             // Mana Tide
             case 16191:
             {
@@ -1886,36 +1900,6 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
         {
             // spells with SpellEffect=72 and aura=4: 6196, 6197, 21171, 21425
             ((Player*)m_target)->ClearFarsight();
-            return;
-        }
-
-        if( (IsQuestTameSpell(GetId())) && caster && caster->isAlive() && m_target->isAlive())
-        {
-            uint32 finalSpelId = 0;
-            switch(GetId())
-            {
-                case 19548: finalSpelId = 19597; break;
-                case 19674: finalSpelId = 19677; break;
-                case 19687: finalSpelId = 19676; break;
-                case 19688: finalSpelId = 19678; break;
-                case 19689: finalSpelId = 19679; break;
-                case 19692: finalSpelId = 19680; break;
-                case 19693: finalSpelId = 19684; break;
-                case 19694: finalSpelId = 19681; break;
-                case 19696: finalSpelId = 19682; break;
-                case 19697: finalSpelId = 19683; break;
-                case 19699: finalSpelId = 19685; break;
-                case 19700: finalSpelId = 19686; break;
-                case 30646: finalSpelId = 30647; break;
-                case 30653: finalSpelId = 30648; break;
-                case 30654: finalSpelId = 30652; break;
-                case 30099: finalSpelId = 30100; break;
-                case 30102: finalSpelId = 30103; break;
-                case 30105: finalSpelId = 30104; break;
-            }
-
-            if(finalSpelId)
-                caster->CastSpell(m_target,finalSpelId,true,NULL,this);
             return;
         }
 

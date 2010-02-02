@@ -216,6 +216,33 @@ class TRINITY_DLL_SPEC Aura
         int32 GetMiscBValue() {return 0;}//m_spellProto->EffectMiscValueB[m_effIndex];}
 
         SpellEntry const* GetSpellProto() const { return m_spellProto; }
+                uint32 GetTameSpellId(uint32 Id)
+        {
+            switch(Id)
+            {
+                case 1515:      return 13481;
+                case 19548:     return 19597;
+                case 19674:     return 19677;
+                case 19687:     return 19676;
+                case 19688:     return 19678;
+                case 19689:     return 19679;
+                case 19692:     return 19680;
+                case 19693:     return 19684;
+                case 19694:     return 19681;
+                case 19696:     return 19682;
+                case 19697:     return 19683;
+                case 19699:     return 19685;
+                case 19700:     return 19686;
+            /*  case 30646:     return 30647;        // [TZERO]These are all TBC
+                case 30653:     return 30648;
+                case 30654:     return 30652;
+                case 30099:     return 30100;
+                case 30102:     return 30103;
+                case 30105:     return 30104; */
+                default:        return 0;     
+            }
+        }
+
         uint32 GetId() const{ return m_spellProto->Id; }
         uint64 GetCastItemGUID() const { return m_castItemGuid; }
         uint32 GetEffIndex() const{ return m_effIndex; }
@@ -269,6 +296,7 @@ class TRINITY_DLL_SPEC Aura
         bool IsPermanent() const { return m_permanent; }
         bool IsAreaAura() const { return m_isAreaAura; }
         bool IsPeriodic() const { return m_isPeriodic; }
+        bool IsTameSpell(uint32 SpellId) { return (GetTameSpellId(SpellId)); }
         bool IsTrigger() const { return m_isTrigger; }
         bool IsPassive() const { return m_isPassive; }
         bool IsPersistent() const { return m_isPersistent; }

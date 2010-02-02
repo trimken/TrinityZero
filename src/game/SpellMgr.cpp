@@ -2288,7 +2288,40 @@ void SpellMgr::LoadSpellCustomAttr()
             mSpellCustomAttr[i] |= SPELL_ATTR_CU_CONE_BACK;
 
         switch(i)
-        {
+        {            // [TZERO] Tame beast + quest spells
+            case 1515:      case 19548:     case 19674:     case 19687:     case 19688:     case 19689:     case 19692:
+            case 19693:    case 19694:     case 19696:     case 19697:     case 19699:     case 19700:     case 30646:
+            case 30653:    case 30654:     case 30099:     case 30102:     case 30105:
+                    {
+                    uint32 triggerSpell = 0;
+                    switch(i)
+                    {
+                case 1515:      triggerSpell = 13481;     break;
+                case 19548:     triggerSpell = 19597;     break;
+                case 19674:     triggerSpell = 19677;     break;
+                case 19687:     triggerSpell = 19676;     break;
+                case 19688:     triggerSpell = 19678;     break;
+                case 19689:     triggerSpell = 19679;     break;
+                case 19692:     triggerSpell = 19680;     break;
+                case 19693:     triggerSpell = 19684;     break;
+                case 19694:     triggerSpell = 19681;     break;
+                case 19696:     triggerSpell = 19682;     break;
+                case 19697:     triggerSpell = 19683;     break;
+                case 19699:     triggerSpell = 19685;     break;
+                case 19700:     triggerSpell = 19686;     break;
+                /*case 30646:     triggerSpell = 30647;    break;        // [TZERO]These are all TBC
+                case 30653:     triggerSpell = 30648;     break;
+                case 30654:     triggerSpell = 30652;     break;
+                case 30099:     triggerSpell = 30100;     break;
+                case 30102:     triggerSpell = 30103;     break;
+                case 30105:     triggerSpell = 30104;     break;    */
+           }
+                spellInfo->EffectTriggerSpell[1] = triggerSpell;
+                spellInfo->EffectAmplitude[1] = 20000;
+                spellInfo->EffectMiscValue[2] = 1;
+                spellInfo->EffectApplyAuraName[1] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
+                break;
+                }
         case 26029: // dark glare
         case 37433: // spout
         case 43140: case 43215: // flame breath

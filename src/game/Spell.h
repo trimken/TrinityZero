@@ -409,6 +409,33 @@ class Spell
         bool IsAutoRepeat() const { return m_autoRepeat; }
         void SetAutoRepeat(bool rep) { m_autoRepeat = rep; }
         void ReSetTimer() { m_timer = m_casttime > 0 ? m_casttime : 0; }
+        bool IsCorrectMobForTameQuest(uint32 unitId, uint32 spellId)
+        {
+            switch(spellId)
+            {     
+            case 1515:      return true;                //Tame Beast
+            case 19548:     return unitId == 1196;      //Ice Claw Bear
+            case 19674:     return unitId == 1126;      //Large Craig Boar
+            case 19687:     return unitId == 1201;      //Snow Leopard
+            case 19688:     return unitId == 2956;      //Adult Plainstrider
+            case 19689:     return unitId == 2959;      //Prairie Stalker
+            case 19692:     return unitId == 2970;      //Swoop
+            case 19693:     return unitId == 1998;      //Webwood Lurker
+            case 19694:     return unitId == 3099;      //Dire Mottled Boar
+            case 19696:     return unitId == 3107;      //Surf Crawler
+            case 19697:     return unitId == 3126;      //Armored Scorpid
+            case 19699:     return unitId == 2043;      //Nightsaber Stalker
+            case 19700:     return unitId == 1996;      //Strigid Screecher
+            /*case 30646:     return unitId == 1111;      //[TZERO]These are all TBC
+            case 30653:     return unitId == 1111;
+            case 30654:     return unitId == 1111;
+            case 30099:     return unitId == 1111;
+            case 30102:     return unitId == 1111;
+            case 30105:     return unitId == 1111; */
+            default:        return false;
+            }
+        }
+
         bool IsNextMeleeSwingSpell() const
         {
             return m_spellInfo->Attributes & (SPELL_ATTR_ON_NEXT_SWING_1|SPELL_ATTR_ON_NEXT_SWING_2);
