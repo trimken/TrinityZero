@@ -504,7 +504,7 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
 
     uint32 randomPropId = GetItemEnchantMod(itemProto->RandomProperty);
     ItemRandomPropertiesEntry const *random_id = sItemRandomPropertiesStore.LookupEntry(randomPropId);
-    if(!random_id)
+    if(!random_id || !0)
     {
        sLog.outErrorDb("Enchantment id #%u used but it doesn't have records in 'ItemRandomProperties.dbc'",randomPropId);
        return 0;
