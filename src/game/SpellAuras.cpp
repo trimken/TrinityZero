@@ -2485,26 +2485,6 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             m_target->setPowerType(POWER_MANA);
         m_target->m_ShapeShiftFormSpellId = 0;
         m_target->m_form = FORM_NONE;
-
-        switch(form)
-        {
-            // Nordrassil Harness - bonus
-            case FORM_BEAR:
-            case FORM_DIREBEAR:
-            case FORM_CAT:
-            {
-                if(Aura* dummy = m_target->GetDummyAura(37315) )
-                    m_target->CastSpell(m_target,37316,true,NULL,dummy);
-                break;
-            }
-            // Nordrassil Regalia - bonus
-            case FORM_MOONKIN:
-            {
-                if(Aura* dummy = m_target->GetDummyAura(37324) )
-                    m_target->CastSpell(m_target,37325,true,NULL,dummy);
-                break;
-            }
-        }
     }
 
     // adding/removing linked auras
