@@ -2305,6 +2305,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             PowerType = POWER_ENERGY;
             break;
         case FORM_TRAVEL:
+            m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,0.75f);
             modelid = 632;
             break;
         case FORM_AQUA:
@@ -2327,12 +2328,12 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         case FORM_DIREBEAR:
             if(Player::TeamForRace(m_target->getRace())==ALLIANCE)
             {
-                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,2.0f);
+                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
                 modelid = 2281;
             }
             else
             {
-                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,2.35f);
+                m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.35f);
                 modelid = 2289;
             }
             PowerType = POWER_RAGE;
