@@ -2580,19 +2580,6 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
             }
             m_target->setTransForm(GetId());
         }
-
-        // polymorph case
-        if( Real && m_target->GetTypeId() == TYPEID_PLAYER && m_target->IsPolymorphed())
-        {
-            // for players, start regeneration after 1s (in polymorph fast regeneration case)
-            // only if caster is Player (after patch 2.4.2)
-            if(IS_PLAYER_GUID(GetCasterGUID()) )
-                ((Player*)m_target)->setRegenTimer(1000);
-
-            //dismount polymorphed target (after patch 2.4.2)
-            /*[TZERO]if (m_target->IsMounted())
-                m_target->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);*/
-        }
     }
     else
     {
