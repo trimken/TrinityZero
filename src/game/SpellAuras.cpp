@@ -2319,7 +2319,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
                 modelid = 2281;
             else
                 modelid = 2289;
-            m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f)
+            m_target->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
             PowerType = POWER_RAGE;
             break;
         case FORM_GHOUL:
