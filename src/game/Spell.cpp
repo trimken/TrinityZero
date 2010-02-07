@@ -4883,7 +4883,7 @@ void Spell::Delayed() // only called in DealDamage()
     sLog.outDetail("Spell %u partially interrupted for (%d) ms at damage",m_spellInfo->Id,delaytime);
 
     WorldPacket data(SMSG_SPELL_DELAYED, 8+4);
-    data.append(m_caster->GetPackGUID());
+    data << m_caster->GetGUID();
     data << uint32(delaytime);
 
     m_caster->SendMessageToSet(&data,true);
