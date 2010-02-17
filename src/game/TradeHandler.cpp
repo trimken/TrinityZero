@@ -148,7 +148,7 @@ void WorldSession::SendUpdateTrade()
             data << (uint32) 0;                             // probably gift=1, created_by=0?
             data << (uint32) 0;
             data << (uint32) 0;
-            data << (uint32) 0;
+            //data << (uint32) 0;
             data << (uint32) item->GetUInt32Value(ITEM_FIELD_ENCHANTMENT);
             data << (uint32) item->GetUInt32Value(ITEM_FIELD_CREATOR);
             data << (uint32) HIGHGUID_PLAYER;
