@@ -264,7 +264,8 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     display_id = objmgr.GetCreatureModelRandomGenderId(display_id); // it can be different (for another gender)
     if (!display_id)
     {
-        sLog.outErrorDb("Creature (Entry: %u) has model %u not found in table `creature_model_info`, can't load. ", Entry, display_id);
+		if(display_id != 0)
+            sLog.outErrorDb("Creature (Entry: %u) has model %u not found in table `creature_model_info`, can't load. ", Entry, display_id);
         return false;
     }                    
 
