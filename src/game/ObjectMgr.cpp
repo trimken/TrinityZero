@@ -4221,8 +4221,6 @@ WorldSafeLocsEntry const *ObjectMgr::GetClosestGraveYard(float x, float y, float
     WorldSafeLocsEntry const* entryNear = NULL;
 
     // at entrance map for corpse map
-    bool foundEntr = false;
-    //float distEntr;
     WorldSafeLocsEntry const* entryEntr = NULL;
 
     // some where other
@@ -4249,32 +4247,14 @@ WorldSafeLocsEntry const *ObjectMgr::GetClosestGraveYard(float x, float y, float
         // find now nearest graveyard at other map
         if(MapId != entry->map_id)
         {
-            // if find graveyard at different map from where entrance placed (or no entrance data), use any first
-            if (!mapEntry) /* || mapEntry->entrance_map < 0 || mapEntry->entrance_map != entry->map_id ||
-                mapEntry->entrance_x == 0 && mapEntry->entrance_y == 0)*/
+            // if find graveyard at different map (or no entrance data), use any first
+            if (!mapEntry)
             {
                 // not have any corrdinates for check distance anyway
                 entryFar = entry;
                 continue;
             }
-
-            // at entrance map calculate distance (2D);
-      /*      float dist2 = (entry->x - mapEntry->entrance_x)*(entry->x - mapEntry->entrance_x)
-                +(entry->y - mapEntry->entrance_y)*(entry->y - mapEntry->entrance_y);
-            if(foundEntr)
-            {
-                if(dist2 < distEntr)
-                {
-                    distEntr = dist2;
-                    entryEntr = entry;
-                }
-            }
-            else
-            {
-                foundEntr = true;
-                distEntr = dist2;
-                entryEntr = entry;
-            }*/
+            entryEntr = entry;
         }
         // find now nearest graveyard at same map
         else
