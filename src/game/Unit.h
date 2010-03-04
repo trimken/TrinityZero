@@ -514,7 +514,7 @@ enum NPCFlags
     UNIT_NPC_FLAG_REPAIR                = 0x00004000,       // 100%
     UNIT_NPC_FLAG_FLIGHTMASTER          = 0x00000008,       // 100%
     UNIT_NPC_FLAG_SPIRITHEALER          = 0x00000020,       // guessed
-    UNIT_NPC_FLAG_SPIRITGUIDE           = 0x00008000,       // guessed
+    UNIT_NPC_FLAG_SPIRITGUIDE           = 0x00000040,       // guessed
     UNIT_NPC_FLAG_INNKEEPER             = 0x00000080,       // 100%
     UNIT_NPC_FLAG_BANKER                = 0x00000100,       // 100%
     UNIT_NPC_FLAG_PETITIONER            = 0x00000200,       // 100% 0xC0000 = guild petitions
