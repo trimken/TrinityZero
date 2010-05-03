@@ -25,8 +25,6 @@ EndScriptData */
 item_area_52_special(i28132)        Prevents abuse of this item
 item_attuned_crystal_cores(i34368)  Prevent abuse(quest 11524 & 11525)
 item_blackwhelp_net(i31129)         Quest Whelps of the Wyrmcult (q10747). Prevents abuse
-item_draenei_fishing_net(i23654)    Hacklike implements chance to spawn item or creature
-item_disciplinary_rod               Prevents abuse
 item_nether_wraith_beacon(i31742)   Summons creatures for quest Becoming a Spellfire Tailor (q10832)
 item_flying_machine(i34060,i34061)  Engineering crafted flying machines
 item_gor_dreks_ointment(i30175)     Protecting Our Own(q10488)
@@ -41,64 +39,12 @@ item_voodoo_charm                   Provide proper error message and target(q256
 item_vorenthals_presence(i30259)    Prevents abuse of this item
 item_yehkinyas_bramble(i10699)      Allow cast spell on vale screecher only and remove corpse if cast sucessful (q3520)
 item_zezzak_shard(i31463)           Quest The eyes of Grillok (q10813). Prevents abuse
-item_inoculating_crystal            Quest Inoculating. Prevent abuse
 EndContentData */
 
 #include "precompiled.h"
 #include "SpellMgr.h"
 #include "Spell.h"
 #include "WorldPacket.h"
-
-
-/*#####
-# item_draenei_fishing_net
-#####*/
-
-//This is just a hack and should be removed from here.
-//Creature/Item are in fact created before spell are sucessfully casted, without any checks at all to ensure proper/expected behavior.
-bool ItemUse_item_draenei_fishing_net(Player *player, Item* _Item, SpellCastTargets const& targets)
-{
-    //if( targets.getGOTarget() && targets.getGOTarget()->GetTypeId() == TYPEID_GAMEOBJECT &&
-    //targets.getGOTarget()->GetGOInfo()->type == GAMEOBJECT_TYPE_SPELL_FOCUS && targets.getGOTarget()->GetEntry() == 181616 )
-    //{
-    if( player->GetQuestStatus(9452) == QUEST_STATUS_INCOMPLETE )
-    {
-        if( rand()%100 < 35 )
-        {
-            Creature *Murloc = player->SummonCreature(17102,player->GetPositionX() ,player->GetPositionY()+20, player->GetPositionZ(), 0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,10000);
-            if( Murloc )
-                Murloc->AI()->AttackStart(player);
-        }
-        else
-        {
-            ItemPosCountVec dest;
-            uint8 msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23614, 1);
-            if( msg == EQUIP_ERR_OK )
-            {
-                Item* item = player->StoreNewItem(dest,23614,true);
-                if( item )
-                    player->SendNewItem(item,1,false,true);
-            }else
-            player->SendEquipError(msg,NULL,NULL);
-        }
-    }
-    //}
-    return false;
-}
-
-/*#####
-# item_disciplinary_rod
-#####*/
-
-bool ItemUse_item_disciplinary_rod(Player *player, Item* _Item, SpellCastTargets const& targets)
-{
-    if( targets.getUnitTarget() && targets.getUnitTarget()->GetTypeId()==TYPEID_UNIT &&
-        (targets.getUnitTarget()->GetEntry() == 15941 || targets.getUnitTarget()->GetEntry() == 15945) )
-        return false;
-
-    player->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW,_Item,NULL);
-    return true;
-}
 
 /*#####
 # item_muiseks_vessel
@@ -150,25 +96,6 @@ bool ItemUse_item_muiseks_vessel(Player *player, Item* _Item, SpellCastTargets c
             return false;
         }
     }
-
-    WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
-    data << uint32(_Item->GetEntry());                      // itemId
-    data << uint8(SPELL_FAILED_BAD_TARGETS);                // reason
-    player->GetSession()->SendPacket(&data);                // send message: Invalid target
-
-    player->SendEquipError(EQUIP_ERR_NONE,_Item,NULL);      // break spell
-    return true;
-}
-
-/*#####
-# item_inoculating_crystal
-#####*/
-
-bool ItemUse_item_inoculating_crystal(Player *player, Item* _Item, SpellCastTargets const& targets)
-{
-    if( targets.getUnitTarget() && targets.getUnitTarget()->GetTypeId()==TYPEID_UNIT &&
-        targets.getUnitTarget()->GetEntry() == 16518 )
-        return false;
 
     WorldPacket data(SMSG_CAST_FAILED, (4+2));              // prepare packet error message
     data << uint32(_Item->GetEntry());                      // itemId
@@ -249,23 +176,8 @@ void AddSC_item_scripts()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="item_disciplinary_rod";
-    newscript->pItemUse = &ItemUse_item_disciplinary_rod;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name="item_draenei_fishing_net";
-    newscript->pItemUse = &ItemUse_item_draenei_fishing_net;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
     newscript->Name="item_muiseks_vessel";
     newscript->pItemUse = &ItemUse_item_muiseks_vessel;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name="item_inoculating_crystal";
-    newscript->pItemUse = &ItemUse_item_inoculating_crystal;
     newscript->RegisterSelf();
 
     newscript = new Script;
