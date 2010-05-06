@@ -28,11 +28,13 @@
 
 #include <map>
 
-typedef std::map<uint16,uint32> AreaFlagByAreaID;
+typedef std::map<uint32,uint16> AreaIDByAreaFlag;
+//typedef std::map<uint16,uint32> AreaFlagByAreaID;
 typedef std::map<uint32,uint32> AreaFlagByMapID;
 
 DBCStorage <AreaTableEntry> sAreaStore(AreaTableEntryfmt);
-static AreaFlagByAreaID sAreaFlagByAreaID;
+static AreaIDByAreaFlag sAreaIDByAreaFlag;
+//static AreaFlagByAreaID sAreaFlagByAreaID;
 static AreaFlagByMapID  sAreaFlagByMapID;                   // for instances without generated *.map files
 
 DBCStorage <AreaTriggerEntry> sAreaTriggerStore(AreaTriggerEntryfmt);
@@ -166,8 +168,8 @@ void LoadDBCStores(const std::string& dataPath)
         if(AreaTableEntry const* area = sAreaStore.LookupEntry(i))
         {
             // fill AreaId->DBC records
-            sAreaFlagByAreaID.insert(AreaFlagByAreaID::value_type(uint16(area->ID),area->exploreFlag));
-
+            /*sAreaFlagByAreaID.insert(AreaFlagByAreaID::value_type(uint16(area->ID),area->exploreFlag));*/
+			sAreaIDByAreaFlag.insert(AreaIDByAreaFlag::value_type(area->exploreFlag,uint16(area->ID)));
             // fill MapId->DBC records ( skip sub zones and continents )
             if(area->zone==0 && area->mapid != 0 && area->mapid != 1 )
                 sAreaFlagByMapID.insert(AreaFlagByMapID::value_type(area->mapid,area->exploreFlag));
@@ -389,21 +391,18 @@ void LoadDBCStores(const std::string& dataPath)
     }
 
 
-    // something wrong with map.dbc - loads only 1077 entries instead 1081
     // check at up-to-date DBC files (33392 is last added spell in 1.12.1)
     // check at up-to-date DBC files (15030 is last ID in SkillLineAbilities in 1.12.1)
     // check at up-to-date DBC files (533 is last map added in 1.12.1)
     // check at up-to-date DBC files (3486 is last area added in 1.12.1)
     if( !sSpellStore.LookupEntry(33392)            ||
         !sSkillLineAbilityStore.LookupEntry(15030) ||
-        !sMapStore.LookupEntry(533)                )
-//        !sAreaStore.LookupEntry(3486)              )
+        !sMapStore.LookupEntry(533)                ||
+        !sAreaStore.LookupEntry(3486)              )
     {
         sLog.outError("\nYou have _outdated_ DBC files. Please extract correct versions from current using client.");
         exit(1);
     }
-    sLog.outError("sAreaStore size %u", sAreaStore.GetNumRows() );
-    sLog.outString();
     sLog.outString( ">> Loaded %d data stores", DBCFilesCount );
     sLog.outString();
 }
@@ -443,29 +442,48 @@ uint32 GetTalentSpellCost(uint32 spellId)
     return 0;
 }
 
-int32 GetAreaFlagByAreaID(uint32 area_id)
+int32 GetAreaIDByAreaFlag(uint32 area_flag)
+{
+	AreaIDByAreaFlag::iterator i = sAreaIDByAreaFlag.find(area_flag);
+	if(i == sAreaIDByAreaFlag.end())
+		return -1;
+
+	return i->second;
+}
+
+/*int32 GetAreaFlagByAreaID(uint32 area_id)
 {
     AreaFlagByAreaID::iterator i = sAreaFlagByAreaID.find(area_id);
     if(i == sAreaFlagByAreaID.end())
         return -1;
 
     return i->second;
-}
+}*/
 
 AreaTableEntry const* GetAreaEntryByAreaID(uint32 area_id)
 {
-    int32 areaflag = GetAreaFlagByAreaID(area_id);
+    AreaTableEntry const* entry = sAreaStore.LookupEntry(area_id);
+	if(!entry)
+		return NULL;
+
+	return entry;
+	/*uint32 areaflag = GetAreaFlagByAreaID(area_id);
     if(areaflag < 0)
         return NULL;
 
-    return sAreaStore.LookupEntry(areaflag );
+    return sAreaStore.LookupEntry(areaflag );*/
 }
 
 AreaTableEntry const* GetAreaEntryByAreaFlagAndMap(uint32 area_flag,uint32 map_id)
 {
     if(area_flag)
-        return sAreaStore.LookupEntry(area_flag);
+	{
+		uint32 id = GetAreaIDByAreaFlag(area_flag);
+		if(id)
+          return sAreaStore.LookupEntry(id);
 
+		return NULL;
+	}
     if(MapEntry const* mapEntry = sMapStore.LookupEntry(map_id))
         return GetAreaEntryByAreaID(mapEntry->linked_zone);
 
