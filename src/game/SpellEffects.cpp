@@ -5088,7 +5088,7 @@ void Spell::EffectActivateObject(uint32 effect_idx)
 void Spell::EffectSummonTotem(uint32 i)
 {
     uint8 slot = 0;
-/*    switch(m_spellInfo->EffectMiscValueB[i])
+    switch(m_spellInfo->Effect[i])
     {
         case SUMMON_TYPE_TOTEM_SLOT1: slot = 0; break;
         case SUMMON_TYPE_TOTEM_SLOT2: slot = 1; break;
@@ -5100,7 +5100,7 @@ void Spell::EffectSummonTotem(uint32 i)
         case SUMMON_TYPE_GUARDIAN:    slot = 255; break;
         default: return;
     }
-*/
+
     if(slot < MAX_TOTEM)
     {
         uint64 guid = m_caster->m_TotemSlot[slot];
