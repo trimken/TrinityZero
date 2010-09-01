@@ -209,8 +209,8 @@ int Master::Run()
     sLog.outTitle( "    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
     sLog.outTitle( "     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
     sLog.outTitle( "      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
-    sLog.outTitle( "                                 C O R E  /\\___/");
-    sLog.outTitle( "http://TrinityCore.org                    \\/__/\n");
+    sLog.outTitle( "                                 Z E R O  /\\___/");
+    sLog.outTitle( "http://TrinityZero.org                    \\/__/\n");
 
     /// worldd PID file creation
     std::string pidfile = sConfig.GetStringDefault("PidFile", "");
