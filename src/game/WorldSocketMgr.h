@@ -5,6 +5,8 @@
  *
  * Copyright (C) 2009-2010 TrinityZero <http://www.trinityzero.org/>
  *
+ * Copyleft (Ɔ) 2013-2015 StasGames Project <htpps://25.212.61.74/zero/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
